@@ -1,10 +1,12 @@
 import React from 'react'
 
 
-const page = () => {
-    return (
-        <div>donor</div>
-    )
-}
 
-export default page
+export default function page() {
+  return (
+    
+    <div>
+            DONOR
+    </div>
+  )
+}
