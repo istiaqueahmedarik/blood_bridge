@@ -73,8 +73,8 @@ function Donor() {
               </div>
               <div className='flex-col-2 mt-4'>
                 {/**lower part*/}
-                <div className='flex gap-2 border h-12 items-center px-4 rounded-sm'>
-                  <div className='hover:text-red-600 text-red-600 underline'>
+                <div className='flex gap-2 border h-16 items-center px-4 rounded-sm'>
+                  <div className='hover:text-red-600 text-red-600 '>
                     <Link href={'/dashboard'}>Dashboard</Link>
                   </div>
                   <div className='hover:text-red-600'>
