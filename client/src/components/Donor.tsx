@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React from 'react'
 import { Button } from './ui/Button';
 import Link from 'next/link';
-import { CalendarDaysIcon, HandHeart, HeartPulseIcon, NotebookPen, User, UserPen } from 'lucide-react';
+import { CalendarDaysIcon, DropletIcon, HandHeart, HeartPulseIcon, NotebookPen, TrophyIcon, User, UserPen } from 'lucide-react';
 
 
 function Donor() {
@@ -74,40 +74,60 @@ function Donor() {
               <div className='flex-col-2 mt-4'>
                 {/**lower part*/}
                 <div className='flex gap-2 border h-12 items-center px-4 rounded-sm'>
-                  <div className='hover:text-red-600'>
+                  <div className='hover:text-red-600 text-red-600 underline'>
                     <Link href={'/dashboard'}>Dashboard</Link>
                   </div>
                   <div className='hover:text-red-600'>
                     <Link href={'/appointments'}> Appoinments </Link>
                   </div>
                   <div className='hover:text-red-600'>
-                   <Link href={'/donation-history'}> Donations History </Link> 
+                  <Link href={'/donation-history'}> Donations History </Link> 
                   </div>
                 </div>
-                <div className='px-3 border'>
+                <div className='px-3 border rounded-sm'>
                   <div>
-                      <h1 className='font-bold text-xl'>Upcomming Appointment</h1>
-                      <div className='border bg-indigo-300 rounded-sm flex justify-between items-center px-2'>
+                      <h1 className='font-bold text-xl mt-2'>Upcomming Appointment</h1>
+                      <div className='m-2 h-28 border bg-indigo-300/10 rounded-sm flex justify-between items-center px-2'>
                         <div className='flex items-center gap-2'>
                           <CalendarDaysIcon/>
                           <div className='flex flex-col'>
-                            <h1 className=''>Blood Donation Appointment</h1>
-                            <p className=''>March 15,2025 - 10.30 AM </p>
-                            <p>City Blood Bank, Downtown Center</p>
+                            <h1 className='text-xl'>Blood Donation Appointment</h1>
+                            <p className='text-sm text-gray-600'>March 15,2025 - 10.30 AM </p>
+                            <p className='text-sm text-gray-600'>City Blood Bank, Downtown Center</p>
                           </div>
                         </div>
-                        <div>
-                          <Button className='bg-blue-600'>
+                        <div className=''>
+                          <Button className='bg-blue-600 m-2'>
                             Confirm 
                           </Button>
                           <Button className='bg-white text-gray-700'>
-                            reshcedule
+                            Reshcedule
                           </Button>
                         </div>
                       </div>
                   </div>
                   <div>
-                      <h1 className='font-bold'>Recent Activity</h1>
+                      <h1 className='font-bold text-xl mt-2'>Recent Activity</h1>
+                      <div className='flex justify-between items-center gap-2 border rounded-sm h-20 m-2 bg-gray-500/5'>
+                          <div className='flex items-center'>
+                          <TrophyIcon className='m-2'/>
+                          <div className='flex flex-col'>
+                          <h1 className='text-xl'>Achivement Unlocked: Silver Donor</h1>
+                          <p className='text-sm text-gray-600'>5 Successful donations completed</p>
+                          </div>
+                          </div>
+                          <p className='m-4'>2 days ago</p>
+                      </div>
+                      <div className='flex justify-between items-center gap-2 border rounded-sm h-20 m-2 bg-gray-500/5'>
+                          <div className='flex items-center'>
+                          <DropletIcon className='m-2'/>
+                          <div className='flex flex-col'>
+                          <h1 className='text-xl'>Donation Completed</h1>
+                          <p className='text-sm text-gray-600'>Thank you for donating at City Blood Bank</p>
+                          </div>
+                          </div>
+                          <p className='m-4'>4 months ago</p>
+                      </div>
                   </div>
                 </div>
               </div>
