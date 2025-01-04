@@ -1,4 +1,4 @@
-import { Calendar1, Contact, HandCoinsIcon, TriangleAlertIcon } from 'lucide-react'
+import { Calendar1, Contact, HandCoinsIcon, Plus, ShieldCheckIcon, TriangleAlertIcon, User } from 'lucide-react'
 import React from 'react'
 
 
@@ -92,6 +92,81 @@ export default function page() {
                       <p className='text-sm text-gray-600'>15 units</p>
                     </div>
                   </div>
+              </div>
+              <div className='grid grid-cols-2 mt-6 px-20 gap-4'>
+                    <div className='flex flex-col'> {/**1st Column */}
+                          <div className='border rounded-sm'> {/**title here */}
+                                <div className='flex justify-between m-3'>
+                                    <h1 className='text-xl font-bold'>Upcoming Appointments </h1>
+                                    <Plus/>
+                                </div>
+                          </div>
+                          <div className='border'>
+                                <div className='flex items-center border justify-between m-6 rounded-sm bg-gray-500/5'>{/**1 pepl */}
+                                    <div className='flex items-center gap-2 m-2'>
+                                        <User/>
+                                        <div className='flex flex-col'>
+                                            <h1 className='font-bold'>Aref</h1>
+                                            <p className='text-sm text-gray-600'>O+ Blood type</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col m-2'>
+                                          <h1 className='font-bold'>Today, 2:30 PM</h1>
+                                          <p className='text-sm text-gray-600'>First Time Donor</p>
+                                    </div>
+                                </div>
+                                <div className='flex items-center border justify-between m-6 rounded-sm bg-gray-500/5'>{/**2 pepl */}
+                                    <div className='flex items-center gap-2 m-2'>
+                                        <User/>
+                                        <div className='flex flex-col'>
+                                            <h1 className=' font-bold'>Tawsif</h1>
+                                            <p className='text-sm text-gray-600'>A+ Blood type</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col m-2 justify-end items-end'>
+                                          <h1 className='font-bold'>Tomorrow, 10:00 AM</h1>
+                                          <p className='text-sm text-gray-600'>Regular Donor</p>
+                                    </div>
+                                </div>
+                          </div>
+                    </div>
+                    <div className='flex flex-col'> {/**2nd Column */}
+                          <div className='border rounded-sm'> {/**title here */}
+                                <div className='flex justify-between m-3'>
+                                    <h1 className='text-xl font-bold'>Recent Donations</h1>
+                                    <ShieldCheckIcon/>
+                                </div>
+                          </div>
+                          <div className='border'>
+                                <div className='flex items-center border justify-between m-6 rounded-sm bg-gray-500/5'>{/**1 pepl */}
+                                    <div className='flex items-center gap-2 m-2'>
+                                        <User/>
+                                        <div className='flex flex-col'>
+                                            <h1 className=' font-bold'>Sajedullah</h1>
+                                            <p className='text-sm text-gray-600'>O+ Blood type</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col m-2'>
+                                          <h1 className='font-bold'>450 ml</h1>
+                                          <p className='text-sm text-gray-600'>2 hours ago</p>
+                                    </div>
+                                </div>
+                                <div className='flex items-center border justify-between m-6 rounded-sm  bg-gray-500/5'>{/**2 pepl */}
+                                    <div className='flex items-center gap-2 m-2'>
+                                        <User/>
+                                        <div className='flex flex-col'>
+                                            <h1 className='font-bold'>Ariful</h1>
+                                            <p className='text-sm text-gray-600'>A+ Blood type</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col m-2'>
+                                          <h1 className='font-bold'>350 ml</h1>
+                                          <p className='text-sm text-gray-600'>5 hours ago</p>
+                                    </div>
+                                </div>
+                          </div>
+                    </div>
+
               </div>
         </div>
         
