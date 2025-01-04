@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/Button';
 const page = () => {
   return (
     <div>
-        <div className='grid grid-cols-2 my-2 px-8'>
+        <div className='grid grid-cols-2 my-2 px-8 ml-6'>
             <div className='grid grid-cols-2 grid-rows-8 gap-4'>
                 <div className='col-span-2 items-center justify-center flex flex-col'>
                     <DropletIcon/>

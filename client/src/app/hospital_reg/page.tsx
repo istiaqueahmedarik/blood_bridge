@@ -9,7 +9,7 @@ import React from "react";
 function page() {
   return (
     <div className="grid grid-cols-2 my-4">
-      <div className="gap-2 ml-6 grid grid-cols-2 grid-rows-8">
+      <div className="gap-2 ml-10 grid grid-cols-2 grid-rows-8">
         <div className="col-span-2 m-auto text-center">
           <Hospital className="w-10 h-10 m-auto text-red-500"/>
           <h1 className="text-xl font-bold">Hospital Registration</h1>
