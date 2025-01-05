@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Minus, Plus, Maximize } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/Button"
 
 export default function MapView() {
   const [zoom, setZoom] = useState(1)
