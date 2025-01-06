@@ -18,7 +18,6 @@ export default function TrackingCard({
   eta,
   distance,
   onAccept,
-  onChat,
 }: TrackingCardProps) {
   return (
     <Card className="w-full max-w-2xl mx-auto">

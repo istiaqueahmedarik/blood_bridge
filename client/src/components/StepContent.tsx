@@ -1,7 +1,5 @@
 "use client";
 
-import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface StepContentProps {
     step: number;

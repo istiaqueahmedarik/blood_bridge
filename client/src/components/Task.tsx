@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
 import React from "react";
 import { useId } from "react";
@@ -85,7 +86,7 @@ export function GridPattern({ width, height, x, y, squares, ...props }: any) {
             />
             {squares && (
                 <svg x={x} y={y} className="overflow-visible">
-                    {squares.map(([x, y]: any, index) => (
+                    {squares.map(([x, y]: any, index: any) => (
                         <rect
                             strokeWidth="0"
                             key={index}

@@ -1,6 +1,6 @@
 import { Bell, Gift, Info } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import Link from 'next/link'
 
 export default function Notification() {
@@ -98,7 +98,7 @@ export default function Notification() {
                   </div>
                   <h3 className="mt-1 text-base font-semibold text-foreground">New Mobile Blood Collection Unit</h3>
                   <p className="mt-1 text-sm text-secondary-foreground">
-                    We've added a new mobile blood collection unit to better serve our community. Check the schedule for its
+                    We&apos;ve added a new mobile blood collection unit to better serve our community. Check the schedule for its
                     location.
                   </p>
                 </div>

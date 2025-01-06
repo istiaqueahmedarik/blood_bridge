@@ -1,9 +1,5 @@
-import { Bell } from 'lucide-react'
-import Link from "next/link"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import Image from 'next/image'
-import { redirect } from 'next/navigation'
 import { Star } from 'coolshapes-react'
 import { Input } from './ui/input'
 
