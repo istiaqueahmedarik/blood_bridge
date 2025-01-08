@@ -75,12 +75,13 @@ export default function WorldMap({
                   pathLength: 0,
                 }}
                 animate={{
-                  pathLength: 1,
+                  pathLength: [0, 1],
                 }}
                 transition={{
-                  duration: 1,
+                  duration: 2,
                   delay: 0.5 * i,
                   ease: "easeOut",
+                  repeat: Infinity,
                 }}
                 key={`start-upper-${i}`}
               ></motion.path>
