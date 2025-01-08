@@ -5,6 +5,7 @@ import Impact from "@/components/Impact";
 import Reason from "@/components/Reason";
 import SubHero from "@/components/SubHero";
 import Task from "@/components/Task";
+import Temp from "@/components/Temp";
 import Image from "next/image";
 import { Suspense } from "react";
 
@@ -22,7 +23,7 @@ export default function Main() {
       <Task />
       <Impact />
       <Footer />
-
+      <Temp />
     </div>
   );
 }
