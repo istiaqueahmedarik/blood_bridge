@@ -11,8 +11,10 @@ import Form from 'next/form'
 import { BellIcon, ChevronDown, MessageCircleQuestion, HomeIcon } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { useMediaQuery } from 'react-responsive'
+import { usePathname } from 'next/navigation'
 
 function NavTab() {
+    const path = usePathname()
     const { scrollY } = useScroll()
     const [scroll, setScroll] = React.useState(0)
     useMotionValueEvent(scrollY, "change", (current) => {
@@ -20,7 +22,7 @@ function NavTab() {
     })
     const offset = 70;
     const height = useWindowHeight();
-    const y = useTransform(scrollY, [0, height], [0, -1 * (height - offset)], { ease: easeOut })
+    const y = useTransform(scrollY, [0, height], [0, (path === '/' ? -1 * (height - offset) : 0)], { ease: easeOut })
     const isSmallScreen = useMediaQuery({ query: '(max-width: 768px)' })
     return (
         <motion.div
@@ -33,7 +35,7 @@ function NavTab() {
                 </Link>
             </div>
             <Button asChild className=' rounded-full  hover:text-background bg-destructive shadow-none text-background font-extrabold'>
-                <Link href="/login" className="">{isSmallScreen ? <HomeIcon size={22} /> : 'Emergency'}</Link>
+                <Link href="/users" className="">{isSmallScreen ? <HomeIcon size={22} /> : 'Emergency'}</Link>
             </Button>
             {isSmallScreen ? (
                 <DropdownMenu>
@@ -57,7 +59,7 @@ function NavTab() {
                         </DropdownMenuItem>
 
                         <DropdownMenuItem asChild>
-                            <Link href="/login" className="">Login</Link>
+                            <Link href="/users" className="">Login</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                             <Link href="/notifications" className=""><BellIcon size={22} /></Link>
@@ -108,7 +110,7 @@ function NavTab() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem asChild>
-                                <Link href="/login" className="">Login</Link>
+                                <Link href="/users" className="">Login</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link href="/notifications" className=""><BellIcon size={22} /></Link>

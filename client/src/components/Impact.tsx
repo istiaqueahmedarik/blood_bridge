@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { motion } from 'framer-motion';
+import { motion } from "motion/react"
 import { StepContent } from './StepContent';
 import { steps } from './steps-data';
 import { cn } from '@/lib/utils';

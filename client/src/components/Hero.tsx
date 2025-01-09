@@ -3,6 +3,7 @@ import React from 'react'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { Flower } from 'coolshapes-react'
+import Form from 'next/form'
 
 
 const images = [
@@ -44,8 +45,8 @@ export default function Hero() {
                         {' '}Share{' '}<span className="text-destructive">Blood</span>
                         <br />
                     </h1>
-                    <form className="relative rounded-full bg-background max-w-sm mx-auto outline-primary outline-4 border-[3px] border-foreground">
-                        <Input placeholder="Search ...." className='rounded-full px-4 py-5' />
+                    <Form action={'/search'} className="relative rounded-full bg-background max-w-sm mx-auto outline-primary outline-4 border-[3px] border-foreground">
+                        <Input name='query' placeholder="Search ...." className='rounded-full px-4 py-5' />
                         <Button variant={'ghost'} type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full border-2 border-primary p-2 w-10 h-10 flex items-center justify-center bg-foreground">
                             <Flower
                                 index={9}
@@ -53,7 +54,7 @@ export default function Hero() {
                                 size={24}
                             />
                         </Button>
-                    </form>
+                    </Form>
                 </div>
             </div>
         </div>
