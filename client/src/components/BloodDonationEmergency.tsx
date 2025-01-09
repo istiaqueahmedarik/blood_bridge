@@ -29,7 +29,7 @@ export default function BloodDonationEmergency() {
   const [origin, setOrigin] = useState<[number, number] | null>(null)
   const destination = {
     name: 'Dhaka Medical College Hospital',
-    coordinates: [23.7277, 90.3950]
+    coordinates: [23.7277, 90.3950] as [number, number]
   }
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function BloodDonationEmergency() {
               <Marker position={destination.coordinates} icon={customIcon}>
                 <Popup>{destination.name}</Popup>
               </Marker>
-              <Polyline positions={[origin, destination.coordinates]} color="blue" />
+              <Polyline positions={[origin as [number, number], destination.coordinates as [number, number]]} color="blue" />
             </MapContainer>
           </CardContent>
         </Card>
