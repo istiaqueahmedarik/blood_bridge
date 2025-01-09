@@ -35,7 +35,7 @@ function NavTab() {
                 </Link>
             </div>
             <Button asChild className=' rounded-full  hover:text-background bg-destructive shadow-none text-background font-extrabold'>
-                <Link href="/users" className="">{isSmallScreen ? <HomeIcon size={22} /> : 'Emergency'}</Link>
+                <Link href="/emergency" className="">{isSmallScreen ? <HomeIcon size={22} /> : 'Emergency'}</Link>
             </Button>
             {isSmallScreen ? (
                 <DropdownMenu>

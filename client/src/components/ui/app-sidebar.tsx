@@ -1,4 +1,4 @@
-import { Calendar, ClockAlert, Headset, Home, Inbox } from "lucide-react"
+import { Calendar, ClockAlert, Headset, Home, Inbox, TicketPercent } from "lucide-react"
 
 import {
     Sidebar,
@@ -37,6 +37,11 @@ const items = [
         title: "Emergency",
         url: "/donor/emergency",
         icon: ClockAlert,
+    },
+    {
+        title: "Offer",
+        url: "/donor/services",
+        icon: TicketPercent,
     },
 
 ]

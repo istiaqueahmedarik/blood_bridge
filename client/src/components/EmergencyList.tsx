@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { ChevronDown, ChevronUp, Clock, Droplet, MapPin } from 'lucide-react'
+import Link from 'next/link'
 
 const dummy = [
     { id: '1', bloodType: 'A+', location: 'Central Hospital', urgency: 'High', postedAt: '2023-05-10T09:00:00Z' },
@@ -59,7 +60,11 @@ export default function EmergencyBloodDonationList() {
                                     <Clock className="w-4 h-4 mr-1" /> Posted: {new Date(request.postedAt).toLocaleString()}
                                 </p>
                                 <p className="text-sm">Urgency: <span className="font-semibold">{request.urgency}</span></p>
-                                <Button className="w-full mt-2">Respond to Request</Button>
+                                <Button className="w-full mt-2" asChild>
+                                    <Link href={`/emergency/${request.id}`}>
+                                        Respond to Request
+                                    </Link>
+                                </Button>
                             </div>
                         )}
                     </li>

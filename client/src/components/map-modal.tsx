@@ -12,20 +12,17 @@ import {
 } from "@/components/ui/dialog"
 import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import { icon } from "leaflet"
+import { Icon } from 'leaflet'
+
 interface MapModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onLocationSelect: (location: string) => void
 }
-const ICON = icon({
-  iconUrl: "/logo.svg",
-  iconAnchor: [16, 32],
-  iconRetinaUrl: "/logo.svg",
-  shadowAnchor: [4, 62],
-  shadowUrl: "/logo.svg",
-  shadowRetinaUrl: "/logo.svg",
-  iconSize: [32, 32],
+const customIcon = new Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
 })
 export default function MapModal({ open, onOpenChange, onLocationSelect }: MapModalProps) {
   const [selectedLocation, setSelectedLocation] = useState({ lat: 0, lng: 0 })
@@ -57,7 +54,7 @@ export default function MapModal({ open, onOpenChange, onLocationSelect }: MapMo
     })
 
     return selectedLocation.lat !== 0 && selectedLocation.lng !== 0 ? (
-      <Marker icon={ICON} position={[selectedLocation.lat, selectedLocation.lng]} >
+      <Marker icon={customIcon} position={[selectedLocation.lat, selectedLocation.lng]} >
         <Popup>
           Your choosen location
         </Popup>
