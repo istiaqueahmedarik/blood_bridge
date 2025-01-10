@@ -24,7 +24,7 @@ function page() {
             </Link>
           </p>
         </div>
-        <Form action={'/'} className='flex flex-col gap-4 my-5'>
+        <Form action={'/donor'} className='flex flex-col gap-4 my-5'>
           <Input placeholder='Your Email' type='email' name='email' className='max-w-xl px-4 py-6' />
           <Input placeholder='Your Password' type='password' name='password' className='max-w-xl px-4 py-6' />
           <Button className='max-w-xl' variant={'default'}>Log in</Button>

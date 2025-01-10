@@ -14,7 +14,7 @@ const EmergencyBloodRequestForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                     <div className="text-center">
-                        <DropletIcon className="mx-auto h-12 w-12 text-destructive" />
+                        <DropletIcon className="mx-auto h-12 w-12 text-destructive text-red-600 fill-current" />
                         <h1 className="mt-2 text-3xl font-bold text-foreground">Emergency Blood Request</h1>
                         <p className="mt-1 text-sm text-muted-foreground">Turn on your location for real-time access</p>
                     </div>

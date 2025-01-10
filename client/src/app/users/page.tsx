@@ -15,7 +15,7 @@ function page() {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                    <Link href="/nid_verify">
+                    <Link href="/signup">
                         <Card className="group isolate flex flex-col rounded-2xl bg-popover transition-all hover:bg-primary shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025] overflow-hidden">
                             <CardContent className="relative z-10 flex-none px-6 order-last pb-6">
                                 <h2 className="text-2xl font-bold text-center text-white">Donor</h2>
