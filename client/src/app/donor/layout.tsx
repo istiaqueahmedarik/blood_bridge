@@ -61,7 +61,7 @@ async function layout({
                         </div>
                     </div>
 
-                    <div className='p-1 flex flex-col auto-cols-min gap-4 w-full lg:w-[30vw]'>
+                    <div className='p-1 flex flex-col auto-cols-min gap-4 w-full lg:w-auto'>
                         <div className='bg-muted aspect-video rounded-xl min-h-[calc(35svh-theme(spacing.4))] grid place-content-center'>
                             <div className='mx-auto '>
                                 <Image
