@@ -44,10 +44,10 @@ export const design: StyleSpecification = {
             "paint": {
                 "background-color": "#111"
             },
-            "interactive": true
+
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -66,7 +66,7 @@ export const design: StyleSpecification = {
             "source-layer": "landcover"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -85,7 +85,7 @@ export const design: StyleSpecification = {
             "source-layer": "landcover"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -104,7 +104,7 @@ export const design: StyleSpecification = {
             "source-layer": "landcover"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -123,7 +123,7 @@ export const design: StyleSpecification = {
             "source-layer": "landcover"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -142,7 +142,7 @@ export const design: StyleSpecification = {
             "source-layer": "landcover"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -169,7 +169,7 @@ export const design: StyleSpecification = {
             "source-layer": "landuse"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -187,7 +187,7 @@ export const design: StyleSpecification = {
             "source-layer": "landuse"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -205,7 +205,7 @@ export const design: StyleSpecification = {
             "source-layer": "landuse"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -236,7 +236,7 @@ export const design: StyleSpecification = {
             "source-layer": "hillshade"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -267,7 +267,7 @@ export const design: StyleSpecification = {
             "source-layer": "hillshade"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -298,7 +298,7 @@ export const design: StyleSpecification = {
             "source-layer": "hillshade"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -329,7 +329,7 @@ export const design: StyleSpecification = {
             "source-layer": "hillshade"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -360,7 +360,7 @@ export const design: StyleSpecification = {
             "source-layer": "hillshade"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -414,7 +414,7 @@ export const design: StyleSpecification = {
                 "fill-antialias": true,
                 "fill-color": "#383838"
             },
-            "interactive": true
+
         },
         {
             "id": "waterway",
@@ -451,7 +451,7 @@ export const design: StyleSpecification = {
                     ]
                 }
             },
-            "interactive": true
+
         },
         {
             "id": "waterway_stream",
@@ -487,7 +487,7 @@ export const design: StyleSpecification = {
                     ]
                 }
             },
-            "interactive": true
+
         },
         {
             "id": "water",
@@ -500,10 +500,10 @@ export const design: StyleSpecification = {
             "paint": {
                 "fill-color": "#2c2c2c"
             },
-            "interactive": true
+
         },
         {
-            "interactive": true,
+
             "layout": {
                 "line-join": "miter",
                 "visibility": "visible"
@@ -556,7 +556,7 @@ export const design: StyleSpecification = {
             "source-layer": "aeroway"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "line-join": "miter"
             },
@@ -641,7 +641,7 @@ export const design: StyleSpecification = {
                     0.18
                 ]
             },
-            "interactive": true
+
         },
         {
             "id": "tunnel_major",
@@ -682,10 +682,10 @@ export const design: StyleSpecification = {
                     0.14
                 ]
             },
-            "interactive": true
+
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -716,7 +716,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "minzoom": 11,
             "layout": {
                 "visibility": "visible"
@@ -775,7 +775,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-cap": "round",
@@ -809,7 +809,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-cap": "round",
@@ -846,7 +846,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-cap": "round",
@@ -891,7 +891,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "minzoom": 14,
             "layout": {
                 "line-cap": "round",
@@ -938,7 +938,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "line-cap": "round",
                 "line-join": "round",
@@ -992,7 +992,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "line-cap": "round",
                 "line-join": "round",
@@ -1034,7 +1034,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "line-cap": "round",
                 "line-join": "round",
@@ -1080,7 +1080,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "minzoom": 13,
             "layout": {
                 "line-cap": "round",
@@ -1116,7 +1116,7 @@ export const design: StyleSpecification = {
             "source-layer": "road"
         },
         {
-            "interactive": true,
+
             "minzoom": 13,
             "layout": {
                 "line-cap": "butt",
@@ -1203,10 +1203,10 @@ export const design: StyleSpecification = {
                     ]
                 }
             },
-            "interactive": true
+
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-cap": "round",
@@ -1239,7 +1239,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "minzoom": 11,
             "layout": {
                 "visibility": "visible",
@@ -1300,7 +1300,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "minzoom": 10,
             "layout": {
                 "visibility": "visible",
@@ -1347,7 +1347,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "minzoom": 14,
             "layout": {
                 "visibility": "visible",
@@ -1394,7 +1394,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "minzoom": 14,
             "layout": {
                 "visibility": "visible",
@@ -1433,7 +1433,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-cap": "round",
@@ -1487,7 +1487,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-cap": "round",
@@ -1533,7 +1533,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-cap": "round",
@@ -1571,7 +1571,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "minzoom": 13,
             "layout": {
                 "visibility": "visible",
@@ -1608,7 +1608,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "minzoom": 14,
             "layout": {
                 "visibility": "visible",
@@ -1645,7 +1645,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "minzoom": 14,
             "layout": {
                 "visibility": "visible",
@@ -1681,7 +1681,7 @@ export const design: StyleSpecification = {
             "source-layer": "bridge"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-join": "bevel"
@@ -1734,7 +1734,7 @@ export const design: StyleSpecification = {
             "source-layer": "admin"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-join": "miter"
@@ -1792,7 +1792,7 @@ export const design: StyleSpecification = {
             "source-layer": "admin"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible",
                 "line-join": "miter"
@@ -1866,7 +1866,7 @@ export const design: StyleSpecification = {
             "source-layer": "admin"
         },
         {
-            "interactive": true,
+
             "minzoom": 1,
             "layout": {
                 "visibility": "visible",
@@ -1914,7 +1914,7 @@ export const design: StyleSpecification = {
             "source-layer": "admin"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -1933,7 +1933,7 @@ export const design: StyleSpecification = {
             "source-layer": "original"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -1973,7 +1973,7 @@ export const design: StyleSpecification = {
             "source-layer": "postline_level1"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "visibility": "visible"
             },
@@ -2018,7 +2018,7 @@ export const design: StyleSpecification = {
             "source-layer": "original"
         },
         {
-            "interactive": true,
+
             "minzoom": 12,
             "layout": {
                 "text-font": [
@@ -2056,7 +2056,7 @@ export const design: StyleSpecification = {
             "source-layer": "waterway_label"
         },
         {
-            "interactive": true,
+
             "minzoom": 12,
             "layout": {
                 "symbol-placement": "line",
@@ -2109,7 +2109,7 @@ export const design: StyleSpecification = {
             "source-layer": "road_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "symbol-placement": "line",
                 "text-field": "{name_en}",
@@ -2151,7 +2151,7 @@ export const design: StyleSpecification = {
             "source-layer": "road_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "symbol-placement": "line",
                 "text-field": "{name_en}",
@@ -2193,7 +2193,7 @@ export const design: StyleSpecification = {
             "source-layer": "road_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-font": [
                     "DIN Offc Pro Medium",
@@ -2255,7 +2255,7 @@ export const design: StyleSpecification = {
             "source-layer": "poi_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 8,
                 "visibility": "visible",
@@ -2302,7 +2302,7 @@ export const design: StyleSpecification = {
             "source-layer": "poi_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 8,
                 "visibility": "visible",
@@ -2404,10 +2404,10 @@ export const design: StyleSpecification = {
                     ]
                 }
             },
-            "interactive": true
+
         },
         {
-            "interactive": true,
+
             "minzoom": 12,
             "layout": {
                 "text-field": "{name_en}",
@@ -2474,7 +2474,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "minzoom": 8,
             "layout": {
                 "text-field": "{name_en}",
@@ -2523,7 +2523,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-field": "{name_en}",
                 "text-font": [
@@ -2610,7 +2610,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-field": "{name_en}",
                 "text-font": [
@@ -2697,7 +2697,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-field": "{name_en}",
                 "text-font": [
@@ -2790,7 +2790,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-field": "{name_en}",
                 "text-font": [
@@ -2883,7 +2883,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-field": "{name_en}",
                 "text-font": [
@@ -2972,7 +2972,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-field": "{name_en}",
                 "text-font": [
@@ -3062,7 +3062,7 @@ export const design: StyleSpecification = {
             "source-layer": "place_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 8,
                 "visibility": "none",
@@ -3112,7 +3112,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 8,
                 "visibility": "visible",
@@ -3161,7 +3161,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 8,
                 "visibility": "visible",
@@ -3210,7 +3210,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 4,
                 "visibility": "visible",
@@ -3259,7 +3259,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 15,
                 "visibility": "visible",
@@ -3310,7 +3310,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 15,
                 "visibility": "visible",
@@ -3359,7 +3359,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 15,
                 "visibility": "visible",
@@ -3408,7 +3408,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "layout": {
                 "text-max-width": 15,
                 "visibility": "visible",
@@ -3457,7 +3457,7 @@ export const design: StyleSpecification = {
             "source-layer": "marine_label"
         },
         {
-            "interactive": true,
+
             "minzoom": 3,
             "layout": {
                 "text-transform": "uppercase",
@@ -3522,7 +3522,7 @@ export const design: StyleSpecification = {
             "source-layer": "state_label"
         },
         {
-            "interactive": true,
+
             "minzoom": 1,
             "layout": {
                 "text-field": "{name_en}",
@@ -3575,7 +3575,7 @@ export const design: StyleSpecification = {
             "source-layer": "country_label"
         },
         {
-            "interactive": true,
+
             "minzoom": 1,
             "layout": {
                 "text-field": {
@@ -3641,7 +3641,6 @@ export const design: StyleSpecification = {
             "source-layer": "country_label"
         },
         {
-            "interactive": true,
             "layout": {
                 "text-field": "{name_en}",
                 "text-font": [
@@ -3694,9 +3693,5 @@ export const design: StyleSpecification = {
             "source-layer": "country_label"
         }
     ],
-    "created": "2015-12-03T08:33:26.143Z",
-    "id": "cihpzjjhv001ibrlzxk0j8gmp",
-    "modified": "2015-12-03T08:33:26.143Z",
-    "owner": "maper",
-    "draft": false
+
 }

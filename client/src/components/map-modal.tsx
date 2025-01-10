@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,56 +10,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
-import { Icon } from 'leaflet'
+import Map, { Marker, NavigationControl } from 'react-map-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 interface MapModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onLocationSelect: (location: string) => void
 }
-const customIcon = new Icon({
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
-})
-export default function MapModal({ open, onOpenChange, onLocationSelect }: MapModalProps) {
-  const [selectedLocation, setSelectedLocation] = useState({ lat: 0, lng: 0 })
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setSelectedLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        })
-      })
-    }
-  }, [])
+export default function MapModal({ open, onOpenChange, onLocationSelect }: MapModalProps) {
+
+  const [selectedLocation, setSelectedLocation] = useState({ lat: 23.8103, lng: 90.4125 })
+
 
   const handleLocationSelect = () => {
     onLocationSelect(`${selectedLocation.lat},${selectedLocation.lng}`)
     onOpenChange(false)
-  }
-
-  function LocationMarker() {
-    useMapEvents({
-      click(event) {
-        setSelectedLocation({
-          lat: event.latlng.lat,
-          lng: event.latlng.lng,
-        })
-      },
-    })
-
-    return selectedLocation.lat !== 0 && selectedLocation.lng !== 0 ? (
-      <Marker icon={customIcon} position={[selectedLocation.lat, selectedLocation.lng]} >
-        <Popup>
-          Your choosen location
-        </Popup>
-      </Marker>
-    ) : null
   }
 
   return (
@@ -72,20 +39,22 @@ export default function MapModal({ open, onOpenChange, onLocationSelect }: MapMo
           </DialogDescription>
         </DialogHeader>
         <div className="h-[300px]">
-          <MapContainer
-            center={[selectedLocation.lat, selectedLocation.lng]}
-            zoom={120}
+          <Map
+            initialViewState={{
+              longitude: selectedLocation.lng,
+              latitude: selectedLocation.lat,
+              zoom: 12
+            }}
             style={{ width: '100%', height: '100%' }}
+            mapStyle="mapbox://styles/mapbox/streets-v11"
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            onClick={(e) => setSelectedLocation({ lat: e.lngLat.lat, lng: e.lngLat.lng })}
           >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <LocationMarker />
+            <NavigationControl position="top-left" />
             {selectedLocation.lat !== 0 && selectedLocation.lng !== 0 && (
-              <Marker position={[selectedLocation.lat, selectedLocation.lng]} />
+              <Marker latitude={selectedLocation.lat} longitude={selectedLocation.lng} />
             )}
-          </MapContainer>
+          </Map>
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleLocationSelect}>Confirm Location</Button>
