@@ -1,18 +1,28 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Hospital } from "lucide-react";
+import { Hospital, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 function page() {
+  const [LcImage, setLcImage] = useState<File | null>(null); 
+  const handleLcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]; // Safely access the first file
+      if (file) {
+        setLcImage(file); // Save the file for further processing
+        
+      }
+    };
   return (
     <div className="grid grid-cols-2 my-4">
-      <div className="gap-2 ml-10 grid grid-cols-2 grid-rows-8">
+      <div className="gap-2 ml-10 grid grid-cols-2 grid-rows-10">
         <div className="col-span-2 m-auto text-center">
-          <Hospital className="w-10 h-10 m-auto text-red-500" />
-          <h1 className="text-xl font-bold">Hospital Registration</h1>
+          {/**<Hospital className="w-10 h-10 m-auto text-red-500" />**/}
+          <Image src={'/pharmacy.png'} alt="hospital_img" height={50} width={50} className="ml-24"/>
+          <h1 className="text-xl font-bold">Institute Registration</h1>
           <h1 className="text-sm text-gray-600">We will manually review your information!</h1>
           <div className="flex flex-row ml-4">
             <p>Already has account?</p>
@@ -22,8 +32,8 @@ function page() {
           </div>
         </div>
         <div>
-          <h1>Hospital Name</h1>
-          <Input type="text" placeholder="Hospital name" name="hospital_name" />
+          <h1>Institute Name</h1>
+          <Input type="text" placeholder="Enter Institute Name" name="Institute_name" />
         </div>
         <div>
           <h1>License no</h1>
@@ -49,17 +59,32 @@ function page() {
         </div>
         <div>
           <h1>State</h1>
-          <Input type="text" placeholder="state_province" name="state_province" />
+          <Input type="text" placeholder="State/Province" name="state_province" />
         </div>
         <div>
           <h1>Password</h1>
-          <Input type="password" placeholder="password" name="password" />
+          <Input type="password" placeholder="Password" name="password" />
         </div>
         <div>
           <h1>Comfirm Password</h1>
-          <Input type="password" placeholder="confirm_password" name="confirm_password" />
+          <Input type="password" placeholder="Confirm password" name="confirm_password" />
         </div>
-
+        
+        {/**Institute Type */}
+        <div className="flex flex-row py-8 justify-end col-span-2 gap-2">
+        <select
+          id="instituteType"
+          name="instituteType"
+          className="px-4 py-2 border border-gray-300 rounded-md w-full"
+          defaultValue=""
+        >
+          <option value="" disabled>
+          Select Type of Institute
+          </option>
+          <option value="Hospital">Hospital</option>
+          <option value="Blood Bank">Blood Bank</option>
+        </select>
+        </div>
 
 
 
@@ -143,11 +168,24 @@ function page() {
             </label>
           </div>
         </div>
+
+        {/**Licence Pic */}
+        <div className="flex flex-col mb-8 justify-end col-span-2 gap-2">
+            <label htmlFor='nidCard' className='text-black-500 ml-3 text-sm font-medium '>Upload Licence</label>
+            <input
+              type='file'
+              id='LcCard'
+              accept='image/*'
+              onChange={handleLcChange}
+              className='block w-full text-sm text-gray-500 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark'
+            />
+          </div>
+
+        
+
         <div className="flex flex-row mr-0 justify-end col-span-2 gap-2">
-          <Button className="max-w-5xl min-w-4xl bg-slate-700">Cancel</Button>
+          <Button className="max-w-5xl min-w-4xl bg-slate-700"> <X/> Cancel</Button>
           <Button>Register Hospital</Button>
-
-
         </div>
       </div>
       <div className="m-auto">
