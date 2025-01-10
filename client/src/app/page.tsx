@@ -1,5 +1,4 @@
 import BdMap from "@/components/BdMap";
-import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Impact from "@/components/Impact";
 import Reason from "@/components/Reason";
@@ -8,11 +7,9 @@ import Task from "@/components/Task";
 import Image from "next/image";
 import { Suspense } from "react";
 
-
 export default function Main() {
-
   return (
-    <div>
+    <div className="space-y-10">
       <Hero />
       <SubHero />
       <Reason />
@@ -21,8 +18,6 @@ export default function Main() {
       </Suspense>
       <Task />
       <Impact />
-      <Footer />
-
     </div>
   );
 }

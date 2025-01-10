@@ -1,30 +1,64 @@
 import Image from 'next/image'
 import React from 'react'
 import { Input } from './ui/input'
+import { Button } from './ui/button'
+import { Flower } from 'coolshapes-react'
 import Form from 'next/form'
 
 
+const images = [
+    '/donor.svg',
+    '/hero_image.svg',
+    '/handshake2.svg',
+    '/happy.svg',
+    '/happy3.svg',
+    '/handshake3.svg',
+]
 
 export default function Hero() {
     return (
-        <div>
-            <div className=' grid grid-rows-1 lg:grid-cols-2 gap-4 mx-6'>
-                <div className='grid place-content-center gap-4'>
-                    <h1 className='text-4xl font-extrabold'>Unite Live Share Blood</h1>
-                    <p className='text-lg font-light'>
-                        Bridinging donors and those in need, making blood donation simple and impactful
-                    </p>
-
-                    <Form action={'/search'} className='flex flex-row gap-4'>
-                        <Input name='query' placeholder='Ask Anything' className='max-w-xl  outline-none px-4 py-6  border-2 border-input rounded-xl' />
+        <div className='font-[family-name:var(--font-poppins)]'>
+            <div className='grid place-content-center'>
+                <Image src={"/logo.svg"} alt="Blood donation" width={60} height={60} />
+            </div>
+            <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-background font-poppins">
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10"></div>
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="scrolling-images-container">
+                            {images.concat(images).map((src, index) => (
+                                <Image
+                                    key={index}
+                                    src={src}
+                                    alt="Blood donation"
+                                    width={300}
+                                    height={300}
+                                    className="scrolling-image"
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div className="relative z-20 text-center px-4 max-w-5xl">
+                    <h1 className="text-6xl md:text-8xl font-bold text-card-foreground mb-6 leading-tight">
+                        Unite{' '}<span className="text-destructive">Live</span>
+                        {' '}Share{' '}<span className="text-destructive">Blood</span>
+                        <br />
+                    </h1>
+                    <Form action={'/search'} className="relative rounded-full bg-background max-w-sm mx-auto outline-primary outline-4 border-[3px] border-foreground">
+                        <Input name='query' placeholder="Search ...." className='rounded-full px-4 py-5' />
+                        <Button variant={'ghost'} type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full border-2 border-primary p-2 w-10 h-10 flex items-center justify-center bg-foreground">
+                            <Flower
+                                index={9}
+                                noise={true}
+                                size={24}
+                            />
+                        </Button>
                     </Form>
                 </div>
-                <div className='grid place-content-center'>
-                    <Image src={'./hero1.svg'} alt='hero' width={500} height={500} />
-                </div>
             </div>
-
-
         </div>
     )
+
+
 }

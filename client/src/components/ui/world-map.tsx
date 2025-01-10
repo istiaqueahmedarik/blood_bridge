@@ -47,7 +47,7 @@ export default function WorldMap({
   };
 
   return (
-    <div className="w-full aspect-[2/1] dark:bg-black bg-white rounded-lg  relative font-sans">
+    <div className="w-full aspect-[3/1] bg-background rounded-lg  relative font-sans">
       <Image
         src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
         className="h-full w-full [mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%,transparent)] pointer-events-none select-none"
@@ -75,12 +75,13 @@ export default function WorldMap({
                   pathLength: 0,
                 }}
                 animate={{
-                  pathLength: 1,
+                  pathLength: [0, 1],
                 }}
                 transition={{
-                  duration: 1,
+                  duration: 2,
                   delay: 0.5 * i,
                   ease: "easeOut",
+                  repeat: Infinity,
                 }}
                 key={`start-upper-${i}`}
               ></motion.path>

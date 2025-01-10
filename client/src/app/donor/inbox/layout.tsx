@@ -1,8 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import React from 'react'
 interface Contact {
     id: number
@@ -26,24 +25,19 @@ export default function layout({
         { id: 7, name: "Badhan Blood Bank", status: "Available", avatar: "/placeholder.svg" },
     ]
     return (
-        <div className="flex h-screen">
-            <div className="w-80 border-r flex flex-col">
+        <div className="flex flex-col md:flex-row h-screen">
+            <div className="w-full md:w-80 flex flex-col border-r">
                 <div className="p-4 border-b">
                     <div className="flex items-center justify-between mb-4">
                         <h1 className="text-xl font-semibold">Inbox</h1>
-                        <Button variant="ghost" size="icon">
-                            <Plus className="h-4 w-4" />
-                        </Button>
+
                     </div>
                     <div className="flex items-center space-x-2">
                         <div className="relative flex-1">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input placeholder="Search..." className="pl-8" />
                         </div>
-                        <Button variant="ghost" size="icon" className="shrink-0">
-                            <span className="sr-only">Toggle filters</span>
-                            ≡
-                        </Button>
+
                     </div>
                 </div>
                 <ScrollArea className="flex-1">
@@ -67,7 +61,7 @@ export default function layout({
                     </div>
                 </ScrollArea>
             </div>
-            {children}
+            <div className="flex-1">{children}</div>
         </div>
     )
 }
