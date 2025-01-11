@@ -65,6 +65,7 @@ async function multiStepTool(prompt: string) {
                     prompt: z.string(),
                 }),
                 execute: async ({ prompt }) => {
+                    console.log(`Executing donation appointment tool with prompt: ${prompt}`);
                     const donationAppointment = {
                         name: 'Istiaque Ahmed',
                         email: 'istia@gmail.com'
@@ -89,6 +90,7 @@ async function multiStepTool(prompt: string) {
                     prompt: z.string(),
                 }),
                 execute: async ({ prompt }) => {
+                    console.log(`Executing getMyDonationDetails tool with prompt: ${prompt}`);
                     const donation = [
                         { date: '2022-01-01', amount: 500, location: 'Dhaka' },
                         { date: '2022-01-15', amount: 300, location: 'Dhaka' },
@@ -104,6 +106,7 @@ async function multiStepTool(prompt: string) {
                     'location': z.string().default('Dhaka').describe('The location of the user'),
                 }),
                 execute: async ({ location }) => {
+                    console.log(`Executing get_hospitals_around_me tool with location: ${location}`);
                     const hospitals = [
                         { name: 'United Hospital Limited', longitude: 90.4069, latitude: 23.7969 },
                         { name: 'Kurmitola General Hospital', longitude: 90.4152, latitude: 23.7789 },
@@ -220,7 +223,7 @@ export async function continueConversation(
                     });
 
                     return <div>
-                        <MapWithMarkers locations={hospitals.hospitals} />
+                        <MapWithMarkers locations={hospitals.hospitals} className='max-w-[80vw]' />
                         <p>
                             {hospitals?.subtext}
                         </p>

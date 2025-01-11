@@ -7,6 +7,7 @@ import { useActions, useUIState } from 'ai/rsc'
 import { generateId } from 'ai'
 import { ClientMessage } from "@/app/action"
 import { Input } from "@/components/ui/input"
+import Image from "next/image"
 
 export const maxDuration = 30
 
@@ -71,21 +72,27 @@ export default function Chat() {
 
             <div className="flex-1 overflow-y-auto px-4 py-8">
                 <div className="max-w-3xl mx-auto space-y-6">
-                    {conversation.map((message: ClientMessage) => (
-                        <div
-                            key={message.id}
-                            className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
-                        >
-                            <div
-                                className={`${message.role === 'assistant'
-                                    ? 'bg-muted-foreground/10 text-foreground'
-                                    : 'bg-secondary text-secondary-foreground'
-                                    } p-4 rounded-2xl max-w-[80%]`}
-                            >
-                                {message.display}
-                            </div>
+                    {conversation.length === 0 ? (
+                        <div className="flex justify-center items-center h-full">
+                            <Image src="/logo.svg" alt="Logo" width={500} height={500} className="w-32 h-32 backdrop:blur-lg" />
                         </div>
-                    ))}
+                    ) : (
+                        conversation.map((message: ClientMessage) => (
+                            <div
+                                key={message.id}
+                                className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
+                            >
+                                <div
+                                    className={`${message.role === 'assistant'
+                                        ? 'bg-muted-foreground/10 text-foreground'
+                                        : 'bg-secondary text-secondary-foreground'
+                                        } p-4 rounded-2xl`}
+                                >
+                                    {message.display}
+                                </div>
+                            </div>
+                        ))
+                    )}
                     <div ref={messagesEndRef} />
                 </div>
             </div>
