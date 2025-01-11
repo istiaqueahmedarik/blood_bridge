@@ -22,7 +22,7 @@ function NavTab() {
     })
     const offset = 70;
     const height = useWindowHeight();
-    const y = useTransform(scrollY, [0, height], [(path.includes('/ask')) ? -1 * (height - offset) : 0, (path === '/' ? -1 * (height - offset) : (path.includes('/ask') ? -1 * (height - offset) : 0))], { ease: easeOut })
+    const y = useTransform(scrollY, [0, height], [0, (path === '/' ? -1 * (height - offset) : (0))], { ease: easeOut })
     const isSmallScreen = useMediaQuery({ query: '(max-width: 768px)' })
     return (
         <motion.div
@@ -52,7 +52,7 @@ function NavTab() {
                             <Link href="/bloodbank" className="">Blood Bank Dashboard</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <Link href="/hospital" className="">Hospital Dashboard</Link>
+                            <Link href="/medical" className="">Medical Dashboard</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                             <Link href="/ask" className=""><MessageCircleQuestion size={22} /></Link>
@@ -62,7 +62,7 @@ function NavTab() {
                             <Link href="/users" className="">Login</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <Link href="/notifications" className=""><BellIcon size={22} /></Link>
+                            <Link href="/notification" className=""><BellIcon size={22} /></Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -82,7 +82,7 @@ function NavTab() {
                                 <Link href="/bloodbank" className="">Blood Bank Dashboard</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Link href="/hospital" className="">Hospital Dashboard</Link>
+                                <Link href="/medical" className="">Medical Dashboard</Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -113,7 +113,7 @@ function NavTab() {
                                 <Link href="/users" className="">Login</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Link href="/notifications" className=""><BellIcon size={22} /></Link>
+                                <Link href="/notification" className=""><BellIcon size={22} /></Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

@@ -335,3 +335,55 @@ export async function continueConversation(
     };
 }
 
+
+
+
+import { revalidatePath } from 'next/cache'
+
+let offers = [
+    { id: 1, hospital: "Central Hospital", service: "Blood Test", discountPercentage: 20, expiryDate: "2023-12-31" },
+    { id: 2, hospital: "Central Hospital", service: "X-Ray", discountPercentage: 15, expiryDate: "2023-12-25" },
+]
+
+export async function addOffer(formData: FormData) {
+    const hospital = formData.get('hospital') as string
+    const service = formData.get('service') as string
+    const discountPercentage = parseInt(formData.get('discountPercentage') as string)
+    const expiryDate = formData.get('expiryDate') as string
+
+    const newOffer = {
+        id: offers.length + 1,
+        hospital,
+        service,
+        discountPercentage,
+        expiryDate,
+    }
+
+    offers.push(newOffer)
+    revalidatePath('/offers')
+}
+
+export async function updateOffer(formData: FormData) {
+    const id = parseInt(formData.get('id') as string)
+    const hospital = formData.get('hospital') as string
+    const service = formData.get('service') as string
+    const discountPercentage = parseInt(formData.get('discountPercentage') as string)
+    const expiryDate = formData.get('expiryDate') as string
+
+    offers = offers.map(offer =>
+        offer.id === id ? { ...offer, hospital, service, discountPercentage, expiryDate } : offer
+    )
+
+    revalidatePath('/offers')
+}
+
+export async function deleteOffer(formData: FormData) {
+    const id = parseInt(formData.get('id') as string)
+    offers = offers.filter(offer => offer.id !== id)
+    revalidatePath('/offers')
+}
+
+export async function getOffers() {
+    return offers
+}
+
