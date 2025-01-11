@@ -4,12 +4,41 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Pencil1Icon } from '@radix-ui/react-icons';
-import { Calendar } from 'lucide-react';
+import { Calendar, ClockAlert, Home, Inbox, TicketPercent } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
+const items = [
+    {
+        title: "Home",
+        url: "/donor",
+        icon: Home,
+        type: 'active'
+    },
+    {
+        title: "Inbox",
+        url: "/donor/inbox/me",
+        icon: Inbox,
 
+    },
+    {
+        title: "Add Appointment",
+        url: "/donor/appoint",
+        icon: Calendar,
+    },
+    {
+        title: "Emergency",
+        url: "/donor/emergency",
+        icon: ClockAlert,
+    },
+    {
+        title: "Offer",
+        url: "/donor/services",
+        icon: TicketPercent,
+    },
+
+]
 async function layout({
     children,
 }: Readonly<{
@@ -24,7 +53,7 @@ async function layout({
     }
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
-            <AppSidebar title='Donor Dashboard' />
+            <AppSidebar title='Donor Dashboard' items={items} />
             <SidebarInset className='px-2'>
                 <div className='flex flex-col lg:flex-row auto-cols-min flex-1 gap-4'>
                     <div className='w-full lg:max-w-[70vw] border-r-2 min-h-[calc(100svh-theme(spacing.4))]'>
@@ -61,7 +90,7 @@ async function layout({
                         </div>
                     </div>
 
-                    <div className='p-1 flex flex-col auto-cols-min gap-4 w-full lg:w-[30vw]'>
+                    <div className='p-1 flex flex-col auto-cols-min gap-4 w-full lg:w-auto'>
                         <div className='bg-muted aspect-video rounded-xl min-h-[calc(35svh-theme(spacing.4))] grid place-content-center'>
                             <div className='mx-auto '>
                                 <Image

@@ -24,45 +24,11 @@ export function BloodDonationForm() {
         <CardDescription>Schedule your life-saving donation today.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input id="name" placeholder="Md. Rahim" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="rahim@example.com" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number</Label>
-          <Input id="phone" type="tel" placeholder="+880 1XXX-XXXXXX" />
-        </div>
-        <div className="space-y-2">
-          <Label>Blood Type</Label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Select your blood type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="a-positive">A+</SelectItem>
-              <SelectItem value="a-negative">A-</SelectItem>
-              <SelectItem value="b-positive">B+</SelectItem>
-              <SelectItem value="b-negative">B-</SelectItem>
-              <SelectItem value="o-positive">O+</SelectItem>
-              <SelectItem value="o-negative">O-</SelectItem>
-              <SelectItem value="ab-positive">AB+</SelectItem>
-              <SelectItem value="ab-negative">AB-</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+
         <div className="space-y-2">
           <Label>Eligibility Checklist</Label>
           <div className="grid gap-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox id="age" />
-              <label htmlFor="age" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                I am between 18 and 65 years old
-              </label>
-            </div>
+
             <div className="flex items-center space-x-2">
               <Checkbox id="weight" />
               <label htmlFor="weight" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">

@@ -22,7 +22,7 @@ function NavTab() {
     })
     const offset = 70;
     const height = useWindowHeight();
-    const y = useTransform(scrollY, [0, height], [0, (path === '/' ? -1 * (height - offset) : 0)], { ease: easeOut })
+    const y = useTransform(scrollY, [0, height], [(path.includes('/ask')) ? -1 * (height - offset) : 0, (path === '/' ? -1 * (height - offset) : (path.includes('/ask') ? -1 * (height - offset) : 0))], { ease: easeOut })
     const isSmallScreen = useMediaQuery({ query: '(max-width: 768px)' })
     return (
         <motion.div

@@ -43,22 +43,24 @@ function page() {
 
           {/**Blood group of donor */}
           <select
-          id="bloodType"
-          name="bloodType"
-          className="px-4 py-2 border border-gray-300 rounded-md w-full"
-          defaultValue=""
+
+            id="bloodType"
+            name="bloodType"
+            className="px-4 py-2 border border-gray-300 rounded-md w-full"
+            defaultValue=""
           >
-          <option value="" disabled selected>
-          -- Select Your Blood Group --
-          </option>
-          <option value="A+">A+</option>
-          <option value="A-">A-</option>
-          <option value="B+">B+</option>
-          <option value="B-">B-</option>
-          <option value="O+">O+</option>
-          <option value="O-">O-</option>
-          <option value="AB+">AB+</option>
-          <option value="AB-">AB-</option>
+            <option value="" disabled selected>
+              -- Select Your Blood Group --
+            </option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+
           </select>
 
           {/* NID Card Input */}

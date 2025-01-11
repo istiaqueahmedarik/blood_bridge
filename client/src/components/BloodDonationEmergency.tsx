@@ -1,16 +1,18 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
-import { Icon } from 'leaflet'
+import React, { useState, useEffect, useRef } from 'react'
+import Map, { Marker, Source, Layer, MapRef } from 'react-map-gl'
 import { format } from 'date-fns'
-import { MapPin, Clock, MessageSquare } from 'lucide-react'
+import { MapPin, Clock, Navigation, ChevronRight, ChevronLeft } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
-
-import 'leaflet/dist/leaflet.css'
+import "mapbox-gl/dist/mapbox-gl.css";
+import { design } from './map_design'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Input } from './ui/input'
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 
 interface Message {
   id: number
@@ -19,100 +21,197 @@ interface Message {
   timestamp: Date
 }
 
+interface Step {
+  maneuver: {
+    instruction: string
+  }
+  distance: number
+}
+
+// Random addresses in Dhaka
+const dhakaAddresses = [
+  { name: 'Dhaka Medical College Hospital', coordinates: [90.3973, 23.7268] },
+  { name: 'Bangabandhu Sheikh Mujib Medical University', coordinates: [90.3953, 23.7398] },
+  { name: 'Square Hospitals Ltd', coordinates: [90.3756, 23.7508] },
+  { name: 'United Hospital Limited', coordinates: [90.4137, 23.8008] },
+  { name: 'Apollo Hospitals Dhaka', coordinates: [90.4211, 23.8103] },
+]
+
 export default function BloodDonationEmergency() {
+  const mapRef = useRef<MapRef>(null)
+  const [viewState, setViewState] = useState({
+    longitude: 90.4125,
+    latitude: 23.8103,
+    zoom: 12,
+    pitch: 75,
+    bearing: 0,
+    width: '100%',
+    height: '200%'
+  })
+
+  const [origin, setOrigin] = useState<[number, number]>([90.4125, 23.8103])
+  const [destination, setDestination] = useState(dhakaAddresses[0])
+  const [route, setRoute] = useState<GeoJSON.Feature | null>(null)
+  const [eta, setEta] = useState<string>('')
+  const [steps, setSteps] = useState<Step[]>([])
+  const [currentStep, setCurrentStep] = useState(0)
+
+  const nextStep = () => {
+    setCurrentStep((prev) => (prev + 1) % steps.length)
+  }
+
+  const prevStep = () => {
+    setCurrentStep((prev) => (prev - 1 + steps.length) % steps.length)
+  }
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, sender: 'Dispatch', content: 'Urgent: Type O- blood needed at SF General', timestamp: new Date() },
-    { id: 2, sender: 'You', content: 'On my way, ETA 15 minutes', timestamp: new Date() },
+    { id: 1, sender: 'Dispatch', content: 'Urgent: Type O- blood needed at Dhaka Medical', timestamp: new Date() },
+    { id: 2, sender: 'You', content: 'On my way, getting current location', timestamp: new Date() },
     { id: 3, sender: 'Dispatch', content: 'Received, please hurry', timestamp: new Date() },
   ])
-  const [newMessage, setNewMessage] = useState('')
-  const [origin, setOrigin] = useState<[number, number] | null>(null)
-  const destination = {
-    name: 'Dhaka Medical College Hospital',
-    coordinates: [23.7277, 90.3950] as [number, number]
+
+  const [inputValue, setInputValue] = useState('')
+
+  const handleSendMessage = () => {
+    if (inputValue.trim() !== '') {
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { id: prevMessages.length + 1, sender: 'You', content: inputValue, timestamp: new Date() }
+      ])
+      setInputValue('')
+    }
   }
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setOrigin([position.coords.latitude, position.coords.longitude])
-    })
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { longitude, latitude } = position.coords
+          setOrigin([longitude, latitude])
+          setViewState(prev => ({ ...prev, longitude, latitude }))
+        },
+        (error) => {
+          console.error("Error getting location:", error)
+        }
+      )
+    }
+
+    const randomDestination = dhakaAddresses[Math.floor(Math.random() * dhakaAddresses.length)]
+    setDestination(randomDestination)
+
   }, [])
 
-  const customIcon = new Icon({
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  })
-
-  const handleSendMessage = () => {
-    if (newMessage.trim() === '') return
-    const message = {
-      id: messages.length + 1,
-      sender: 'You',
-      content: newMessage,
-      timestamp: new Date()
+  useEffect(() => {
+    if (origin && destination) {
+      fetchRoute()
     }
-    setMessages([...messages, message])
-    setNewMessage('')
-    setTimeout(() => {
-      const response = {
-        id: messages.length + 2,
-        sender: 'Dispatch',
-        content: 'Acknowledged. Stay safe!',
-        timestamp: new Date()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [origin, destination])
+
+  const fetchRoute = async () => {
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[0]},${origin[1]};${destination.coordinates[0]},${destination.coordinates[1]}?steps=true&geometries=geojson&access_token=${MAPBOX_TOKEN}`
+      )
+      const data = await response.json()
+      if (data.routes && data.routes.length > 0) {
+        setRoute(data.routes[0].geometry)
+        setSteps(data.routes[0].legs[0].steps)
+        // Calculate ETA
+        const durationInSeconds = data.routes[0].duration
+        const etaMinutes = Math.round(durationInSeconds / 60)
+        setEta(`${etaMinutes} minutes`)
       }
-      setMessages(prevMessages => [...prevMessages, response])
-    }, 2000)
+    } catch (error) {
+      console.error("Error fetching route:", error)
+    }
   }
 
-  if (!origin) {
-    return <div>Loading...</div>
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessages(prevMessages => [
+        ...prevMessages,
+        { id: prevMessages.length + 1, sender: 'Ariful', content: 'Please update your status.', timestamp: new Date() }
+      ])
+    }, 10000)
+
+    return () => clearInterval(interval)
+  }, [])
+
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <div className="flex-grow p-6">
-        <Card className="h-full">
+    <div className="relative h-screen w-full   overflow-hidden">
+      <Map
+        ref={mapRef}
+        {...viewState}
+        onMove={evt => setViewState(prev => ({ ...prev, ...evt.viewState }))}
+        mapStyle={design}
+        mapboxAccessToken={MAPBOX_TOKEN}
+        terrain={{ source: 'mapbox-dem', exaggeration: 1.5 }}
+      >
+        <Source id="mapbox-dem" type="raster-dem" url="mapbox://mapbox.mapbox-terrain-dem-v1" tileSize={512} maxzoom={14} />
+        <Layer
+          id="building"
+          type="fill-extrusion"
+          source="composite"
+          source-layer="building"
+          paint={{
+            'fill-extrusion-color': '#4B5563',
+            'fill-extrusion-height': ['get', 'height'],
+            'fill-extrusion-base': ['get', 'min_height'],
+            'fill-extrusion-opacity': 0.8
+          }}
+        />
+        <Marker
+          longitude={origin[0]}
+          latitude={origin[1]}
+          anchor="center"
+          rotationAlignment="map"
+          pitchAlignment="map"
+        >
+          <Navigation
+            className="text-destructive"
+            size={24}
+
+          />
+        </Marker>
+        <Marker longitude={destination.coordinates[0]} latitude={destination.coordinates[1]} anchor="bottom">
+          <MapPin className="text-green-500" size={24} />
+        </Marker>
+        {route && (
+          <Source id="route" type="geojson" data={route}>
+            <Layer
+              id="route"
+              type="line"
+              paint={{
+                'line-color': '#007cbf',
+                'line-width': 3
+              }}
+            />
+          </Source>
+        )}
+      </Map>
+      <div className="absolute top-0 left-0 m-6 w-1/3 bg-foreground border border-primary bg-opacity-80 p-4 rounded-lg">
+        <Card className="h-full bg-foreground text-background border-none">
           <CardHeader>
-            <CardTitle>Emergency Blood Donation Response</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[calc(100%-4rem)]">
-            <MapContainer center={origin} zoom={130} style={{ height: '100%', width: '100%' }} className='z-20 rounded-xl'>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-              <Marker position={origin} icon={customIcon}>
-                <Popup>Current Location</Popup>
-              </Marker>
-              <Marker position={destination.coordinates} icon={customIcon}>
-                <Popup>{destination.name}</Popup>
-              </Marker>
-              <Polyline positions={[origin as [number, number], destination.coordinates as [number, number]]} color="blue" />
-            </MapContainer>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="w-1/3 p-6">
-        <Card className="h-full">
-          <CardHeader>
-            <CardTitle>Mission Details</CardTitle>
+            <CardTitle>
+              Emergency Details
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-2">
-              <MapPin className="text-red-500" />
+              <MapPin className="text-destructive" />
               <span>{destination.name}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Clock className="text-blue-500" />
-              <span>ETA: 15 minutes</span>
+              <span>ETA: {eta}</span>
             </div>
             <div className="space-y-2">
               <h3 className="font-semibold">Inbox</h3>
-              <ScrollArea className="h-64 rounded border p-4">
+              <ScrollArea className="h-64 rounded border border-muted/20 p-4">
                 {messages.map(message => (
                   <div key={message.id} className="mb-4">
-                    <div className="flex justify-between text-sm text-gray-500">
+                    <div className="flex justify-between text-sm text-input">
                       <span>{message.sender}</span>
                       <span>{format(message.timestamp, 'HH:mm')}</span>
                     </div>
@@ -122,21 +221,48 @@ export default function BloodDonationEmergency() {
               </ScrollArea>
             </div>
             <div className="flex items-center space-x-2">
-              <input
+              <Input
                 type="text"
                 placeholder="Type a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                className="flex-grow rounded-md border p-2 text-sm"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
               <Button size="sm" onClick={handleSendMessage}>
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Send
+                <ChevronRight className=" h-4 w-4" />
               </Button>
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-green-500">●</span>
-              <span>Live</span>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="absolute right-0 top-0 flex justify-end p-4">
+        <Card className="w-80 bg-foreground shadow-lg border-primary">
+          <CardHeader className="bg-destructive rounded-xl text-background">
+            <CardTitle className="text-2xl font-bold">Steps</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="mb-4 text-4xl font-bold text-background">
+              {currentStep + 1}/{steps.length}
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="h-24"
+              >
+                <p className="text-lg text-muted-foreground">{steps[currentStep]?.maneuver.instruction}</p>
+              </motion.div>
+            </AnimatePresence>
+            <div className="mt-6 flex justify-between">
+              <Button onClick={prevStep} variant="outline" size="icon">
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button onClick={nextStep} variant="outline" size="icon">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
           </CardContent>
         </Card>

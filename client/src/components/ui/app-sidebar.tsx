@@ -15,48 +15,10 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 
-const items = [
-    {
-        title: "Home",
-        url: "/donor",
-        icon: Home,
-        type: 'active'
-    },
-    {
-        title: "Inbox",
-        url: "/donor/inbox/me",
-        icon: Inbox,
 
-    },
-    {
-        title: "Add Appointment",
-        url: "/donor/appoint",
-        icon: Calendar,
-    },
-    {
-        title: "Emergency",
-        url: "/donor/emergency",
-        icon: ClockAlert,
-    },
-    {
-        title: "Offer",
-        url: "/donor/services",
-        icon: TicketPercent,
-    },
-    {
-        title: "Check Up Request",
-        url: "/donor/form",
-        icon: HeartPulse,
-    },
-    {
-        title: "Result of Check-Up",
-        url: "/donor/checkupresult",
-        icon: ClipboardCheck,
-    },
 
-]
 
-export function AppSidebar({ title }: { title: string }) {
+export function AppSidebar({ title, items }: { title: string, items: { title: string, url: string, icon: React.ComponentType, type?: string }[] }) {
 
     return (
         <Sidebar variant="inset" collapsible="icon">

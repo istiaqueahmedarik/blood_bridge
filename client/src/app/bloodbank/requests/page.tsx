@@ -1,10 +1,12 @@
-import Chat from '@/components/Chat'
+import RequestsPage from '@/components/RequestPage'
 import React from 'react'
+
+
 
 function page() {
     return (
         <div>
-            <Chat />
+            <RequestsPage />
         </div>
     )
 }
