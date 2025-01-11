@@ -17,9 +17,7 @@ interface BloodTestRequest {
 
 export default function BloodTestRequestsPage() {
     const [requests, setRequests] = useState<BloodTestRequest[]>([
-        { id: '1', patientName: 'John Doe', testType: 'A+', urgency: 'high', status: 'pending' },
-        { id: '2', patientName: 'Jane Smith', testType: 'O-', urgency: 'medium', status: 'pending' },
-        { id: '3', patientName: 'Bob Johnson', testType: 'AB-', urgency: 'low', status: 'pending' },
+
         { id: '4', patientName: 'Rahim Uddin', testType: 'A-', urgency: 'high', status: 'pending' },
         { id: '5', patientName: 'Karim Ahmed', testType: 'AB+', urgency: 'medium', status: 'pending' },
         { id: '6', patientName: 'Fatema Begum', testType: 'B+', urgency: 'low', status: 'pending' },
