@@ -19,9 +19,9 @@ function page() {
   };
 
   return (
-    <div className="grid grid-cols-2 my-4">
+    <div className="grid grid-cols-2 my-8">
       <div className="gap-2 ml-10 grid grid-cols-2 grid-rows-10">
-        <div className="col-span-2 m-auto text-center">
+        <div className="col-span-2 m-auto text-center mt-2">
           {/**<Hospital className="w-10 h-10 m-auto text-red-500" />**/}
 
           <Image src={'/pharmacy.png'} alt="hospital_img" height={50} width={50} className="ml-24" />
@@ -30,7 +30,7 @@ function page() {
           <h1 className="text-sm text-gray-600">We will manually review your information!</h1>
           <div className="flex flex-row ml-4">
             <p>Already has account?</p>
-            <Link href={'/login'} className="underline">
+            <Link href={'/institute_login'} className="underline">
               Login Here
             </Link>
           </div>
@@ -211,7 +211,7 @@ function page() {
         </div>
       </div>
       <div className="m-auto">
-        <Image alt="" src={"/doctor_standing.svg"} height={800} width={500} className="mb-44" />
+        <Image alt="" src={"/doctor_standing.svg"} height={900} width={700} className="mb-44" />
       </div>
 
     </div>
