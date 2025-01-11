@@ -1,4 +1,4 @@
-import { Calendar, ClipboardCheck, ClockAlert, Headset, HeartPulse, Home, Inbox, TicketPercent } from "lucide-react"
+import { Headset } from "lucide-react"
 
 import {
     Sidebar,

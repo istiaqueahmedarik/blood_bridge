@@ -1,14 +1,17 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 "use client"
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Hospital, X } from "lucide-react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
 function page() {
   const [LcImage, setLcImage] = useState<File | null>(null);
+  console.log(LcImage);
   const handleLcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUpRight, Droplet, Heart, Microscope } from 'lucide-react'
+import { ArrowUpRight, Droplet } from 'lucide-react'
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -58,7 +58,7 @@ export default function DashboardContent() {
         <motion.div variants={item} className="grid gap-6 md:grid-cols-1">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Blood Tests</CardTitle>
+              <CardTitle className="text-sm font-medium">Blood Transfer</CardTitle>
               <Droplet className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>

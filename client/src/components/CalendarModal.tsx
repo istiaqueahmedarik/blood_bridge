@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
@@ -33,6 +33,27 @@ export function CalendarModal({ isOpen, onClose, onConfirm }: CalendarModalProps
         { start: new Date(2025, 0, 10, 15, 0), end: new Date(2025, 0, 10, 17, 0) },
         { start: new Date(2025, 0, 11, 11, 0), end: new Date(2025, 0, 11, 13, 0) },
     ])
+    useEffect(() => {
+        const generateRandomTime = () => {
+            const now = new Date()
+            const startHour = Math.floor(Math.random() * 24)
+            const startMinute = Math.floor(Math.random() * 60)
+            const endHour = startHour + 1
+            const endMinute = startMinute
+
+            const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMinute)
+            const endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, endMinute)
+
+            return { start: startTime, end: endTime, title: 'Available' }
+        }
+        const rnd = Math.floor(Math.random() * 1);
+        const newTime = generateRandomTime()
+        if (rnd === 1) {
+            setAvailableTimes([...availableTimes, newTime])
+        }
+        setUserAvailableTimes([...userAvailableTimes, newTime])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
         const isAvailable = availableTimes.some(

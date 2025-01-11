@@ -5,12 +5,8 @@ import { ChevronRightCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { useActions, useUIState } from 'ai/rsc';
 import { generateId } from 'ai';
-import { TextShimmerWave } from "./ui/text-shimmer-wave";
 import { ClientMessage } from "@/app/action";
-type Message = {
-  message: string
-  sender: 'model' | 'user' | 'loading'
-}
+
 
 
 export default function Chat() {
