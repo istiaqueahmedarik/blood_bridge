@@ -1,4 +1,4 @@
-import { Calendar, ClockAlert, Headset, Home, Inbox, TicketPercent } from "lucide-react"
+import { Calendar, ClipboardCheck, ClockAlert, Headset, HeartPulse, Home, Inbox, TicketPercent } from "lucide-react"
 
 import {
     Sidebar,
@@ -42,6 +42,16 @@ const items = [
         title: "Offer",
         url: "/donor/services",
         icon: TicketPercent,
+    },
+    {
+        title: "Check Up Request",
+        url: "/donor/form",
+        icon: HeartPulse,
+    },
+    {
+        title: "Result of Check-Up",
+        url: "/donor/checkupresult",
+        icon: ClipboardCheck,
     },
 
 ]
