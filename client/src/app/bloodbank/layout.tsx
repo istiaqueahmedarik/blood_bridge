@@ -72,7 +72,7 @@ export default async function layout({
               {children}
             </div>
           </div>
-          <div className='flex flex-col auto-cols-min gap-4 w-full lg:w-auto'>
+          <div className='flex flex-col auto-cols-min gap-4 w-full lg:w-auto transition-all'>
             <LabReports />
             <Suspense fallback={<div>Loading...</div>}>
               <LogTab />

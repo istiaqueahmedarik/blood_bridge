@@ -48,7 +48,7 @@ const pendingTestsData = [
 
 const LogTab = () => {
     return (
-        <Card className="w-full max-w-3xl mx-auto bg-white shadow-lg">
+        <Card className="w-full max-w-3xl mx-auto bg-background shadow-lg transition-all">
             <CardContent className="p-6">
                 <Tabs defaultValue="logs" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mb-6">
@@ -70,7 +70,7 @@ const LogTab = () => {
                                             <motion.li key={`log-${log.id}`} variants={itemVariants} className="bg-gray-50 p-3 rounded-md relative">
                                                 <div className="flex justify-between">
                                                     <span>{log.message}</span>
-                                                    <span>{log.date}</span>
+                                                    <span className='border rounded-full p-4 object-cover'>{log.id}</span>
                                                 </div>
                                             </motion.li>
                                         ))}
