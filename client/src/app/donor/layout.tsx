@@ -94,7 +94,7 @@ async function layout({
                         <div className='bg-muted aspect-video rounded-xl min-h-[calc(35svh-theme(spacing.4))] grid place-content-center'>
                             <div className='mx-auto '>
                                 <Image
-                                    src="/ariful.jpg"
+                                    src="/rf.jpeg"
                                     height={70}
                                     width={70}
                                     alt="ariful Image"
@@ -105,7 +105,7 @@ async function layout({
                                 <div className="text-lg">Md. Sajedullah Aref</div>
                                 <div className="">
                                     <span className="text-muted-foreground">Blood Group: </span>
-                                    <span className=" font-bold">A+</span>
+                                    <span className=" font-bold">O+ve</span>
                                 </div>
                                 <div className="">
                                     <Button className="hover:text-destructive" variant="ghost" asChild>

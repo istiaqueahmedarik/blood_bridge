@@ -43,6 +43,7 @@ function page() {
 
           {/**Blood group of donor */}
           <select
+
             id="bloodType"
             name="bloodType"
             className="px-4 py-2 border border-gray-300 rounded-md w-full"
@@ -59,6 +60,7 @@ function page() {
             <option value="O-">O-</option>
             <option value="AB+">AB+</option>
             <option value="AB-">AB-</option>
+
           </select>
 
           {/* NID Card Input */}

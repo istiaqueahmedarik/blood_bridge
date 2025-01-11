@@ -24,6 +24,7 @@ const EmergencyBloodRequestForm = async () => {
 
 
     return (
+
         <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center shadow-none">
             <Card className="w-full max-w-4xl overflow-hidden shadow-none">
                 <CardHeader className="text-center space-y-2">
@@ -75,6 +76,7 @@ const EmergencyBloodRequestForm = async () => {
                                     <Label htmlFor="hospitalLocation">Hospital Location*</Label>
                                     <Input id="hospitalLocation" name="hospitalLocation" placeholder="Enter Hospital Location" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
+
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="purpose">Purpose/Reason*</Label>

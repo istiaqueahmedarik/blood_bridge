@@ -1,4 +1,4 @@
-import { Calendar, ClockAlert, Headset, Home, Inbox, TicketPercent } from "lucide-react"
+import { Calendar, ClipboardCheck, ClockAlert, Headset, HeartPulse, Home, Inbox, TicketPercent } from "lucide-react"
 
 import {
     Sidebar,
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
+
 
 
 
