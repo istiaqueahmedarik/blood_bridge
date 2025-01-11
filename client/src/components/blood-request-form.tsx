@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Calendar } from "@/components/ui/calendar"
-import { CalendarIcon, MapPin } from 'lucide-react'
+import { CalendarIcon } from 'lucide-react'
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -21,6 +21,9 @@ export function BloodRequestForm() {
   const [date, setDate] = useState<Date>()
   const [showMap, setShowMap] = useState(false)
   const [location, setLocation] = useState('')
+  const [testLocation, setTestLocation] = useState('Blood Bank')
+
+
 
   return (
     <Card className="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -77,28 +80,38 @@ export function BloodRequestForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="hospital" className="text-sm font-medium text-gray-700">Hospital Name</Label>
-          <Input
-            id="hospital"
-            placeholder="Enter hospital name"
-            className="w-full border-gray-300 focus:border-red-500 focus:ring-red-500"
-          />
+          <Label>Test Location</Label>
+          <RadioGroup defaultValue="Blood Bank" onValueChange={setTestLocation}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Blood Bank" id="Blood Bank" />
+              <Label htmlFor="Blood Bank">Choose Blood Bank</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="map" id="map" />
+              <Label htmlFor="map">Choose on Map</Label>
+            </div>
+          </RadioGroup>
+          {testLocation === 'Blood Bank' && (
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a Blood Bank" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Blood Bank-1">Dhaka Medical College Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-2">Square Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-3">United Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-4">Apollo Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-5">Ma-Shisho Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-6">Central Blood Bank</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
         </div>
-
         <div className="space-y-2">
-          <Label htmlFor="location" className="text-sm font-medium text-gray-700">Hospital Location</Label>
+          <Label htmlFor="location">Selected Location</Label>
           <div className="flex space-x-2">
-            <Input
-              id="location"
-              value={location}
-              readOnly
-              placeholder="No location selected"
-              className="flex-grow border-gray-300 focus:border-red-500 focus:ring-red-500"
-            />
-            <Button onClick={() => setShowMap(true)} className="bg-red-600 hover:bg-red-700">
-              <MapPin className="w-4 h-4 mr-2" />
-              Select on Map
-            </Button>
+            <Input id="location" value={location} readOnly placeholder="No location selected" className="flex-grow" />
+            <Button onClick={() => setShowMap(true)} disabled={testLocation !== 'map'}>Open Map</Button>
           </div>
         </div>
 

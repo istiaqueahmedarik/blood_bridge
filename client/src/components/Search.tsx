@@ -87,7 +87,7 @@ function SearchPageWrapper() {
                                         </div>
                                     </div>
                                     <Button className="w-full bg-primary hover:bg-secondary text-foreground" asChild>
-                                        <Link href="/inbox/1">Contact</Link>
+                                        <Link href="/donor/inbox/1">Contact</Link>
                                     </Button>
                                 </div>
                             ))}

@@ -58,7 +58,7 @@ export default function DashboardContent() {
         <motion.div variants={item} className="grid gap-6 md:grid-cols-1">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Blood Tests</CardTitle>
+              <CardTitle className="text-sm font-medium">Blood Transfer</CardTitle>
               <Droplet className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
