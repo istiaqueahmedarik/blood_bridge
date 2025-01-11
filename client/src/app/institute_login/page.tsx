@@ -28,8 +28,18 @@ export default function page() {
           </p>
         </div>
         <Form action={'/donor'} className='flex flex-col gap-4 my-5'>
-          <Input placeholder='Your Email' type='email' name='email' className='max-w-xl px-4 py-6' />
-          <Input placeholder='Your Password' type='password' name='password' className='max-w-xl px-4 py-6' />
+            <Input placeholder='Your Email' type='email' name='email' className='max-w-xl px-4 py-6' />
+            <Input placeholder='Your Password' type='password' name='password' className='max-w-xl px-4 py-6' />
+            <select
+                id="instituteType"
+                name="instituteType"
+                className=" px-4 py-2 border border-gray-300 rounded-md mr-48"
+            >
+                <option value="Hospital">Hospital</option>
+                <option value="Bloodbank">Bloodbank</option>
+            </select>
+
+
           <Button className='max-w-xl' variant={'default'}>Log in</Button>
 
         </Form>
