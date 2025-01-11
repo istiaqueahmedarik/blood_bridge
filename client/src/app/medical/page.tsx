@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUpRight, Droplet, Heart, Microscope } from 'lucide-react'
+import { ArrowUpRight, Droplet } from 'lucide-react'
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

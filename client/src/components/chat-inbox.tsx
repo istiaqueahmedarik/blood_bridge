@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { ChatList } from "./chat-list"
 import { ConversationView } from "./conversation-view"
-import { BloodBankInfo } from "./blood-bank-info"
 
 interface BloodBank {
   id: number
