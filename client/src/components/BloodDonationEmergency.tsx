@@ -64,9 +64,7 @@ export default function BloodDonationEmergency() {
     setCurrentStep((prev) => (prev - 1 + steps.length) % steps.length)
   }
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, sender: 'Dispatch', content: 'Urgent: Type O- blood needed at Dhaka Medical', timestamp: new Date() },
-    { id: 2, sender: 'You', content: 'On my way, getting current location', timestamp: new Date() },
-    { id: 3, sender: 'Dispatch', content: 'Received, please hurry', timestamp: new Date() },
+
   ])
 
   const [inputValue, setInputValue] = useState('')
