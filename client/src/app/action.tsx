@@ -65,6 +65,7 @@ async function multiStepTool(prompt: string) {
                     prompt: z.string(),
                 }),
                 execute: async ({ prompt }) => {
+                    console.log(`Executing donation appointment tool with prompt: ${prompt}`);
                     const donationAppointment = {
                         name: 'Istiaque Ahmed',
                         email: 'istia@gmail.com'
@@ -89,6 +90,7 @@ async function multiStepTool(prompt: string) {
                     prompt: z.string(),
                 }),
                 execute: async ({ prompt }) => {
+                    console.log(`Executing getMyDonationDetails tool with prompt: ${prompt}`);
                     const donation = [
                         { date: '2022-01-01', amount: 500, location: 'Dhaka' },
                         { date: '2022-01-15', amount: 300, location: 'Dhaka' },
@@ -104,6 +106,7 @@ async function multiStepTool(prompt: string) {
                     'location': z.string().default('Dhaka').describe('The location of the user'),
                 }),
                 execute: async ({ location }) => {
+                    console.log(`Executing get_hospitals_around_me tool with location: ${location}`);
                     const hospitals = [
                         { name: 'United Hospital Limited', longitude: 90.4069, latitude: 23.7969 },
                         { name: 'Kurmitola General Hospital', longitude: 90.4152, latitude: 23.7789 },
@@ -220,7 +223,7 @@ export async function continueConversation(
                     });
 
                     return <div>
-                        <MapWithMarkers locations={hospitals.hospitals} />
+                        <MapWithMarkers locations={hospitals.hospitals} className='max-w-[80vw]' />
                         <p>
                             {hospitals?.subtext}
                         </p>
@@ -333,5 +336,57 @@ export async function continueConversation(
         role: 'assistant',
         display: result.value,
     };
+}
+
+
+
+
+import { revalidatePath } from 'next/cache'
+
+let offers = [
+    { id: 1, hospital: "Central Hospital", service: "Blood Test", discountPercentage: 20, expiryDate: "2023-12-31" },
+    { id: 2, hospital: "Central Hospital", service: "X-Ray", discountPercentage: 15, expiryDate: "2023-12-25" },
+]
+
+export async function addOffer(formData: FormData) {
+    const hospital = formData.get('hospital') as string
+    const service = formData.get('service') as string
+    const discountPercentage = parseInt(formData.get('discountPercentage') as string)
+    const expiryDate = formData.get('expiryDate') as string
+
+    const newOffer = {
+        id: offers.length + 1,
+        hospital,
+        service,
+        discountPercentage,
+        expiryDate,
+    }
+
+    offers.push(newOffer)
+    revalidatePath('/offers')
+}
+
+export async function updateOffer(formData: FormData) {
+    const id = parseInt(formData.get('id') as string)
+    const hospital = formData.get('hospital') as string
+    const service = formData.get('service') as string
+    const discountPercentage = parseInt(formData.get('discountPercentage') as string)
+    const expiryDate = formData.get('expiryDate') as string
+
+    offers = offers.map(offer =>
+        offer.id === id ? { ...offer, hospital, service, discountPercentage, expiryDate } : offer
+    )
+
+    revalidatePath('/offers')
+}
+
+export async function deleteOffer(formData: FormData) {
+    const id = parseInt(formData.get('id') as string)
+    offers = offers.filter(offer => offer.id !== id)
+    revalidatePath('/offers')
+}
+
+export async function getOffers() {
+    return offers
 }
 
