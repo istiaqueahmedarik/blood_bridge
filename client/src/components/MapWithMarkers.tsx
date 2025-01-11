@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Map, { Marker, Popup } from 'react-map-gl'
 import { Card } from "@/components/ui/card"
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { cn } from '@/lib/utils'
 
 interface Location {
     name: string
@@ -13,9 +14,10 @@ interface Location {
 
 interface MapComponentProps {
     locations: Location[]
+    className?: string
 }
 
-export function MapWithMarkers({ locations }: MapComponentProps) {
+export function MapWithMarkers({ locations, className }: MapComponentProps) {
     const [viewState, setViewState] = useState({
         latitude: locations[0]?.latitude || 0,
         longitude: locations[0]?.longitude || 0,
@@ -25,7 +27,7 @@ export function MapWithMarkers({ locations }: MapComponentProps) {
     const [popupInfo, setPopupInfo] = useState<Location | null>(null)
 
     return (
-        <Card className="w-[800px] h-[400px] overflow-hidden">
+        <Card className={cn("w-[800px] h-[400px] overflow-hidden", className)} >
             <Map
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
@@ -63,7 +65,7 @@ export function MapWithMarkers({ locations }: MapComponentProps) {
                     </Popup>
                 )}
             </Map>
-        </Card>
+        </Card >
     )
 }
 
