@@ -48,7 +48,7 @@ export function BloodDonationForm() {
           <RadioGroup defaultValue="hospital" onValueChange={setDonationLocation}>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="hospital" id="hospital" />
-              <Label htmlFor="hospital">Choose Hospital</Label>
+              <Label htmlFor="hospital">Choose Blood Bank</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="map" id="map" />
@@ -58,14 +58,14 @@ export function BloodDonationForm() {
           {donationLocation === 'hospital' && (
             <Select>
               <SelectTrigger>
-                <SelectValue placeholder="Select a hospital" />
+                <SelectValue placeholder="Select a Blood Bank" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hospital-1">Dhaka Medical College Hospital</SelectItem>
-                <SelectItem value="hospital-2">Square Hospital</SelectItem>
-                <SelectItem value="hospital-3">United Hospital</SelectItem>
-                <SelectItem value="hospital-4">Apollo Hospital</SelectItem>
-                <SelectItem value="hospital-5">Ibn Sina Hospital</SelectItem>
+                <SelectItem value="hospital-1">Dhaka Medical College Blood Bank</SelectItem>
+                <SelectItem value="hospital-2">Square Blood Bank</SelectItem>
+                <SelectItem value="hospital-3">United Blood Bank</SelectItem>
+                <SelectItem value="hospital-4">Apollo Blood Bank</SelectItem>
+                <SelectItem value="hospital-5">Ibn Sina Blood Bank</SelectItem>
               </SelectContent>
             </Select>
           )}

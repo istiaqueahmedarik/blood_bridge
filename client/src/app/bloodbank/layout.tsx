@@ -60,7 +60,7 @@ export default async function layout({
               <div className="flex flex-col sm:flex-row w-full items-center justify-between">
                 <div className="flex items-center gap-4 mb-4 sm:mb-0">
                   <div className="text-center sm:text-left">
-                    <div className="text-xl sm:text-2xl font-extrabold">Ariful Blood Bank</div>
+                    <div className="text-xl sm:text-2xl font-extrabold">Crimson Care Blood Bank</div>
                     <div className="text-xs text-muted-foreground">
                       Explore your dashboard!
                     </div>

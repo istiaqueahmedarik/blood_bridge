@@ -17,12 +17,12 @@ interface BloodTestRequest {
 
 export default function BloodTestRequestsPage() {
     const [requests, setRequests] = useState<BloodTestRequest[]>([
-        { id: '1', patientName: 'John Doe', testType: 'A+', urgency: 'high', status: 'pending' },
-        { id: '2', patientName: 'Jane Smith', testType: 'O-', urgency: 'medium', status: 'pending' },
-        { id: '3', patientName: 'Bob Johnson', testType: 'AB-', urgency: 'low', status: 'pending' },
-        { id: '4', patientName: 'Rahim Uddin', testType: 'A-', urgency: 'high', status: 'pending' },
-        { id: '5', patientName: 'Karim Ahmed', testType: 'AB+', urgency: 'medium', status: 'pending' },
-        { id: '6', patientName: 'Fatema Begum', testType: 'B+', urgency: 'low', status: 'pending' },
+        { id: '1', patientName: 'Sajedullah Aref', testType: 'Blood Glucose Test', urgency: 'high', status: 'pending' },
+        { id: '2', patientName: 'Ariful Khan', testType: 'Hemoglobin A1c Test', urgency: 'medium', status: 'pending' },
+        { id: '3', patientName: 'Ismail Hossane', testType: 'Platelet Test', urgency: 'low', status: 'pending' },
+        { id: '4', patientName: 'Ibrahim Reza', testType: 'Antibody Tests', urgency: 'high', status: 'pending' },
+        { id: '5', patientName: 'Tawsif', testType: 'Toxicology Test', urgency: 'medium', status: 'pending' },
+        { id: '6', patientName: 'Rasiul Hasan', testType: 'Platelet Test', urgency: 'low', status: 'pending' },
     ])
 
     const [selectedRequest, setSelectedRequest] = useState<BloodTestRequest | null>(null)

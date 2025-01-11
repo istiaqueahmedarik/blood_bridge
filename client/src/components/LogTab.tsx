@@ -53,7 +53,7 @@ const LogTab = () => {
                 <Tabs defaultValue="logs" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mb-6">
                         <TabsTrigger value="logs" className="text-lg font-semibold">Logs</TabsTrigger>
-                        <TabsTrigger value="pending" className="text-lg font-semibold">Pending Tests</TabsTrigger>
+                        <TabsTrigger value="pending" className="text-lg font-semibold">Pending Request</TabsTrigger>
                     </TabsList>
                     <AnimatePresence mode="wait">
                         <TabsContent value="logs" key="logs">
@@ -85,7 +85,7 @@ const LogTab = () => {
                                 animate="show"
                                 exit="hidden"
                             >
-                                <h2 className="text-2xl font-bold mb-4 text-gray-800">Pending Blood Tests</h2>
+                                <h2 className="text-2xl font-bold mb-4 text-gray-800">Pending Blood Request</h2>
                                 <ScrollArea className="h-64 w-full">
                                     <ul className="space-y-4">
                                         {pendingTestsData.map((test) => (
