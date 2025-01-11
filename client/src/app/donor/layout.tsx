@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Pencil1Icon } from '@radix-ui/react-icons';
-import { Calendar, ClockAlert, Home, Inbox, TicketPercent } from 'lucide-react';
+import { Calendar, ClipboardCheck, ClockAlert, HeartPulse, Home, Inbox, TicketPercent } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -37,6 +37,16 @@ const items = [
         url: "/donor/services",
         icon: TicketPercent,
     },
+    {
+        title: "Check Up Request",
+        url: "/donor/form",
+        icon: HeartPulse,
+    },
+    {
+        title: "Result of Check-Up",
+        url: "/donor/checkupresult",
+        icon: ClipboardCheck,
+    }
 
 ]
 async function layout({

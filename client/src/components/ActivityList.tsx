@@ -8,11 +8,9 @@ type Activity = {
 }
 
 const activities: Activity[] = [
-    { id: 1, type: 'Donation', date: '2024-03-15', details: 'Donated blood at City Hospital' },
-    { id: 2, type: 'Appointment', date: '2024-03-20', details: 'Scheduled next donation' },
-    { id: 3, type: 'Achievement', date: '2024-03-10', details: 'Reached 5 donations milestone' },
-    { id: 4, type: 'Education', date: '2024-03-05', details: 'Attended blood type seminar' },
-    { id: 5, type: 'Referral', date: '2024-03-01', details: 'Referred a friend for donation' },
+    { id: 1, type: 'Donation', date: '2024-03-15', details: 'Donated blood at BD Blood Bank' },
+    { id: 2, type: 'Donation', date: '2024-07-05', details: 'Donated blood at BD Blood Bank' },
+    { id: 3, type: 'Donation', date: '2024-10-25', details: 'Donated blood at BD Blood Bank' },
 ]
 
 export function ActivityList() {

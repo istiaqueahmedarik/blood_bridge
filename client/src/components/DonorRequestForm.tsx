@@ -14,7 +14,7 @@ export function DonorRequestForm() {
   const MapModal = dynamic(() => import('./map-modal'), { ssr: false })
   const [showMap, setShowMap] = useState(false)
   const [location, setLocation] = useState('')
-  const [testLocation, setTestLocation] = useState('hospital')
+  const [testLocation, setTestLocation] = useState('Blood Bank')
 
   return (
     <Card className="w-full max-w-full mx-auto">
@@ -63,28 +63,28 @@ export function DonorRequestForm() {
         </div>
         <div className="space-y-2">
           <Label>Test Location</Label>
-          <RadioGroup defaultValue="hospital" onValueChange={setTestLocation}>
+          <RadioGroup defaultValue="Blood Bank" onValueChange={setTestLocation}>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="hospital" id="hospital" />
-              <Label htmlFor="hospital">Choose Hospital</Label>
+              <RadioGroupItem value="Blood Bank" id="Blood Bank" />
+              <Label htmlFor="Blood Bank">Choose Blood Bank</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="map" id="map" />
               <Label htmlFor="map">Choose on Map</Label>
             </div>
           </RadioGroup>
-          {testLocation === 'hospital' && (
+          {testLocation === 'Blood Bank' && (
             <Select>
               <SelectTrigger>
-                <SelectValue placeholder="Select a hospital" />
+                <SelectValue placeholder="Select a Blood Bank" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hospital-1">Dhaka Medical College Hospital</SelectItem>
-                <SelectItem value="hospital-2">Square Hospital</SelectItem>
-                <SelectItem value="hospital-3">United Hospital</SelectItem>
-                <SelectItem value="hospital-4">Apollo Hospital</SelectItem>
-                <SelectItem value="hospital-5">Ma-Shisho Hospital</SelectItem>
-                <SelectItem value="hospital-6">Central Hospital</SelectItem>
+                <SelectItem value="Blood Bank-1">Dhaka Medical College Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-2">Square Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-3">United Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-4">Apollo Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-5">Ma-Shisho Blood Bank</SelectItem>
+                <SelectItem value="Blood Bank-6">Central Blood Bank</SelectItem>
               </SelectContent>
             </Select>
           )}
