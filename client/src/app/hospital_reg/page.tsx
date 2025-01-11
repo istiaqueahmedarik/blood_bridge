@@ -25,6 +25,12 @@ function page() {
             <span>Institute Registration</span>
           </h1>
           <p className="text-gray-600">We will manually review your information!</p>
+          <div className="flex flex-row items-center justify-center">
+            <p>Already has account?</p>
+            <Link href={'/institute_login'} className="underline">
+              Login Here
+            </Link>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <form className="space-y-6 ml-10">
