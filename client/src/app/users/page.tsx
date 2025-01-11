@@ -14,8 +14,8 @@ function page() {
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                    <Link href="/nid_verify">
+                <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                    <Link href="/signup">
                         <Card className="group isolate flex flex-col rounded-2xl bg-popover transition-all hover:bg-primary shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025] overflow-hidden">
                             <CardContent className="relative z-10 flex-none px-6 order-last pb-6">
                                 <h2 className="text-2xl font-bold text-center text-white">Donor</h2>
@@ -36,11 +36,11 @@ function page() {
                         </Card>
                     </Link>
 
-                    <Link href="/hospital_verify">
+                    <Link href="/hospital_reg">
 
                         <Card className="group isolate flex flex-col rounded-2xl bg-input hover:bg-primary transition-all shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025] overflow-hidden">
                             <CardContent className="relative z-10 flex-none px-6 order-last pb-6">
-                                <h2 className="text-2xl font-bold text-center text-background">Hospital</h2>
+                                <h2 className="text-2xl font-bold text-center text-background">Institute</h2>
                             </CardContent>
                             <div className="pointer-events-none relative flex-auto select-none isolate" style={{ minHeight: '10.25rem' }} aria-hidden="true">
                                 <div className="absolute inset-0 -bottom-5 z-10 bg-[radial-gradient(50%_100%_at_top,theme(colors.gray.900/0),theme(colors.gray.900/0.68)_61.5%,rgb(33,33,38))]"></div>
@@ -57,7 +57,7 @@ function page() {
                             </div>
                         </Card>
                     </Link>
-
+                    {/** *
                     <Link href="/bloodbank_verify">
 
                         <Card className="group isolate transition-all flex flex-col rounded-2xl bg-primary hover:bg-destructive shadow-[inset_0_1px,inset_0_0_0_1px] shadow-white/[0.025] overflow-hidden">
@@ -79,6 +79,7 @@ function page() {
                             </div>
                         </Card>
                     </Link>
+                    **/ }
                 </div>
 
 
