@@ -46,7 +46,7 @@ export function CalendarModal({ isOpen, onClose, onConfirm }: CalendarModalProps
 
             return { start: startTime, end: endTime, title: 'Available' }
         }
-        const rnd = Math.floor(Math.random() * 1);
+        
         const newTime = generateRandomTime()
        
             setAvailableTimes([...availableTimes, newTime])
