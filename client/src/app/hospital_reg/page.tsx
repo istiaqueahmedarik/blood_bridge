@@ -63,8 +63,8 @@ function page() {
                 <Input type="text" placeholder="Enter City" name="city" />
               </div>
               <div className="space-y-2">
-                <h1>State</h1>
-                <Input type="text" placeholder="State/Province" name="state_province" />
+                <h1>Upazilla</h1>
+                <Input type="text" placeholder="Upazilla" name="upazilla" />
               </div>
               <div className="space-y-2">
                 <h1>Password</h1>
