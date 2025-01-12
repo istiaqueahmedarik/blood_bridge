@@ -48,7 +48,7 @@ export function CalendarModal({ isOpen, onClose, onConfirm }: CalendarModalProps
         }
         
         const newTime = generateRandomTime()
-       
+        
             setAvailableTimes([...availableTimes, newTime])
         
         setUserAvailableTimes([...userAvailableTimes, newTime])
