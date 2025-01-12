@@ -50,7 +50,7 @@ export default async function layout({
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
   return (
     <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
-      <AppSidebar title='Blood Bank Dashboard' items={items} />
+      <AppSidebar title='Blood Bank' items={items} />
       <SidebarInset className='px-2'>
         <div className='flex flex-col lg:flex-row auto-cols-min flex-1 gap-4'>
           <div className='w-full lg:max-w-[70vw] border-r-2 min-h-[calc(100svh-theme(spacing.4))]'>
