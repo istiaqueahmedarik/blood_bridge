@@ -9,6 +9,7 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
+import { get } from '../rest';
 const items = [
     {
         title: "Home",
@@ -61,6 +62,11 @@ async function layout({
         month: new Date().toLocaleString('default', { month: 'long' }),
         year: new Date().getFullYear()
     }
+
+    const getData = await get('/donor')
+    console.log(getData)
+    const user = getData[0];
+
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
             <AppSidebar title='Donor Dashboard' items={items} />
@@ -73,7 +79,7 @@ async function layout({
                             <div className="flex flex-col sm:flex-row w-full items-center justify-between">
                                 <div className="flex items-center gap-4 mb-4 sm:mb-0">
                                     <div className="text-center sm:text-left">
-                                        <div className="text-xl sm:text-2xl font-extrabold">Hello Md. Sajedullah Aref</div>
+                                        <div className="text-xl sm:text-2xl font-extrabold">Hello {user.userName}</div>
                                         <div className="text-xs text-muted-foreground">
                                             Happy to see you again!
                                         </div>
@@ -112,10 +118,10 @@ async function layout({
                                 />
                             </div>
                             <div className='text-center'>
-                                <div className="text-lg">Md. Sajedullah Aref</div>
+                                <div className="text-lg">{user.userName}</div>
                                 <div className="">
                                     <span className="text-muted-foreground">Blood Group: </span>
-                                    <span className=" font-bold">O+ve</span>
+                                    <span className=" font-bold">{user.bloodType}</span>
                                 </div>
                                 <div className="">
                                     <Button className="hover:text-destructive" variant="ghost" asChild>

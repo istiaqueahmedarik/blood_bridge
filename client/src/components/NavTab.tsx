@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import React from 'react'
 import { Button } from './ui/button'
@@ -13,7 +14,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useMediaQuery } from 'react-responsive'
 import { usePathname } from 'next/navigation'
 
-function NavTab() {
+function NavTab({ token }: { token: any }) {
+    const isLogged = token !== undefined
     const path = usePathname()
     const { scrollY } = useScroll()
     const [scroll, setScroll] = React.useState(0)
@@ -59,7 +61,9 @@ function NavTab() {
                         </DropdownMenuItem>
 
                         <DropdownMenuItem asChild>
-                            <Link href="/users" className="">Login</Link>
+                            <Link href={`${isLogged ? '/logout' : '/users'}`} className="">
+                                {isLogged ? 'Logout' : 'Login'}
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                             <Link href="/notification" className=""><BellIcon size={22} /></Link>
@@ -110,8 +114,11 @@ function NavTab() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem asChild>
-                                <Link href="/users" className="">Login</Link>
+                                <Link href={`${isLogged ? '/logout' : '/users'}`} className="">
+                                    {isLogged ? 'Logout' : 'Login'}
+                                </Link>
                             </DropdownMenuItem>
+
                             <DropdownMenuItem asChild>
                                 <Link href="/notification" className=""><BellIcon size={22} /></Link>
                             </DropdownMenuItem>

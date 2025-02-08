@@ -1,11 +1,14 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Form from 'next/form'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useActionState } from 'react'
+import { Login } from '../action'
+function LoginPage() {
+  const [state, formAction, isPending] = useActionState(Login, null)
 
-function page() {
   return (
     <div className='grid grid-cols-2 place-content-center h-[90vh] w-full m-auto'>
       <div className='m-auto'>
@@ -24,16 +27,18 @@ function page() {
             </Link>
           </p>
         </div>
-        <Form action={'/donor'} className='flex flex-col gap-4 my-5'>
+        <form action={formAction} className='flex flex-col gap-4 my-5'>
           <Input placeholder='Your Email' type='email' name='email' className='max-w-xl px-4 py-6' />
           <Input placeholder='Your Password' type='password' name='password' className='max-w-xl px-4 py-6' />
-          <Button className='max-w-xl' variant={'default'}>Log in</Button>
-
-        </Form>
+          <Button className='max-w-xl' variant={'default'} disabled={isPending}>
+            {isPending ? 'Loading...' : 'Login'}
+          </Button>
+          {state?.error && <p className='text-red-500'>{state.error}</p>}
+        </form>
       </div>
 
     </div>
   )
 }
 
-export default page
+export default LoginPage
