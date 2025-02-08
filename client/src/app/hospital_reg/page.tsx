@@ -2,22 +2,21 @@
 
 "use client"
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useActionState, useState } from "react";
+import { InstituteSignUp } from "../actions/institute";
 
 function page() {
-  const [LcImage, setLcImage] = useState<File | null>(null);
-  console.log(LcImage);
-  const handleLcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLcImage(file);
-    }
-  };
+  const MapModal = dynamic(() => import('@/components/map-modal'), { ssr: false })
+  const [location, setLocation] = useState('')
+  const [isMapboxModalOpen, setIsMapboxModalOpen] = useState(false)
+
+  const [state, formAction, isLoading] = useActionState(InstituteSignUp, null);
+
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center shadow-none border rounded-sm">
@@ -30,13 +29,13 @@ function page() {
           <p className="text-gray-600">We will manually review your information!</p>
           <div className="flex flex-row items-center justify-center">
             <p>Already has account?</p>
-            <Link href={'/institute_login'} className="underline">
+            <Link href={'/login'} className="underline">
               Login Here
             </Link>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <form className="space-y-6 ml-10">
+          <form action={formAction} className="space-y-6 ml-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <h1>Institute Name</h1>
@@ -44,35 +43,56 @@ function page() {
               </div>
               <div className="space-y-2">
                 <h1>License no</h1>
-                <Input type="text" placeholder="License no" name="license_no" />
+                <Input type="text" placeholder="License no" name="license_no" required />
               </div>
               <div className="space-y-2">
                 <h1>Email</h1>
-                <Input type="text" placeholder="Email Address" name="Email_Address" />
+                <Input type="text" placeholder="Email Address" name="Email_Address" required />
               </div>
               <div className="space-y-2">
                 <h1>Phone Number</h1>
-                <Input type="text" placeholder="Phone Number" name="Phone_Number" />
+                <Input type="text" placeholder="Phone Number" name="Phone_Number" required />
               </div>
-              <div className="col-span-2 space-y-2">
+
+              <div className="space-y-2 col-span-2">
+                <h1>Full Address</h1>
+                <div className="flex flex-row gap-4">
+                  <Input type="text" placeholder="Enter Complete Address" name="permanentAddress" required />
+
+                </div>
+              </div>
+
+              <div className="space-y-2 col-span-2">
                 <h1>Address</h1>
-                <Input type="text" placeholder="Enter Complete Address" name="address" />
+                <div className="flex flex-row gap-4">
+                  <Input type="text" placeholder="Enter Complete Address" name="address" value={location} readOnly required />
+                  <Button className="w-full" type="button" onClick={() => setIsMapboxModalOpen(true)}>
+                    Select on Map
+                  </Button>
+                </div>
               </div>
+
+
+              <MapModal
+                open={isMapboxModalOpen}
+                onOpenChange={setIsMapboxModalOpen} onLocationSelect={(loc) => setLocation(loc)}
+              />
+
               <div className="space-y-2">
                 <h1>City</h1>
-                <Input type="text" placeholder="Enter City" name="city" />
+                <Input type="text" placeholder="Enter City" name="city" required />
               </div>
               <div className="space-y-2">
                 <h1>Upazilla</h1>
-                <Input type="text" placeholder="Upazilla" name="upazilla" />
+                <Input type="text" placeholder="Upazilla" name="upazilla" required />
               </div>
               <div className="space-y-2">
                 <h1>Password</h1>
-                <Input type="password" placeholder="Password" name="password" />
+                <Input type="password" placeholder="Password" name="password" required />
               </div>
               <div className="space-y-2">
                 <h1>Confirm Password</h1>
-                <Input type="password" placeholder="Confirm password" name="confirm_password" />
+                <Input type="password" placeholder="Confirm password" name="confirm_password" required />
               </div>
             </div>
 
@@ -82,6 +102,7 @@ function page() {
                 name="instituteType"
                 className="px-4 py-2 border border-gray-300 rounded-md w-full"
                 defaultValue=""
+                required
               >
                 <option value="" disabled>
                   Select Type of Institute
@@ -91,41 +112,6 @@ function page() {
               </select>
             </div>
 
-            <div className="grid grid-cols-4">
-              {/* Blood Group Checkboxes */}
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">A+ve</label>
-              </div>
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">A-ve</label>
-              </div>
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">B+ve</label>
-              </div>
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">B-ve</label>
-              </div>
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">AB+ve</label>
-              </div>
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">AB-ve</label>
-              </div>
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">O+ve</label>
-              </div>
-              <div>
-                <Checkbox className="m-2" />
-                <label className="text-sm font-medium">O-ve</label>
-              </div>
-            </div>
 
             <div className="flex flex-col mb-8 justify-end col-span-2 gap-2">
               <label htmlFor="LcCard" className="text-sm font-medium">
@@ -135,8 +121,9 @@ function page() {
                 type="file"
                 id="LcCard"
                 accept="image/*"
-                onChange={handleLcChange}
+                name="LcCard"
                 className="block w-full text-sm text-gray-500 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
+                required
               />
             </div>
 
@@ -144,8 +131,11 @@ function page() {
               <Button className="bg-slate-700">
                 <X /> Cancel
               </Button>
-              <Button>Register Hospital</Button>
+              <Button disabled={isLoading}>
+                {isLoading ? "Loading..." : "Register"}
+              </Button>
             </div>
+            {state?.error && <p className="text-red-500">{state.error}</p>}
           </form>
 
           <div className="hidden md:flex items-center justify-center">

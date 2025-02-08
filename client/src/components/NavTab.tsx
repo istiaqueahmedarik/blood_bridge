@@ -62,7 +62,7 @@ function NavTab({ token }: { token: any }) {
 
                         <DropdownMenuItem asChild>
                             <Link href={`${isLogged ? '/logout' : '/users'}`} className="">
-                                {isLogged ? 'Logout' : 'Login'}
+                                {isLogged ? 'Logout' : 'Sign Up'}
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
@@ -115,7 +115,7 @@ function NavTab({ token }: { token: any }) {
                         <DropdownMenuContent>
                             <DropdownMenuItem asChild>
                                 <Link href={`${isLogged ? '/logout' : '/users'}`} className="">
-                                    {isLogged ? 'Logout' : 'Login'}
+                                    {isLogged ? 'Logout' : 'Sign Up'}
                                 </Link>
                             </DropdownMenuItem>
 

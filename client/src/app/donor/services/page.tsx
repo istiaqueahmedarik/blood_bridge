@@ -1,4 +1,4 @@
-import { get } from "@/app/req";
+import { get } from "@/app/actions/req";
 import { ServiceCard } from "@/components/ServiceCard"
 
 interface Service {

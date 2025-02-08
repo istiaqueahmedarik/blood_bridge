@@ -1,11 +1,10 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import Form from 'next/form'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useActionState } from 'react'
-import { Login } from '../action'
+import { Login } from '../actions/action'
 function LoginPage() {
   const [state, formAction, isPending] = useActionState(Login, null)
 

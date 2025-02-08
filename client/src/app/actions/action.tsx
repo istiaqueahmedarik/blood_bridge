@@ -84,6 +84,9 @@ export async function DonorSignUp(prevState: any, formData: FormData) {
             nidImage
         });
         console.log(res);
+        if (res.error) {
+            return { error: res.error };
+        }
 
     }
     catch (error) {
@@ -120,6 +123,10 @@ export async function Login(prevState: any, formData: FormData) {
             email,
             password,
         });
+        console.log(res);
+        if (res.status === 'error') {
+            return { error: res.message };
+        }
         (await cookies()).set('token', res.token);
         (await cookies()).set('type', res.type);
 
