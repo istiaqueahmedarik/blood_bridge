@@ -14,11 +14,11 @@ async function page() {
 
     }
     return (
-        <form action={formAction} className='min-h-screen grid place-content-center'>
-            <Button className='max-w-xl' variant={'default'}>
-                Logout
-            </Button>
-        </form>
+
+        <Button formAction={formAction} className='max-w-xl' variant={'default'}>
+            Logout
+        </Button>
+
     )
 }
 

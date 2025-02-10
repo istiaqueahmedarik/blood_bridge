@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import React, { Suspense } from 'react'
 import LabReports from '@/components/LabReports';
 import LogTab from '@/components/LogTab';
+import { check_type } from '../actions/general';
 
 const items = [
   {
@@ -41,11 +42,15 @@ const items = [
   },
 ]
 
+
 export default async function layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const type = await check_type();
+  if (type !== 'bloodbank')
+    return <div>Not authorized</div>
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
   return (

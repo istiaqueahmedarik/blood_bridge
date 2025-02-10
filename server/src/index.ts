@@ -189,7 +189,7 @@ app.post('/login', async (c) => {
       })
     }
     const id = user.length ? user[0].ID : user1[0].user_id
-    const type = user.length ? 'Donor' : user1[0].Type
+    const type = user.length ? 'donor' : user1[0].Type
     const payload = { email, id, type }
     const token = jwt_.sign(payload, c.env.JWT_SECRET, { expiresIn: '1d' })
     console.log('token', token)
@@ -200,6 +200,9 @@ app.post('/login', async (c) => {
     })
   }
 
+
+
+
   return c.json({
     status: 'error',
     message: 'User not found'
@@ -207,7 +210,13 @@ app.post('/login', async (c) => {
 
 })
 
-
+app.get('/auth/type', async (c) => {
+  const payload = c.get('jwtPayload');
+  return c.json({
+    status: 'success',
+    type: payload.type
+  })
+})
 
 app.get('/', async (c) => {
 

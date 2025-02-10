@@ -107,8 +107,8 @@ function page() {
                 <option value="" disabled>
                   Select Type of Institute
                 </option>
-                <option value="Hospital">Hospital</option>
-                <option value="Blood Bank">Blood Bank</option>
+                <option value="hospital">Hospital</option>
+                <option value="bloodbank">Blood Bank</option>
               </select>
             </div>
 

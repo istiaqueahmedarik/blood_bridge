@@ -9,7 +9,7 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
-import { get } from '../rest';
+import { check_type } from '../actions/general';
 const items = [
     {
         title: "Home",
@@ -63,9 +63,18 @@ async function layout({
         year: new Date().getFullYear()
     }
 
-    const getData = await get('/donor')
-    console.log(getData)
-    const user = getData[0];
+    // const getData = await get('/donor')
+    // console.log(getData)
+    // const user = getData[0];
+
+    const user = {
+        userName: 'Ariful Islam',
+        bloodType: 'A+'
+    }
+
+    const type = await check_type();
+    if (type !== 'donor')
+        return <div>Not authorized</div>
 
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>

@@ -1,6 +1,5 @@
 'use server';
 import { z } from "zod";
-import { post } from "./req";
 import { redirect } from "next/navigation";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

@@ -3,6 +3,9 @@ import { Geist, Geist_Mono, Lexend_Deca, Poppins } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import { cookies } from "next/headers";
+import SearchBar from "@/components/SearchBar";
+
+import { check_type } from "./actions/general";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,6 +41,8 @@ export default async function RootLayout({
 }>) {
 
   const cookieStore = await cookies();
+  const type = await check_type();
+
   return (
     <html lang="en">
       <body
@@ -46,8 +51,8 @@ export default async function RootLayout({
 
         {/* <NavBar /> */}
         {children}
-        <NavBar token={cookieStore.get('token')} />
-
+        <NavBar token={cookieStore.get('token')} type={type} />
+        <SearchBar />
       </body>
     </html>
   );
