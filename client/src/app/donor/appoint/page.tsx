@@ -1,12 +1,15 @@
+import { get } from '@/app/actions/req';
 import { BloodDonationForm } from '@/components/blood-donation-form'
 import React from 'react'
 
 
+export const dynamic = 'force-dynamic'
 
-function page() {
+async function page() {
+    const getBloodBanks = await get('bloodbank/bloodbanks');
     return (
         <div className=''>
-            <BloodDonationForm />
+            <BloodDonationForm list={getBloodBanks} />
         </div>
     )
 }

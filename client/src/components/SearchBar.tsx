@@ -15,7 +15,7 @@ function SearchBar() {
     return (
         <motion.div
             layout
-            className={`fixed z-50 overflow-hidden ${isOpen ? "inset-0 bg-background/80 backdrop-blur-sm" : "top-4 left-4"
+            className={`fixed z-50 overflow-hidden ${isOpen ? "inset-0 bg-background/80 backdrop-blur-sm" : "top-2 right-2"
                 }`}
         >
             <motion.div

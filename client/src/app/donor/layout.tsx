@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 import { check_type } from '../actions/general';
+import { get_with_token } from '../actions/req';
 const items = [
     {
         title: "Home",
@@ -62,19 +63,21 @@ async function layout({
         month: new Date().toLocaleString('default', { month: 'long' }),
         year: new Date().getFullYear()
     }
-
+    const type = await check_type();
+    if (type !== 'donor')
+        return <div>Not authorized</div>
     // const getData = await get('/donor')
     // console.log(getData)
     // const user = getData[0];
 
+    const data = (await get_with_token('donor/auth/donor_details')).donor;
+    console.log(data);
     const user = {
-        userName: 'Ariful Islam',
-        bloodType: 'A+'
+        userName: data['Full_name'],
+        bloodType: data['Blood_type']
     }
 
-    const type = await check_type();
-    if (type !== 'donor')
-        return <div>Not authorized</div>
+
 
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
@@ -119,7 +122,7 @@ async function layout({
                         <div className='bg-muted aspect-video rounded-xl min-h-[calc(35svh-theme(spacing.4))] grid place-content-center'>
                             <div className='mx-auto '>
                                 <Image
-                                    src="/rf.jpeg"
+                                    src={data['Profile_picture']}
                                     height={70}
                                     width={70}
                                     alt="ariful Image"

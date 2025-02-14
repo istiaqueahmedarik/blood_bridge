@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import { getMutableAIState, streamUI } from 'ai/rsc';
@@ -13,8 +14,9 @@ import { MapWithMarkers } from '@/components/MapWithMarkers';
 import { redirect } from 'next/navigation';
 
 import { revalidatePath } from 'next/cache'
-import { post } from './req';
+import { get_with_token, post } from './req';
 import { cookies } from 'next/headers';
+import { check_type } from './general';
 
 const signUpSchema = z
     .object({
@@ -312,12 +314,9 @@ async function multiStepTool(prompt: string) {
                 }),
                 execute: async ({ prompt }) => {
                     console.log(`Executing getMyDonationDetails tool with prompt: ${prompt}`);
-                    const donation = [
-                        { date: '2022-01-01', amount: 500, location: 'Dhaka' },
-                        { date: '2022-01-15', amount: 300, location: 'Dhaka' },
-                        { date: '2022-02-01', amount: 200, location: 'Dhaka' },
-                    ];
-                    const str_donation = donation.map(d => `On ${d.date}, I donated ${d.amount} ml of blood at ${d.location}`).join('\n');
+                    const donation = (await get_with_token('donor/auth/donor_history')).data;
+
+                    const str_donation = donation.map((d: any) => `Date - ${d.Date} , Unit - ${d.Unit} in a ${d.Type} at  ${d.Address}`).join('\n');
                     return str_donation;
                 },
             },
@@ -466,7 +465,9 @@ export async function continueConversation(
                     yield <TextShimmerWave className="mx-auto text-foreground">
                         Umm... Let me find that...
                     </TextShimmerWave>;
-
+                    const type = await check_type();
+                    if (type !== 'donor')
+                        return <div>Are you sure you are logged in as Donor?</div>
                     const { text } = await multiStepTool(`${prompt}`);
 
                     const { object: donationChart } = await generateObject({
@@ -475,9 +476,10 @@ export async function continueConversation(
                         prompt: text,
                         schema: z.object({
                             detais: z.array(z.object({
-                                date: z.string(),
-                                amount: z.number(),
-                                location: z.string(),
+                                Date: z.string(),
+                                Unit: z.number(),
+                                Address: z.string(),
+                                Type: z.string(),
                             })),
                             subtext: z.string().describe('Other parts of the text'),
                             OptionalText: z.string().optional().describe('Other Parts that is not related to the schema and a full senetence'),
@@ -485,7 +487,10 @@ export async function continueConversation(
                     });
 
 
-                    return <div>            <DonationChart />
+
+
+
+                    return <div>    <DonationChart data={donationChart.detais} />
                         <p>
                             {donationChart?.subtext}
                         </p>

@@ -66,7 +66,7 @@ export const basic_post = cache(async (url: any, data: any) => {
     }
 })
 
-export const get = cache(async (url: any) => {
+export const get = cache(async (url: any, c: boolean = true) => {
     url = server_url + url
 
     const response = await fetch(
@@ -76,7 +76,8 @@ export const get = cache(async (url: any) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            cache: 'force-cache', next: { revalidate: 30000 }
+
+            ...(c ? { cache: 'force-cache', next: { revalidate: 30000 } } : {})
         },
 
     )
@@ -87,6 +88,7 @@ export const get = cache(async (url: any) => {
         console.error('Error:', error)
     }
 })
+
 
 export const post_with_token = cache(async (url: any, data: any) => {
     const cookieStore = await cookies()
@@ -121,7 +123,7 @@ export const post_with_token = cache(async (url: any, data: any) => {
     }
 })
 
-export const get_with_token = cache(async (url: any) => {
+export const get_with_token = cache(async (url: any, c: boolean = true) => {
     const cookieStore = await cookies()
     const token = cookieStore.get('token')
     if (token === undefined)
@@ -137,8 +139,7 @@ export const get_with_token = cache(async (url: any) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token.value}`,
             },
-            cache: 'force-cache',
-            next: { revalidate: 30000 }
+            ...(c ? { cache: 'force-cache', next: { revalidate: 30000 } } : {})
         },
 
     )

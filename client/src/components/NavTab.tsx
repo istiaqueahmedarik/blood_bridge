@@ -39,7 +39,7 @@ function NavTab({ token, type }: { token: any, type: any }) {
             </Button>
 
             <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none' asChild>
-                <Link href={`/${type}`} className="">
+                <Link href={`/${type}`} className={`${!isLogged && 'hidden'}`}>
                     <LayoutDashboard size={22} />
                 </Link>
             </Button>
