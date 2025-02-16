@@ -1,29 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search } from 'lucide-react';
+import { get_with_token } from '@/app/actions/req'
 import React from 'react'
-interface Contact {
-    id: number
-    name: string
-    status: "Available" | "Not Available"
-    avatar: string
-}
+import Link from 'next/link';
 
-export default function layout({
+
+export default async function layout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const contacts: Contact[] = [
-        { id: 1, name: "Rasiul Hasan", status: "Available", avatar: "/placeholder.svg" },
-        { id: 2, name: "Istiaque Ahmed", status: "Not Available", avatar: "/placeholder.svg" },
-        { id: 3, name: "Aref", status: "Not Available", avatar: "/placeholder.svg" },
-        { id: 4, name: "Ariful Khan", status: "Available", avatar: "/placeholder.svg" },
-        { id: 5, name: "Reza", status: "Available", avatar: "/placeholder.svg" },
-        { id: 6, name: "Oriental Blood bank", status: "Available", avatar: "/placeholder.svg" },
-        { id: 7, name: "Badhan Blood Bank", status: "Available", avatar: "/placeholder.svg" },
-    ]
+
+    const allUser = await get_with_token('inbox/api/auth/inbox')
+    console.log("allUser", allUser)
+
     return (
         <div className="flex flex-col md:flex-row h-screen">
             <div className="w-full md:w-80 flex flex-col border-r">
@@ -42,21 +35,18 @@ export default function layout({
                 </div>
                 <ScrollArea className="flex-1">
                     <div className="p-2">
-                        {contacts.map((contact) => (
-                            <div
-                                key={contact.id}
-                                className={`flex items-center space-x-4 p-3 rounded-lg cursor-pointer hover:bg-muted ${contact.id === 2 ? "bg-muted" : ""
-                                    }`}
+                        {allUser?.map((contact: any) => (
+                            <Link href={`/donor/inbox/me/${contact.url}`} key={contact.ID}
+                                className={`flex items-center space-x-4 p-3 rounded-lg cursor-pointer hover:bg-muted`}
                             >
                                 <Avatar>
                                     <AvatarImage src={contact.avatar} />
-                                    <AvatarFallback>{contact.name[0]}</AvatarFallback>
+                                    <AvatarFallback>{contact.Full_name[0]}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium">{contact.name}</p>
-                                    <p className="text-sm text-muted-foreground truncate">{contact.status}</p>
+                                    <p className="text-sm font-medium">{contact.Full_name}</p>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </ScrollArea>

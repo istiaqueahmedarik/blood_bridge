@@ -8,7 +8,7 @@ import { Calendar, ClipboardCheck, ClockAlert, HeartPulse, Home, Inbox, TicketPe
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React, { Suspense } from 'react'
 import { check_type } from '../actions/general';
 import { get_with_token } from '../actions/req';
 const items = [
@@ -67,11 +67,11 @@ async function layout({
     if (type !== 'donor')
         return <div>Not authorized</div>
     // const getData = await get('/donor')
-    // console.log(getData)
+    // 
     // const user = getData[0];
 
     const data = (await get_with_token('donor/auth/donor_details')).donor;
-    console.log(data);
+
     const user = {
         userName: data['Full_name'],
         bloodType: data['Blood_type']
@@ -81,7 +81,9 @@ async function layout({
 
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
-            <AppSidebar title='Donor Dashboard' items={items} />
+            <Suspense fallback={<div>Loading...</div>}>
+                <AppSidebar title='Donor Dashboard' items={items} />
+            </Suspense>
             <SidebarInset className='px-2'>
                 <div className='flex flex-col lg:flex-row auto-cols-min flex-1 gap-4'>
                     <div className='w-full lg:max-w-[70vw] border-r-2 min-h-[calc(100svh-theme(spacing.4))]'>

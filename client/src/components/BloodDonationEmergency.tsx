@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useActionState } from 'react'
 import Map, { Marker, Source, Layer, MapRef } from 'react-map-gl'
 import { format } from 'date-fns'
-import { MapPin, Clock, Navigation, ChevronRight, ChevronLeft } from 'lucide-react'
+import { MapPin, Clock, Navigation, ChevronRight, ChevronLeft, PhoneCall, User2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,6 +13,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { design } from './map_design'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Input } from './ui/input'
+import { AcceptEm } from '@/app/actions/emergency'
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 
 interface Message {
@@ -28,16 +30,12 @@ interface Step {
   distance: number
 }
 
-// Random addresses in Dhaka
-const dhakaAddresses = [
-  { name: 'Dhaka Medical College Hospital', coordinates: [90.3973, 23.7268] },
-  { name: 'Bangabandhu Sheikh Mujib Medical University', coordinates: [90.3953, 23.7398] },
-  { name: 'Square Hospitals Ltd', coordinates: [90.3756, 23.7508] },
-  { name: 'United Hospital Limited', coordinates: [90.4137, 23.8008] },
-  { name: 'Apollo Hospitals Dhaka', coordinates: [90.4211, 23.8103] },
-]
 
-export default function BloodDonationEmergency() {
+
+export default function BloodDonationEmergency({ data, id, data1 }: { data: any, id: any, data1: any }) {
+
+  const [state, formAction, pending] = useActionState(AcceptEm, null);
+  console.log(state);
   const mapRef = useRef<MapRef>(null)
   const [viewState, setViewState] = useState({
     longitude: 90.4125,
@@ -50,7 +48,12 @@ export default function BloodDonationEmergency() {
   })
 
   const [origin, setOrigin] = useState<[number, number]>([90.4125, 23.8103])
-  const [destination, setDestination] = useState(dhakaAddresses[0])
+  const [destination,] = useState(
+    {
+      name: data.Hospital_name,
+      coordinates: [data.longitude, data.latitude]
+    }
+  )
   const [route, setRoute] = useState<GeoJSON.Feature | null>(null)
   const [eta, setEta] = useState<string>('')
   const [steps, setSteps] = useState<Step[]>([])
@@ -93,8 +96,7 @@ export default function BloodDonationEmergency() {
       )
     }
 
-    const randomDestination = dhakaAddresses[Math.floor(Math.random() * dhakaAddresses.length)]
-    setDestination(randomDestination)
+
 
   }, [])
 
@@ -135,9 +137,25 @@ export default function BloodDonationEmergency() {
     return () => clearInterval(interval)
   }, [])
 
+  // Add state to manage the visibility of the chatbox
+  const [showChatbox, setShowChatbox] = useState(data1 !== undefined && data1.present === true);
+  console.log("d", data1);
+
+  const [text, setText] = useState('');
+
+  // Add handlers for accept and reject buttons
+  const handleAccept = () => {
+    setText('ac');
+    setShowChatbox(true);
+  };
+
+  const handleReject = () => {
+    setText('reject');
+    setShowChatbox(false);
+  };
 
   return (
-    <div className="relative h-screen w-full   overflow-hidden">
+    <div className="relative h-screen w-full overflow-hidden">
       <Map
         ref={mapRef}
         {...viewState}
@@ -204,31 +222,49 @@ export default function BloodDonationEmergency() {
               <Clock className="text-blue-500" />
               <span>ETA: {eta}</span>
             </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold">Inbox</h3>
-              <ScrollArea className="h-64 rounded border border-muted/20 p-4">
-                {messages.map(message => (
-                  <div key={message.id} className="mb-4">
-                    <div className="flex justify-between text-sm text-input">
-                      <span>{message.sender}</span>
-                      <span>{format(message.timestamp, 'HH:mm')}</span>
+            <div className='flex flex-row space-x-2'>
+              <div className="flex items-center space-x-2">
+                <User2 className="text-blue-500" />
+                <span>Name: {data.Contact_name}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <PhoneCall className="text-blue-500" />
+                <span>Phone.: {data.Contact_phone}</span>
+              </div>
+            </div>
+            <form action={formAction} className="flex space-x-2">
+              <Input type='hidden' name='val' value={text} />
+              <Input type='hidden' name='eid' value={id} />
+              <Button type='submit' onClick={handleAccept} variant="default" disabled={pending}>Accept</Button>
+              <Button type='submit' onClick={handleReject} variant="destructive" disabled={pending}>Reject</Button>
+            </form>
+            {showChatbox && (
+              <div className="space-y-2">
+                <h3 className="font-semibold">Inbox</h3>
+                <ScrollArea className="h-64 rounded border border-muted/20 p-4">
+                  {messages.map(message => (
+                    <div key={message.id} className="mb-4">
+                      <div className="flex justify-between text-sm text-input">
+                        <span>{message.sender}</span>
+                        <span>{format(message.timestamp, 'HH:mm')}</span>
+                      </div>
+                      <p className="text-sm">{message.content}</p>
                     </div>
-                    <p className="text-sm">{message.content}</p>
-                  </div>
-                ))}
-              </ScrollArea>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Input
-                type="text"
-                placeholder="Type a message..."
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
-              <Button size="sm" onClick={handleSendMessage}>
-                <ChevronRight className=" h-4 w-4" />
-              </Button>
-            </div>
+                  ))}
+                </ScrollArea>
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="text"
+                    placeholder="Type a message..."
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                  />
+                  <Button size="sm" onClick={handleSendMessage}>
+                    <ChevronRight className=" h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

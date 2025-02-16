@@ -13,6 +13,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import Link from "next/link"
 
 interface DonationEvent {
     ID: string
@@ -69,7 +70,9 @@ export default function UpComingDonation({ data, appo }: { data: any[], appo: an
                 <div className="flex flex-col space-y-4">
                     <div className="flex items-center justify-between">
                         <h2 className="text-2xl font-semibold">Bookings</h2>
-                        <Button variant="outline">Schedule New</Button>
+                        <Button variant="outline" asChild>
+                            <Link href="/donor/appoint">Schedule New</Link>
+                        </Button>
                     </div>
                     <p className="text-sm text-muted-foreground">
                         See your scheduled events from your calendar events links.

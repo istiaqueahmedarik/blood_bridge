@@ -1,4 +1,4 @@
-
+'use client'
 import { DropletIcon, Send } from 'lucide-react'
 import Image from 'next/image'
 import { Input } from "@/components/ui/input"
@@ -8,20 +8,63 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useState, useEffect, useActionState } from 'react'
+import { EmergencyReq } from '../actions/emergency'
 import { redirect } from 'next/navigation'
 
-const EmergencyBloodRequestForm = async () => {
+const EmergencyBloodRequestForm = () => {
 
-    async function actionHandler(formData: FormData) {
-        'use server'
-        const terms = formData.get('terms');
-        if (!terms) {
-            alert('Please confirm this is an emergency requirement');
-            return;
+    const [latitude, setLatitude] = useState<number>(0)
+    const [longitude, setLongitude] = useState<number>(0)
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                setLatitude(position.coords.latitude)
+                setLongitude(position.coords.longitude)
+            })
         }
-        redirect('/emergency/chat/1');
-    }
+    }, [])
 
+
+    const [state, formAction, pending] = useActionState(EmergencyReq, null)
+    useEffect(() => {
+        if (state && state.data) {
+            async function logout() {
+
+                for (let i = 0; i < state?.data.length; i++) {
+                    await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            service_id: 'service_nsfwyrb',
+                            template_id: 'template_dqb6ys4',
+                            user_id: '-5Yq0qod4i_9g_tOj',
+                            template_params: {
+                                distance: state!.data[i].distance,
+                                link: state!.data[i].link,
+                                reply_to: state!.data[i].email,
+                            }
+                        })
+                    })
+                        .then((res) => {
+                            if (res.ok) {
+
+
+                            }
+                        })
+                        .catch((err) => {
+                            console.error(err)
+                        })
+                }
+            }
+            logout()
+            redirect('/emergency/' + state!.data[0].id)
+        }
+
+    }, [state])
 
     return (
 
@@ -36,19 +79,19 @@ const EmergencyBloodRequestForm = async () => {
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <form action={actionHandler} className="space-y-6">
+                        <form action={formAction} className="space-y-6">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="patientName">Patient Name*</Label>
-                                    <Input id="patientName" name="patientName" placeholder="Enter Patient Name" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                    <Input id="patientName" name="Name" placeholder="Enter Patient Name" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="patientAge">Age*</Label>
-                                    <Input id="patientAge" name="patientAge" type="number" placeholder="Enter Patient Age" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                    <Input id="patientAge" name="Age" type="number" placeholder="Enter Patient Age" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="bloodGroup">Blood Group Required*</Label>
-                                    <Select required>
+                                    <Select name='Blood_type_req' required>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Select Blood Group" />
                                         </SelectTrigger>
@@ -66,46 +109,53 @@ const EmergencyBloodRequestForm = async () => {
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="unitsRequired">Units Required*</Label>
-                                    <Input id="unitsRequired" name="unitsRequired" type="number" placeholder="Enter Required Blood Units" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                    <Input id="unitsRequired" name="Unit_req" type="number" placeholder="Enter Required Blood Units" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="hospitalName">Hospital Name*</Label>
-                                    <Input id="hospitalName" name="hospitalName" placeholder="Enter Hospital Name" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                    <Input id="hospitalName" name="Hospital_name" placeholder="Enter Hospital Name" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="hospitalLocation">Hospital Location*</Label>
-                                    <Input id="hospitalLocation" name="hospitalLocation" placeholder="Enter Hospital Location" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                    <Input id="hospitalLocation" name="Hospital_location" placeholder="Enter Hospital Location" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
 
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="purpose">Purpose/Reason*</Label>
-                                <Textarea id="purpose" name="purpose" placeholder="Enter the purpose" required className="min-h-[100px] transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                <Textarea id="purpose" name="Reason" placeholder="Enter the purpose" required className="min-h-[100px] transition-all duration-300 focus:ring-2 focus:ring-primary" />
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="contactPersonName">Contact Person Name*</Label>
-                                    <Input id="contactPersonName" name="contactPersonName" placeholder="Enter Contact Person Name" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                    <Input id="contactPersonName" name="Contact_name" placeholder="Enter Contact Person Name" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="contactNumber">Contact Number*</Label>
-                                    <Input id="contactNumber" name="contactNumber" type="tel" placeholder="Enter contact number" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
+                                    <Input id="contactNumber" name="Contact_phone" type="tel" placeholder="Enter contact number" required className="transition-all duration-300 focus:ring-2 focus:ring-primary" />
                                 </div>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <Checkbox id="terms" name="terms" required />
+                                <Checkbox id="terms" name="terms" required
+                                />
                                 <Label htmlFor="terms" className="text-sm font-medium leading-none">
                                     I confirm this is an emergency requirement
                                 </Label>
                             </div>
                             <div className="flex justify-center space-x-4">
-                                <Button type="submit" className="bg-destructive hover:bg-destructive/90 text-destructive-foreground transition-all duration-300">
+                                <Button type="submit" className="bg-destructive hover:bg-destructive/90 text-destructive-foreground transition-all duration-300"
+                                    disabled={pending}
+                                >
                                     <div className="flex items-center">
                                         <Send className="mr-2 h-4 w-4" />
-                                        Submit Emergency Request
+                                        {pending ? 'Submitting..' : ' Submit Emergency Request'}
                                     </div>
                                 </Button>
 
+                            </div>
+                            <div>
+                                <Input type="hidden" name="latitude" value={latitude} readOnly />
+                                <Input type="hidden" name="longitude" value={longitude} readOnly />
                             </div>
                         </form>
                         <div className="hidden md:flex items-center justify-center">

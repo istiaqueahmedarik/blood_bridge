@@ -49,7 +49,7 @@ export async function InstituteSignUp(prevState: any, formData: FormData) {
         instituteType: formData.get("instituteType"),
         LcCard: lcCardValue,
     })
-    console.log(validatedFields);
+
     if (!validatedFields.success) {
         return {
             error: validatedFields.error.issues[0].message,

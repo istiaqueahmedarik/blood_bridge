@@ -15,9 +15,11 @@ async function page() {
     }
     return (
 
-        <Button formAction={formAction} className='max-w-xl' variant={'default'}>
-            Logout
-        </Button>
+        <form action={formAction}>
+            <Button formAction={formAction} className='max-w-xl' variant={'default'}>
+                Logout
+            </Button>
+        </form>
 
     )
 }
