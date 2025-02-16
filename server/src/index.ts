@@ -2,8 +2,14 @@ import { Hono } from 'hono'
 import auth from './auth'
 import donor from './donor'
 import bloodbank from './bloodbank'
+import hospital from './hospital'
+import emergency from './emergency'
+import inbox from './inbox'
 import postgres from 'postgres'
 import { JwtVariables } from 'hono/jwt'
+
+
+
 
 type Variables = JwtVariables
 
@@ -19,6 +25,9 @@ const app = new Hono<{ Variables: Variables, Bindings: Bindings }>()
 app.route('/', auth)
 app.route('/donor', donor)
 app.route('/bloodbank', bloodbank)
+app.route('/hospital', hospital)
+app.route('/emergency', emergency)
+app.route('/inbox', inbox)
 
 
 app.get('/events', async (c) => {
@@ -30,4 +39,7 @@ app.get('/events', async (c) => {
   return c.json(events)
 
 })
+
+
+
 export default app

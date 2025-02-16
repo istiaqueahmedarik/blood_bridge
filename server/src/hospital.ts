@@ -28,14 +28,16 @@ app.get('/auth', async (c) => {
     return c.text('Hello Hono!')
 })
 
-app.get('/bloodbanks', async (c) => {
+app.get('/hospitals', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
-    const get_blood_bank_id = (await sql`SELECT "Full_name","latitude","longitude" FROM "User"
+    const get_hospital = (await sql`SELECT "Full_name","latitude","longitude" FROM "User"
         INNER JOIN "Institute" ON "Institute"."user_id" = "User"."ID"
-        WHERE "Institute"."Type" = 'bloodbank'
+        WHERE "Institute"."Type" = 'hospital'
       `)
-    return c.json(get_blood_bank_id)
+    return c.json({
+        data: get_hospital
+    })
 })
 
 
@@ -45,7 +47,7 @@ app.get('/', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
     const test = await sql`SELECT * FROM "User"`
-
+    console.log('test', test)
     return c.text('Hello Hono!')
 })
 

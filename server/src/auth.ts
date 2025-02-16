@@ -1,9 +1,11 @@
 import { Hono } from 'hono'
 import { jwt, JwtVariables } from 'hono/jwt';
 import postgres from 'postgres'
+const nodemailer = require('nodemailer');
 
 var jwt_ = require('jsonwebtoken')
 import { createClient } from '@supabase/supabase-js'
+import { createMimeMessage } from 'mimetext';
 
 
 type Variables = JwtVariables
@@ -12,7 +14,7 @@ type Bindings = {
     DATABASE_URL: string,
     JWT_SECRET: string,
     SUPABASE_URL: string,
-    SUPABASE_SERVICE_ROLE_KEY: string
+    SUPABASE_SERVICE_ROLE_KEY: string,
 }
 
 const app = new Hono<{ Variables: Variables, Bindings: Bindings }>()
@@ -99,7 +101,7 @@ app.post('/institute_signup', async (c) => {
     const confirm_password = file['confirm_password'] as string
     const instituteType = file['instituteType'] as string
 
-    console.log(Institute_name, license_no, Email_Address, Phone_Number, permanentAddress, address, city, upazilla, password, confirm_password, instituteType, LcCard)
+
 
     const supabaseUrl = c.env.SUPABASE_URL
     const supabaseKey = c.env.SUPABASE_SERVICE_ROLE_KEY
@@ -125,7 +127,7 @@ app.post('/institute_signup', async (c) => {
     const { data: licenseData } = supabase.storage.from('license').getPublicUrl(fileName)
     const publicURL = licenseData.publicUrl
 
-    console.log('License card stored at:', publicURL)
+
 
     let ok = false;
     let [lat, lng] = address.split(',');
@@ -171,7 +173,7 @@ app.post('/login', async (c) => {
 
     const { email, password } = body;
 
-    console.log(email, password)
+
 
 
     const user = await sql`SELECT * FROM "User" , "Donor" WHERE "email" = ${email} and "User"."ID" = "Donor"."User_id"`
@@ -180,7 +182,7 @@ app.post('/login', async (c) => {
 
         const pass = await sql`SELECT * FROM "Password" WHERE "User_id" = ${user.length ? user[0].ID : user1[0].user_id}`
 
-        console.log('pass', pass)
+
 
         if (pass[0].Password !== password) {
             return c.json({
@@ -192,7 +194,7 @@ app.post('/login', async (c) => {
         const type = user.length ? 'donor' : user1[0].Type
         const payload = { email, id, type }
         const token = jwt_.sign(payload, c.env.JWT_SECRET, { expiresIn: '1d' })
-        console.log('token', token)
+
         return c.json({
             status: 'success',
             token,
@@ -222,13 +224,78 @@ app.get('/', async (c) => {
 
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
-    const test = await sql`SELECT * FROM "User"`
-    console.log('test', test)
-    return c.text('Hello Hono!')
+    const msg = createMimeMessage();
+
+    return c.text('Hello Hono1!')
+
 })
 
 
+app.post('/auth/em/ac', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const body = await c.req.json();
+    const eid = body.eid;
+    const type = body.val;
+    const payload = c.get('jwtPayload');
+    const email = payload.email;
+    const user = await sql`SELECT * FROM "User" WHERE "email" = ${email}`
+    if (user.length === 0) {
+        return c.json({
+            status: 'error',
+            message: 'User not found'
+        })
+    }
+    const user_id = user[0].ID
+    console.log(type)
+    if (type === "ac") {
+        const res = await sql`INSERT INTO public."Responder" ("Emergency_id", "User_id")
+VALUES (${eid}, ${user_id}) RETURNING *;`
+            .catch((e) => {
+                return c.json({
+                    status: 'error',
+                    message: e
+                })
+            })
+        console.log(res)
+    }
+    else {
+        try {
+            const res = await sql`DELETE FROM public."Responder" WHERE "Emergency_id" = ${eid} and "User_id" = ${user_id};`
+        }
+        catch (e) {
+            return c.json({
+                status: 'error',
+                message: e
+            })
+        }
+    }
 
+    return c.json({
+        status: 'success'
+    })
+
+})
+
+app.get('/auth/em', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const email = payload.email;
+    const user = await sql`SELECT * FROM "User" WHERE "email" = ${email}`
+    if (user.length === 0) {
+        return c.json({
+            status: 'error',
+            message: 'User not found'
+        })
+    }
+    const user_id = user[0].ID
+    const res = await sql`SELECT * FROM "Responder" WHERE "User_id" = ${user_id}`
+    return c.json({
+        status: 'success',
+        present: res.length > 0,
+    })
+})
 
 
 

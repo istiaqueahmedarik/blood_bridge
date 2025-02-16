@@ -33,7 +33,7 @@ app.get('/auth/donor_history', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
     const payload = c.get('jwtPayload');
-    console.log(payload);
+
     const get_user_id = payload['id'];
     const get_donor_id = (await sql`SELECT "Donor_id" FROM "Donor" WHERE "User_id" = ${get_user_id}`)[0]['Donor_id']
     const count = (await sql`SELECT COUNT(*) FROM "Donor_donation_history" WHERE "Donor_id" = ${get_donor_id}`)[0]['count']
@@ -73,7 +73,7 @@ JOIN
     public."User" u ON d."User_id" = u."ID" 
 WHERE 
     d."User_id" = ${payload['id']}`)[0]
-    console.log(donor)
+
     return c.json({ donor })
 
 })
@@ -110,22 +110,35 @@ app.post('/auth/appointment', async (c) => {
     if (!body.location || !body.start_date || !body.end_date || !body.start_time || !body.end_time || !body.donationType) {
         return c.json({ error: 'Invalid request' })
     }
-    console.log(
-        donor_id,
-        body.location,
-        body.start_date,
-        body.end_date,
-        body.start_time,
-        body.end_time,
-        body.add_info,
-        body.donationType
-    )
-    const final_time = new Date().toISOString()
-    const res = await sql`INSERT INTO public."Appointment" ("Donor_id", "Location", "Pref_date_start", "Pref_date_end", "Pref_time_start", "Pref_time_end", "Add_info", "Completed", "Final_Time", "donationType") VALUES (${donor_id},${body.location},${body.start_date},${body.end_date},${body.start_time},${body.end_time},${body.add_info},${false},${final_time},${body.donationType}) RETURNING *;`
+
+
+    const res = await sql`INSERT INTO public."Appointment" ("Donor_id", "Location", "Pref_date_start", "Pref_date_end", "Pref_time_start", "Pref_time_end", "Add_info", "Completed", "donationType") VALUES (${donor_id},${body.location},${body.start_date},${body.end_date},${body.start_time},${body.end_time},${body.add_info},${false},${body.donationType}) RETURNING *;`
 
     return c.json({ body })
 })
 
+
+app.post('/auth/test_appointment', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const donor_id = await sql`SELECT "Donor_id" FROM "Donor" WHERE "User_id" = ${payload['id']}`
+        .then((res) => res[0]['Donor_id'])
+        .catch((error) => { return c.json({ error }) })
+    const body = await c.req.json();
+    console.log(body.location, body.start_date, body.end_date, body.start_time, body.end_time, body.symptoms, body.test_type)
+
+
+    try {
+        const res = await sql`INSERT INTO public."Checkup" ("Donor_id", "Test_location", "Pref_date_start", "Pref_date_end", "Pref_time_start", "Pref_time_end", "Add_info", "Test_type","Reason") VALUES (${donor_id},${body.location},${body.start_date},${body.end_date},${body.start_time},${body.end_time},${body.add_info},${body.test_type},${body.symptoms}) RETURNING *;`
+        console.log(res);
+        return c.json({ res })
+    }
+    catch (error) {
+        console.log(error)
+        return c.json({ error })
+    }
+})
 
 
 
@@ -150,7 +163,7 @@ app.get('/', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
     const test = await sql`SELECT * FROM "User"`
-    console.log('test', test)
+
     return c.text('Hello Hono!')
 })
 
