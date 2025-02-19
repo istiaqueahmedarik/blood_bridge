@@ -46,11 +46,11 @@ export function CalendarModal({ isOpen, onClose, onConfirm }: CalendarModalProps
 
             return { start: startTime, end: endTime, title: 'Available' }
         }
-        const rnd = Math.floor(Math.random() * 1);
+        
         const newTime = generateRandomTime()
-        if (rnd === 1) {
+        
             setAvailableTimes([...availableTimes, newTime])
-        }
+        
         setUserAvailableTimes([...userAvailableTimes, newTime])
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
