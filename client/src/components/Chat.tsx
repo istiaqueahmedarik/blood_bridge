@@ -5,7 +5,7 @@ import { ChevronRightCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { useActions, useUIState } from 'ai/rsc';
 import { generateId } from 'ai';
-import { ClientMessage } from "@/app/action";
+import { ClientMessage } from "@/app/actions/action";
 
 
 

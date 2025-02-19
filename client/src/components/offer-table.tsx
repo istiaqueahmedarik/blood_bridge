@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
-import { deleteOffer, updateOffer } from '@/app/action'
+import { deleteOffer, updateOffer } from '@/app/actions/action'
 
 interface Offer {
   id: number

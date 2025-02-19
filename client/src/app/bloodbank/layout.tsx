@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import React, { Suspense } from 'react'
 import LabReports from '@/components/LabReports';
 import LogTab from '@/components/LogTab';
+import { check_type } from '../actions/general';
 
 const items = [
   {
@@ -41,16 +42,20 @@ const items = [
   },
 ]
 
+
 export default async function layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const type = await check_type();
+  if (type !== 'bloodbank')
+    return <div>Not authorized</div>
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
   return (
     <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
-      <AppSidebar title='Donor Dashboard' items={items} />
+      <AppSidebar title='Blood Bank' items={items} />
       <SidebarInset className='px-2'>
         <div className='flex flex-col lg:flex-row auto-cols-min flex-1 gap-4'>
           <div className='w-full lg:max-w-[70vw] border-r-2 min-h-[calc(100svh-theme(spacing.4))]'>

@@ -1,4 +1,4 @@
-import { getOffers } from "@/app/action"
+import { getOffers } from "@/app/actions/action"
 import { OfferForm } from "@/components/offer-form"
 import { OfferTable } from "@/components/offer-table"
 

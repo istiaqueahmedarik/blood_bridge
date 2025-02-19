@@ -8,7 +8,9 @@ import { Calendar, ClipboardCheck, ClockAlert, HeartPulse, Home, Inbox, TicketPe
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React, { Suspense } from 'react'
+import { check_type } from '../actions/general';
+import { get_with_token } from '../actions/req';
 const items = [
     {
         title: "Home",
@@ -61,9 +63,27 @@ async function layout({
         month: new Date().toLocaleString('default', { month: 'long' }),
         year: new Date().getFullYear()
     }
+    const type = await check_type();
+    if (type !== 'donor')
+        return <div>Not authorized</div>
+    // const getData = await get('/donor')
+    // 
+    // const user = getData[0];
+
+    const data = (await get_with_token('donor/auth/donor_details')).donor;
+
+    const user = {
+        userName: data['Full_name'],
+        bloodType: data['Blood_type']
+    }
+
+
+
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
-            <AppSidebar title='Donor Dashboard' items={items} />
+            <Suspense fallback={<div>Loading...</div>}>
+                <AppSidebar title='Donor Dashboard' items={items} />
+            </Suspense>
             <SidebarInset className='px-2'>
                 <div className='flex flex-col lg:flex-row auto-cols-min flex-1 gap-4'>
                     <div className='w-full lg:max-w-[70vw] border-r-2 min-h-[calc(100svh-theme(spacing.4))]'>
@@ -73,7 +93,7 @@ async function layout({
                             <div className="flex flex-col sm:flex-row w-full items-center justify-between">
                                 <div className="flex items-center gap-4 mb-4 sm:mb-0">
                                     <div className="text-center sm:text-left">
-                                        <div className="text-xl sm:text-2xl font-extrabold">Hello Md. Sajedullah Aref</div>
+                                        <div className="text-xl sm:text-2xl font-extrabold">Hello {user.userName}</div>
                                         <div className="text-xs text-muted-foreground">
                                             Happy to see you again!
                                         </div>
@@ -104,7 +124,7 @@ async function layout({
                         <div className='bg-muted aspect-video rounded-xl min-h-[calc(35svh-theme(spacing.4))] grid place-content-center'>
                             <div className='mx-auto '>
                                 <Image
-                                    src="/rf.jpeg"
+                                    src={data['Profile_picture']}
                                     height={70}
                                     width={70}
                                     alt="ariful Image"
@@ -112,10 +132,10 @@ async function layout({
                                 />
                             </div>
                             <div className='text-center'>
-                                <div className="text-lg">Md. Sajedullah Aref</div>
+                                <div className="text-lg">{user.userName}</div>
                                 <div className="">
                                     <span className="text-muted-foreground">Blood Group: </span>
-                                    <span className=" font-bold">O+ve</span>
+                                    <span className=" font-bold">{user.bloodType}</span>
                                 </div>
                                 <div className="">
                                     <Button className="hover:text-destructive" variant="ghost" asChild>

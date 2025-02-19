@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import React from 'react'
 import { Button } from './ui/button'
@@ -8,12 +9,12 @@ import Image from 'next/image'
 import { Input } from './ui/input'
 import { Flower } from 'coolshapes-react'
 import Form from 'next/form'
-import { BellIcon, ChevronDown, MessageCircleQuestion, HomeIcon } from 'lucide-react'
+import { BellIcon, Grip, LayoutDashboard, LogInIcon, LogOutIcon } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
-import { useMediaQuery } from 'react-responsive'
 import { usePathname } from 'next/navigation'
 
-function NavTab() {
+function NavTab({ token, type }: { token: any, type: any }) {
+    const isLogged = token !== undefined
     const path = usePathname()
     const { scrollY } = useScroll()
     const [scroll, setScroll] = React.useState(0)
@@ -23,7 +24,6 @@ function NavTab() {
     const offset = 70;
     const height = useWindowHeight();
     const y = useTransform(scrollY, [0, height], [0, (path === '/' ? -1 * (height - offset) : (0))], { ease: easeOut })
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 768px)' })
     return (
         <motion.div
             style={{ y }}
@@ -35,91 +35,47 @@ function NavTab() {
                 </Link>
             </div>
             <Button asChild className=' rounded-full  hover:text-background bg-destructive shadow-none text-background font-extrabold'>
-                <Link href="/emergency" className="">{isSmallScreen ? <HomeIcon size={22} /> : 'Emergency'}</Link>
+                <Link href="/emergency" className="">Emergency</Link>
             </Button>
-            {isSmallScreen ? (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none'>
-                            <ChevronDown size={22} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuItem asChild>
-                            <Link href="/donor" className="">Donor Dashboard</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <Link href="/bloodbank" className="">Blood Bank Dashboard</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <Link href="/medical" className="">Medical Dashboard</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <Link href="/ask" className=""><MessageCircleQuestion size={22} /></Link>
-                        </DropdownMenuItem>
 
-                        <DropdownMenuItem asChild>
-                            <Link href="/users" className="">Login</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <Link href="/notification" className=""><BellIcon size={22} /></Link>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            ) : (
-                <>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none'>
-                                Services
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem asChild>
-                                <Link href="/donor" className="">Donor Dashboard</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/bloodbank" className="">Blood Bank Dashboard</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/medical" className="">Medical Dashboard</Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button asChild className=' rounded-full bg-transparent text-foreground hover:text-background  shadow-none'>
-                        <Link href="/ask" className=""><MessageCircleQuestion size={22} /></Link>
+            <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none' asChild>
+                <Link href={`/${type}`} className={`${!isLogged && 'hidden'}`}>
+                    <LayoutDashboard size={22} />
+                </Link>
+            </Button>
+
+            <motion.div
+                initial={{ opacity: 0, display: 'none' }}
+                animate={{ opacity: scroll > 0 ? 1 : 0, display: scroll > 0 ? 'block' : 'none' }}
+                transition={{ duration: 0.5 }}
+                className=''
+            >
+                <Form action={'/search'} className="relative rounded-full bg-background max-w-xs w-32 mx-auto outline-primary ">
+                    <Input placeholder="Search ...." className='rounded-full px-4 py-3' />
+                    <Button variant={'ghost'} type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full border-2 border-primary p-2 w-8 h-8 flex items-center justify-center bg-foreground">
+                        <Flower index={9} noise={true} size={24} />
                     </Button>
-                    <motion.div
-                        initial={{ opacity: 0, display: 'none' }}
-                        animate={{ opacity: scroll > 0 ? 1 : 0, display: scroll > 0 ? 'block' : 'none' }}
-                        transition={{ duration: 0.5 }}
-                        className=''
-                    >
-                        <Form action={'/search'} className="relative rounded-full bg-background max-w-xs w-32 mx-auto outline-primary ">
-                            <Input placeholder="Search ...." className='rounded-full px-4 py-3' />
-                            <Button variant={'ghost'} type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full border-2 border-primary p-2 w-8 h-8 flex items-center justify-center bg-foreground">
-                                <Flower index={9} noise={true} size={24} />
-                            </Button>
-                        </Form>
-                    </motion.div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none'>
-                                Dashboard
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem asChild>
-                                <Link href="/users" className="">Login</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href="/notification" className=""><BellIcon size={22} /></Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </>
-            )}
-        </motion.div>
+                </Form>
+            </motion.div>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none'>
+                        <Grip size={22} />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='flex gap-2 w-fit  justify-center'>
+                    <DropdownMenuItem asChild>
+                        <Link href={`${isLogged ? '/logout' : '/users'}`} className='hover:text-foreground/80 transition-all'>
+                            {isLogged ? <LogOutIcon size={22} className='hover:text-foreground/80 transition-all' /> : <LogInIcon className='hover:text-foreground/80 transition-all' size={22} />}
+                        </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem asChild>
+                        <Link href="/notification" className='hover:text-foreground/80 transition-all'><BellIcon className='hover:text-foreground/80 transition-all' size={22} /></Link>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </motion.div >
     )
 }
 

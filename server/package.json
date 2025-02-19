@@ -1,0 +1,28 @@
+{
+  "scripts": {
+    "dev": "wrangler dev ",
+    "deploy": "wrangler deploy --minify"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@emailjs/nodejs": "^5.0.2",
+    "@supabase/supabase-js": "^2.48.1",
+    "@types/bun": "^1.2.2",
+    "@types/node": "^22.13.0",
+    "dotenv": "^16.4.7",
+    "emailjs": "^4.0.3",
+    "hono": "^4.6.20",
+    "i": "^0.3.7",
+    "jsonwebtoken": "^9.0.2",
+    "mimetext": "^3.0.27",
+    "ncrypt-js": "^2.1.2",
+    "nodemailer": "^6.10.0",
+    "postgres": "^3.4.5",
+    "resend": "^4.1.2",
+    "uuidv7": "^1.0.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "wrangler": "^3.101.0"
+  }
+}

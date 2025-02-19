@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import { useMemo, useState } from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
 import {
@@ -13,17 +15,7 @@ import {
     ChartConfig,
     ChartContainer,
     ChartTooltip,
-    ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-    { year: "2019", total: Math.floor(Math.random() * 5) },
-    { year: "2020", total: Math.floor(Math.random() * 5) },
-    { year: "2021", total: Math.floor(Math.random() * 5) },
-    { year: "2022", total: Math.floor(Math.random() * 5) },
-    { year: "2023", total: Math.floor(Math.random() * 5) },
-    { year: "2024", total: Math.floor(Math.random() * 5) },
-
-]
 
 const chartConfig = {
     total: {
@@ -32,20 +24,83 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export default function DonationChart() {
+function ChartTooltipEnhanced({ active, payload, label }: any) {
+    if (active && payload && payload.length) {
+        const data = payload[0]?.payload
+        return (
+            <div className="bg-gray-100 p-2 rounded shadow">
+                <div>
+                    <strong>{label}</strong>
+                </div>
+                <div>Total Donations: {data.total}</div>
+            </div>
+        )
+    }
+    return null
+}
+
+
+
+export default function DonationChart({ data }: { data: any[] }) {
+    console.log(data);
+    const [groupBy, setGroupBy] = useState<"year" | "month" | "date">("year")
+
+    const aggregatedData = useMemo(() => {
+        if (!data || data.length === 0) return []
+        const groups: { [key: string]: number } = {}
+        data.forEach((item) => {
+            const d = new Date(item.Date)
+            let key = ""
+            if (groupBy === "year") {
+                key = d.getFullYear().toString()
+            } else if (groupBy === "month") {
+                key =
+                    d.getFullYear() +
+                    "-" +
+                    (d.getMonth() + 1).toString().padStart(2, "0")
+            } else if (groupBy === "date") {
+                key = d.toISOString().split("T")[0]
+            }
+            groups[key] = (groups[key] || 0) + 1
+        })
+        return Object.entries(groups)
+            .map(([label, total]) => ({ label, total }))
+            .sort((a, b) => (a.label > b.label ? 1 : -1))
+    }, [data, groupBy])
+
     return (
-        <Card className="">
+        <Card>
             <CardHeader>
                 <CardTitle>Donation Chart</CardTitle>
                 <CardDescription>
-                    Your donation chart for the last 5 years
+                    Your donation chart aggregated by {groupBy}
                 </CardDescription>
+                <div className="mt-2">
+                    <label htmlFor="groupBy" className="mr-2 text-sm">
+                        Group By:
+                    </label>
+                    <select
+                        id="groupBy"
+                        value={groupBy}
+                        onChange={(e) =>
+                            setGroupBy(e.target.value as "year" | "month" | "date")
+                        }
+                        className="rounded border p-1 text-sm"
+                    >
+                        <option value="year">Year</option>
+                        <option value="month">Month</option>
+                        <option value="date">Date</option>
+                    </select>
+                </div>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} className="max-h-[calc(50svh-theme(spacing.4))]">
+                <ChartContainer
+                    config={chartConfig}
+                    className="max-h-[calc(50svh-theme(spacing.4))] min-w-full"
+                >
                     <AreaChart
                         accessibilityLayer
-                        data={chartData}
+                        data={aggregatedData}
                         margin={{
                             left: 12,
                             right: 12,
@@ -53,12 +108,12 @@ export default function DonationChart() {
                     >
                         <CartesianGrid vertical={false} />
                         <XAxis
-                            dataKey="year"
+                            dataKey="label"
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
                         />
-                        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                        <ChartTooltip cursor={false} content={<ChartTooltipEnhanced />} />
                         <defs>
                             <linearGradient id="filltotal" x1="0" y1="0" x2="0" y2="1">
                                 <stop
@@ -72,9 +127,7 @@ export default function DonationChart() {
                                     stopOpacity={0.1}
                                 />
                             </linearGradient>
-
                         </defs>
-
                         <Area
                             dataKey="total"
                             type="natural"
@@ -86,7 +139,6 @@ export default function DonationChart() {
                     </AreaChart>
                 </ChartContainer>
             </CardContent>
-
         </Card>
     )
 }

@@ -1,15 +1,148 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import { getMutableAIState, streamUI } from 'ai/rsc';
 import { google } from '@ai-sdk/google';
 import { ReactNode } from 'react';
 import { z } from 'zod';
-import { generateId, generateObject, generateText } from 'ai';
+import { generateId, generateObject, generateText, Output } from 'ai';
 import HospitalCard from '@/components/HospitalCard';
 import { TextShimmerWave } from '@/components/ui/text-shimmer-wave';
 import DonationChart from '@/components/DonationChart';
 import { BloodAppointmentCard } from '@/components/BloodAppointmentCard';
 import { MapWithMarkers } from '@/components/MapWithMarkers';
+import { redirect } from 'next/navigation';
+
+import { revalidatePath } from 'next/cache'
+import { get_with_token, post } from './req';
+import { cookies } from 'next/headers';
+import { check_type } from './general';
+
+const signUpSchema = z
+    .object({
+        name: z.string().min(1, "Name is required"),
+        present_address: z.string().min(1, "Address is required"),
+        email: z.string().email("Invalid email address"),
+        phone: z.string().min(10, "Invalid phone number"),
+        password: z.string().min(8, "Password must be at least 8 characters"),
+        confirmPassword: z.string(),
+        bloodType: z.string().min(1, "Blood Type is required"),
+        dob: z.string().min(1, "Date of birth is required"),
+        fathersName: z.string().min(1, "Father's name is required"),
+        mothersName: z.string().min(1, "Mother's name is required"),
+        nid: z.string().min(1, "NID is required"),
+        permanentAddress: z.string().min(1, "Address is required"),
+        croppedImage: z.string().min(1, "Cropped image is required"),
+        nidImage: z.string().min(1, "NID image is required"),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords don't match",
+        path: ["confirmPassword"],
+    });
+
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DonorSignUp(prevState: any, formData: FormData) {
+    const validatedFields = signUpSchema.safeParse({
+        name: formData.get("name"),
+        present_address: formData.get("present_address"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        password: formData.get("password"),
+        confirmPassword: formData.get("confirmPassword"),
+        bloodType: formData.get("bloodType"),
+        dob: formData.get("dob"),
+        fathersName: formData.get("fathersName"),
+        mothersName: formData.get("mothersName"),
+        nid: formData.get("nid"),
+        permanentAddress: formData.get("permanentAddress"),
+        croppedImage: formData.get("croppedImage"),
+        nidImage: formData.get("nidImage"),
+    });
+    console.log(validatedFields);
+    if (!validatedFields.success) {
+        return {
+            error: validatedFields.error.issues[0].message,
+        };
+    }
+
+    const { name, present_address, email, phone, password, bloodType, dob, fathersName, mothersName, nid, permanentAddress, croppedImage, nidImage } = validatedFields.data;
+
+    try {
+        const res = await post('donor_signup', {
+            name,
+            present_address,
+            email,
+            phone,
+            password,
+            bloodType,
+            dob,
+            fathersName,
+            mothersName,
+            nid,
+            permanentAddress,
+            croppedImage,
+            nidImage
+        });
+        console.log(res);
+        if (res.error) {
+            return { error: res.error };
+        }
+
+    }
+    catch (error) {
+        console.error(error);
+        return { error: "Sign up failed!" };
+    }
+    redirect('/login');
+
+}
+
+
+const loginSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function Login(prevState: any, formData: FormData) {
+    const validatedFields = loginSchema.safeParse({
+        email: formData.get("email"),
+        password: formData.get("password"),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            error: validatedFields.error.issues[0].message,
+        };
+    }
+
+    const { email, password } = validatedFields.data;
+
+    try {
+        const res = await post('login', {
+            email,
+            password,
+        });
+        console.log(res);
+        if (res.status === 'error') {
+            return { error: res.message };
+        }
+        (await cookies()).set('token', res.token);
+        (await cookies()).set('type', res.type);
+
+
+    }
+    catch (error) {
+        console.error(error);
+        return { error: "Login failed!" };
+    }
+    redirect('/');
+
+}
+
+
 export interface ServerMessage {
     role: 'user' | 'assistant';
     content: string;
@@ -29,6 +162,96 @@ async function getHospital(hospitalName: string) {
         beds: 100,
         doctors: 20,
         image: '/logo.svg',
+    }
+}
+
+export async function detectObjectsFromBase64(base64ImageUrl: string) {
+    const url = 'https://api.landing.ai/v1/tools/agentic-object-detection';
+    const formData = new FormData();
+
+    const base64Response = await fetch(base64ImageUrl);
+    const arrayBuffer = await base64Response.arrayBuffer();
+    formData.append('image', new Blob([arrayBuffer]), 'image.jpg');
+    formData.append('prompts', "profile_picture");
+    formData.append('model', 'agentic');
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                Authorization: `Basic ${process.env.AGENTIC_API_KEY}`,
+            },
+        });
+        const data = await response.json();
+        console.log(JSON.stringify(data));
+
+        let bounding_box;
+        try {
+            bounding_box = data.data[0][0].bounding_box;
+        } catch {
+            console.log('No bounding box found');
+            bounding_box = [16, 108, 126, 215];
+        }
+        return { bounding_box: JSON.stringify(bounding_box) };
+    } catch (error) {
+        console.error(error);
+    }
+    return { bounding_box: JSON.stringify([16, 108, 126, 215]) };
+}
+
+
+export async function OCRImage(image: string, image1: string) {
+    const result = await generateText({
+        model: google('gemini-2.0-flash-exp', {
+            structuredOutputs: true
+        }),
+
+        maxSteps: 10,
+        messages: [
+            {
+                role: 'user',
+                content: [
+                    { type: 'text', text: "Is it look like NID, it needs to be bangladeshi NID? If say yes, also OCR the image, extract info in good structured way and you must reply with the 2d bounding box of box_2d_tx, box_2d_ty,box_2d_bx,box_2d_by  , mask and label of the first image, where the profile pictures at" },
+                    { type: 'image', image: image },
+                    { type: 'image', image: image1 }
+                ],
+            },
+        ],
+
+
+        experimental_output: Output.object({
+            schema: z.object({
+                isNID: z.boolean(),
+                name: z.string(),
+                fatherName: z.string(),
+                motherName: z.string(),
+                dob: z.string(),
+                nid: z.string(),
+                address: z.string(),
+                blood_type: z.string(),
+                box_2d_tx: z.number(),
+                box_2d_ty: z.number(),
+                box_2d_bx: z.number(),
+                box_2d_by: z.number(),
+            }),
+        }),
+    });
+    console.log(result);
+    return result.experimental_output;
+    return {
+        isNID: true,
+        name: 'Istiaque Ahmed',
+        fatherName: 'Md. Shahidul Islam',
+        motherName: 'Rojina Begum',
+        dob: '1998-01-01',
+        nid: '12345678901234567',
+        address: 'Dhaka',
+        blood_type: 'A+',
+        box_2d_tx: 16,
+        box_2d_ty: 108,
+        box_2d_bx: 126,
+        box_2d_by: 215,
     }
 }
 
@@ -91,12 +314,9 @@ async function multiStepTool(prompt: string) {
                 }),
                 execute: async ({ prompt }) => {
                     console.log(`Executing getMyDonationDetails tool with prompt: ${prompt}`);
-                    const donation = [
-                        { date: '2022-01-01', amount: 500, location: 'Dhaka' },
-                        { date: '2022-01-15', amount: 300, location: 'Dhaka' },
-                        { date: '2022-02-01', amount: 200, location: 'Dhaka' },
-                    ];
-                    const str_donation = donation.map(d => `On ${d.date}, I donated ${d.amount} ml of blood at ${d.location}`).join('\n');
+                    const donation = (await get_with_token('donor/auth/donor_history')).data;
+
+                    const str_donation = donation.map((d: any) => `Date - ${d.Date} , Unit - ${d.Unit} in a ${d.Type} at  ${d.Address}`).join('\n');
                     return str_donation;
                 },
             },
@@ -245,7 +465,9 @@ export async function continueConversation(
                     yield <TextShimmerWave className="mx-auto text-foreground">
                         Umm... Let me find that...
                     </TextShimmerWave>;
-
+                    const type = await check_type();
+                    if (type !== 'donor')
+                        return <div>Are you sure you are logged in as Donor?</div>
                     const { text } = await multiStepTool(`${prompt}`);
 
                     const { object: donationChart } = await generateObject({
@@ -254,9 +476,10 @@ export async function continueConversation(
                         prompt: text,
                         schema: z.object({
                             detais: z.array(z.object({
-                                date: z.string(),
-                                amount: z.number(),
-                                location: z.string(),
+                                Date: z.string(),
+                                Unit: z.number(),
+                                Address: z.string(),
+                                Type: z.string(),
                             })),
                             subtext: z.string().describe('Other parts of the text'),
                             OptionalText: z.string().optional().describe('Other Parts that is not related to the schema and a full senetence'),
@@ -264,7 +487,10 @@ export async function continueConversation(
                     });
 
 
-                    return <div>            <DonationChart />
+
+
+
+                    return <div>    <DonationChart data={donationChart.detais} />
                         <p>
                             {donationChart?.subtext}
                         </p>
@@ -341,7 +567,7 @@ export async function continueConversation(
 
 
 
-import { revalidatePath } from 'next/cache'
+
 
 let offers = [
     { id: 1, hospital: "Central Hospital", service: "Blood Test", discountPercentage: 20, expiryDate: "2023-12-31" },
