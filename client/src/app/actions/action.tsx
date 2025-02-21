@@ -262,7 +262,6 @@ async function distanceBetweenHospitals(hospital1: string, hospital2: string) {
 
 async function multiStepTool(prompt: string) {
     console.log(`Executing multi-step tool with prompt: ${prompt}`);
-    await new Promise(resolve => setTimeout(resolve, 3000));
 
     const { text, toolResults } = await generateText({
         model: google('gemini-2.0-flash-exp'),

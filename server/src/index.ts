@@ -5,6 +5,7 @@ import bloodbank from './bloodbank'
 import hospital from './hospital'
 import emergency from './emergency'
 import inbox from './inbox'
+import institute from './institute'
 import postgres from 'postgres'
 import { JwtVariables } from 'hono/jwt'
 
@@ -28,6 +29,8 @@ app.route('/bloodbank', bloodbank)
 app.route('/hospital', hospital)
 app.route('/emergency', emergency)
 app.route('/inbox', inbox)
+app.route('/institute', institute)
+
 
 
 app.get('/events', async (c) => {

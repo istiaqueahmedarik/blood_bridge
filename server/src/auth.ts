@@ -2,10 +2,12 @@ import { Hono } from 'hono'
 import { jwt, JwtVariables } from 'hono/jwt';
 import postgres from 'postgres'
 const nodemailer = require('nodemailer');
-
+import { createWorkersAI } from 'workers-ai-provider';
+import { generateText, Output } from 'ai';
 var jwt_ = require('jsonwebtoken')
 import { createClient } from '@supabase/supabase-js'
 import { createMimeMessage } from 'mimetext';
+import { z } from 'zod';
 
 
 type Variables = JwtVariables
@@ -15,6 +17,7 @@ type Bindings = {
     JWT_SECRET: string,
     SUPABASE_URL: string,
     SUPABASE_SERVICE_ROLE_KEY: string,
+    AI: Ai
 }
 
 const app = new Hono<{ Variables: Variables, Bindings: Bindings }>()
@@ -72,7 +75,7 @@ app.post('/donor_signup', async (c) => {
         })
     }
     catch (e) {
-        console.log('error', e)
+
         return c.json({
             status: 'error',
             message: e
@@ -156,7 +159,7 @@ app.post('/institute_signup', async (c) => {
         })
     }
     catch (e) {
-        console.log('error', e)
+
         return c.json({
             status: 'error',
             message: e
@@ -192,8 +195,11 @@ app.post('/login', async (c) => {
         }
         const id = user.length ? user[0].ID : user1[0].user_id
         const type = user.length ? 'donor' : user1[0].Type
-        const payload = { email, id, type }
-        const token = jwt_.sign(payload, c.env.JWT_SECRET, { expiresIn: '1d' })
+        const payload = {
+            email, id, type, "role": "authenticated",
+            "aud": "authenticated", "sub": id
+        }
+        const token = jwt_.sign(payload, c.env.JWT_SECRET, { expiresIn: '1h' })
 
         return c.json({
             status: 'success',
@@ -220,13 +226,42 @@ app.get('/auth/type', async (c) => {
     })
 })
 
-app.get('/', async (c) => {
+app.get('/ai/:q', async (c) => {
+
+    const { q } = c.req.param();
 
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
-    const msg = createMimeMessage();
+    const workersai = createWorkersAI({ binding: c.env.AI });
+    const reason = await generateText({
+        model: workersai('@cf/deepseek-ai/deepseek-r1-distill-qwen-32b'),
+        prompt: q,
+        stopSequences: ['</Reason>'],
 
-    return c.text('Hello Hono1!')
+    });
+    const result = await generateText({
+        model: workersai('@cf/meta/llama-3.3-70b-instruct-fp8-fast'),
+        system: 'You are a reasoning chatbot, you first reason your answer, then when user asks you to answer, you generate the answer.',
+        messages: [
+            { role: 'user', content: `${q}... please reason your answer first then i will ask you to generate main` },
+            { role: 'assistant', content: 'here is my reasoning - ' + reason.text },
+            { role: 'user', content: 'okay, now answer.' },
+        ],
+        maxTokens: 4000,
+        experimental_output: Output.object({
+            schema: z.object({
+                reason: z.string().describe('The reason for the output.').optional(),
+                text: z.string().describe('The generated text.').optional(),
+            }),
+        }),
+    });
+
+    return c.json({
+        status: 'success',
+        reason: reason.text,
+        result: result.experimental_output
+    })
+
 
 })
 
@@ -247,7 +282,7 @@ app.post('/auth/em/ac', async (c) => {
         })
     }
     const user_id = user[0].ID
-    console.log(type)
+
     if (type === "ac") {
         const res = await sql`INSERT INTO public."Responder" ("Emergency_id", "User_id")
 VALUES (${eid}, ${user_id}) RETURNING *;`
@@ -257,7 +292,7 @@ VALUES (${eid}, ${user_id}) RETURNING *;`
                     message: e
                 })
             })
-        console.log(res)
+
     }
     else {
         try {

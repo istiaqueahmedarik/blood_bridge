@@ -1,3 +1,4 @@
+import { ScrollArea } from '@/components/ui/scroll-area';
 import React from 'react'
 
 export default async function layout({
@@ -7,9 +8,9 @@ export default async function layout({
 }>) {
 
     return (
-        <div className="flex-1 flex flex-col">
+        <ScrollArea className="flex-1 flex flex-col h-[50vh]">
 
             {children}
-        </div>
+        </ScrollArea>
     )
 }

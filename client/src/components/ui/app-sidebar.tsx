@@ -15,7 +15,12 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 
-
+function active_state(x: string, y: string) {
+    if (x.includes(y)) {
+        return true
+    }
+    return false
+}
 
 
 export function AppSidebar({ title, items }: { title: string, items: { title: string, url: string, icon: React.ComponentType, type?: string }[] }) {
@@ -37,7 +42,7 @@ export function AppSidebar({ title, items }: { title: string, items: { title: st
                                 type?: string;
                             }) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild isActive={item.type === 'active'}>
+                                    <SidebarMenuButton asChild >
                                         <Link href={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>

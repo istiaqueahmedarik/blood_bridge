@@ -1,5 +1,4 @@
 import { ActivityList } from '@/components/ActivityList';
-import { AppSidebar } from '@/components/ui/app-sidebar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
@@ -11,6 +10,8 @@ import Link from 'next/link';
 import React, { Suspense } from 'react'
 import { check_type } from '../actions/general';
 import { get_with_token } from '../actions/req';
+import dynamic from 'next/dynamic';
+import { AppSidebar } from '@/components/ui/app-sidebar';
 const items = [
     {
         title: "Home",
@@ -79,15 +80,17 @@ async function layout({
 
 
 
+
+
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
             <Suspense fallback={<div>Loading...</div>}>
                 <AppSidebar title='Donor Dashboard' items={items} />
             </Suspense>
             <SidebarInset className='px-2'>
-                <div className='flex flex-col lg:flex-row auto-cols-min flex-1 gap-4'>
+                <div className='flex flex-col lg:flex-row auto-cols-min flex-1 gap-4 '>
                     <div className='w-full lg:max-w-[70vw] border-r-2 min-h-[calc(100svh-theme(spacing.4))]'>
-                        <header className="flex flex-col sm:flex-row h-auto sm:h-22 shrink-0 items-center gap-2 border-b bg-background px-4 py-6">
+                        <header className="flex flex-col sm:flex-row h-auto sm:h-22 shrink-0 items-center gap-2 border-b bg-background px-4 py-6 z-10 sticky top-0">
                             <SidebarTrigger className="-ml-1" />
                             <Separator orientation="vertical" className="h-4 hidden sm:block" />
                             <div className="flex flex-col sm:flex-row w-full items-center justify-between">

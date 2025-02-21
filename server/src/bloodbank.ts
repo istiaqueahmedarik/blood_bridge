@@ -38,7 +38,29 @@ app.get('/bloodbanks', async (c) => {
     return c.json(get_blood_bank_id)
 })
 
+app.get('/auth/tests', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    /**
+     * 
+     */
 
+    const data = await sql`
+        SELECT *
+        FROM "Appointment"
+        WHERE "Final_Time" > now()
+            AND NOT EXISTS (
+                SELECT 1
+                FROM "Booked_time"
+                WHERE "Appointment"."Pref_date_start" BETWEEN start_time AND end_time
+            )
+    `
+
+
+    return c.json(data)
+})
 
 app.get('/', async (c) => {
 

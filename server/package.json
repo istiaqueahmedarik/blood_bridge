@@ -9,6 +9,7 @@
     "@supabase/supabase-js": "^2.48.1",
     "@types/bun": "^1.2.2",
     "@types/node": "^22.13.0",
+    "ai": "^4.1.41",
     "dotenv": "^16.4.7",
     "emailjs": "^4.0.3",
     "hono": "^4.6.20",
@@ -19,7 +20,9 @@
     "nodemailer": "^6.10.0",
     "postgres": "^3.4.5",
     "resend": "^4.1.2",
-    "uuidv7": "^1.0.2"
+    "uuidv7": "^1.0.2",
+    "workers-ai-provider": "^0.0.11",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0",

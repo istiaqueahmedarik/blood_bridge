@@ -99,6 +99,8 @@ app.get('/auth/appointments', async (c) => {
 })
 
 
+
+
 app.post('/auth/appointment', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
@@ -126,16 +128,16 @@ app.post('/auth/test_appointment', async (c) => {
         .then((res) => res[0]['Donor_id'])
         .catch((error) => { return c.json({ error }) })
     const body = await c.req.json();
-    console.log(body.location, body.start_date, body.end_date, body.start_time, body.end_time, body.symptoms, body.test_type)
+
 
 
     try {
         const res = await sql`INSERT INTO public."Checkup" ("Donor_id", "Test_location", "Pref_date_start", "Pref_date_end", "Pref_time_start", "Pref_time_end", "Add_info", "Test_type","Reason") VALUES (${donor_id},${body.location},${body.start_date},${body.end_date},${body.start_time},${body.end_time},${body.add_info},${body.test_type},${body.symptoms}) RETURNING *;`
-        console.log(res);
+
         return c.json({ res })
     }
     catch (error) {
-        console.log(error)
+
         return c.json({ error })
     }
 })

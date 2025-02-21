@@ -1,13 +1,20 @@
+import { get_with_token } from '@/app/actions/req'
 import RequestsPage from '@/components/RequestPage'
 import React from 'react'
 
 
 
-function page() {
+async function page() {
+    const res = await get_with_token('institute/auth/booked');
+    const res1 = await get_with_token('institute/auth/booked/accepted');
     return (
-        <div>
-            <RequestsPage />
-        </div>
+
+        <main className="container mx-auto p-4">
+            <RequestsPage data={res} data1={res1} />
+
+        </main>
+
+
     )
 }
 

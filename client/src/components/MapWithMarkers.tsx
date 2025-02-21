@@ -19,9 +19,9 @@ interface MapComponentProps {
 
 export function MapWithMarkers({ locations, className }: MapComponentProps) {
     const [viewState, setViewState] = useState({
-        latitude: locations[0]?.latitude || 0,
-        longitude: locations[0]?.longitude || 0,
-        zoom: 18
+        latitude: locations[0]?.latitude || 23.81,
+        longitude: locations[0]?.longitude || 90.41,
+        zoom: 12
     })
     console.log(locations)
     const [popupInfo, setPopupInfo] = useState<Location | null>(null)

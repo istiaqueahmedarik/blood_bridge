@@ -10,7 +10,7 @@ export async function ActivityList() {
     const get_log = (await get_with_token('donor/auth/user_log')).user_log;
 
     return (
-        <ScrollArea className="max-h-[calc(100svh-theme(spacing.4))] w-full">
+        <ScrollArea className="max-h-[calc(40svh-theme(spacing.4))] w-full">
             <ul className="space-y-4 p-4">
                 {get_log.map((activity: any) => (
                     <li key={activity['ID']} className="flex items-start space-x-4 bg-background p-4 rounded-lg shadow-sm transition-all duration-300 hover:shadow-md">

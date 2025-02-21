@@ -1,106 +1,114 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client'
-import React, { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
-import { supabase } from "@/app/lib/supabaseClient";
+"use client"
 
-export default function Inbox({ res, val, token }: any) {
-    const [messages, setMessages] = useState<any[]>(res.messages || []);
-    const [inputValue, setInputValue] = useState("");
+import { useEffect, useState, useRef } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Send } from "lucide-react"
+import { send_message } from "@/app/actions/inbox"
+import { motion, AnimatePresence } from "framer-motion"
+import { useCookies } from 'react-cookie';
+import { createClient } from "@supabase/supabase-js"
+import { get_with_token } from "@/app/actions/req"
 
-    // Fetch messages from Supabase for the current inbox
+
+
+export default function Inbox({ res, val }: any) {
+    const [messages, setMessages] = useState<any[]>(res.messages || [])
+    const [inputValue, setInputValue] = useState("")
+    const messagesEndRef = useRef<HTMLDivElement>(null)
+    const handleInserts = (payload: any) => {
+        console.log(res.uid, payload.new.sender_id, payload)
+        setMessages((prev) => [...prev, { Text: payload.new.Text, owner: res.uid === payload.new.sender_id ? "me" : "other" }])
+    }
+    const [cookies, ,] = useCookies(['token']);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+
+
     useEffect(() => {
-        async function fetchMessages() {
-            const { data, error } = await supabase
-                .from("Message")
-                .select("ID, Text, Inbox_id, created_at")
-                .eq("Inbox_id", val.slug)
-                .order("created_at", { ascending: true });
-            if (error) {
-                console.error("Error fetching messages", error);
-            } else if (data) {
-                // Map DB columns to local message format.
-                const formattedMessages = data.map((msg) => ({
-                    id: msg.ID,
-                    text: msg.Text,
-                    // Assuming the current user’s ID is stored under res.res1[0].ID.
-                    mine: msg.Inbox_id === res.res1[0].ID,
-                }));
-                setMessages(formattedMessages);
-            }
+        async function ws() {
+            const sec = cookies.token || ''
+            console.log("sec", sec)
+            if (sec === '')
+                return <></>
+            const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+            console.log(sec, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+            const client = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
+            client.realtime.setAuth(sec)
+            const id = val.slug
+            const res = await get_with_token(`inbox/api/auth/inbox/${id}`, id)
+            console.log(res)
+            const iid = res.iid;
+
+            client.channel('Message')
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'Message',
+                    filter: `Inbox_id=eq.${iid}`
+                }, handleInserts)
+                .subscribe();
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
         }
-        fetchMessages();
-    }, []);
-
-    // Subscribe to new realtime messages from Supabase
-    useEffect(() => {
-        const subscription = supabase
-            .channel('public:Message')
-            .on(
-                'postgres_changes',
-                { event: 'INSERT', schema: 'public', table: 'Message' },
-                (payload: any) => {
-                    // Check if the new message belongs to the current inbox
-                    if (payload.new.Inbox_id === val.slug) {
-                        const newMessage = {
-                            id: payload.new.ID || Date.now(),
-                            text: payload.new.Text,
-                            mine: false
-                        };
-                        setMessages((prev) => [...prev, newMessage]);
-                    }
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(subscription);
-        };
-    }, [val.slug]);
+        ws();
+        scrollToBottom()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cookies])
 
     async function handleSend() {
-        if (!inputValue.trim()) return;
-        const newMessageData = { Text: inputValue.trim(), Inbox_id: val.slug };
-        // Insert the new message into the "Message" table
-        const { data, error } = await supabase
-            .from("Message")
-            .insert([newMessageData])
-            .single();
-        if (error) {
-            console.error("Error sending message", error);
-            return;
-        }
-        const sentMessage = {
-            id: data.ID,
-            text: data.Text,
-            mine: true
-        };
-        setMessages((prev) => [...prev, sentMessage]);
-        setInputValue("");
+        if (!inputValue.trim()) return
+
+        await send_message(inputValue, val.slug)
+        // setMessages((prev) => [...prev, { Text: inputValue, owner: "me" }])
+        setInputValue("")
     }
 
     return (
-        <div className="flex flex-col h-full">
-            <div className="flex-1 p-4 overflow-y-auto">
-                {messages.map((msg) => (
-                    <div key={msg.id} className="mb-4">
-                        <div className="bg-muted p-3 rounded-lg">{msg.text}</div>
-                    </div>
-                ))}
+        <>
+
+            <div className="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+                <AnimatePresence initial={false}>
+                    {messages.map((msg, id) => (
+                        <motion.div
+                            key={id}
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -50 }}
+                            transition={{ duration: 0.3 }}
+                            className={`mb-4 flex ${msg.owner === "me" ? "justify-end" : "justify-start"}`}
+                        >
+                            <div
+                                className={`p-3 rounded-2xl max-w-[70%] ${msg.owner === "me"
+                                    ? "bg-blue-500 text-white rounded-br-none"
+                                    : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none"
+                                    }`}
+                            >
+                                {msg.Text}
+                            </div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+                <div ref={messagesEndRef} />
             </div>
-            <div className="border-t p-4 flex space-x-2">
-                <Input
-                    placeholder="Write Message..."
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="flex-1"
-                />
-                <Button size="icon" onClick={handleSend}>
-                    <Send className="h-4 w-4" />
-                </Button>
+            <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex space-x-2">
+                    <Input
+                        placeholder="Type a message..."
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                        className="flex-1 rounded-full bg-gray-100 dark:bg-gray-700 border-none"
+                    />
+                    <Button size="icon" onClick={handleSend} className="rounded-full">
+                        <Send className="h-4 w-4" />
+                    </Button>
+                </div>
             </div>
-        </div>
-    );
+        </>
+    )
 }
+

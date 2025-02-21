@@ -47,7 +47,7 @@ app.get('/', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
     const test = await sql`SELECT * FROM "User"`
-    console.log('test', test)
+
     return c.text('Hello Hono!')
 })
 

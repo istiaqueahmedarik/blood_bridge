@@ -16,7 +16,7 @@ const RegistrationSchema = z
         upazilla: z.string().min(1, "Upazilla is required"),
         password: z.string().min(6, "Password must be at least 6 characters"),
         confirm_password: z.string().min(6, "Confirm your password"),
-        instituteType: z.enum(["Hospital", "Blood Bank"], {
+        instituteType: z.enum(["hospital", "bloodbank"], {
             errorMap: () => ({ message: "Institute type is required" }),
         }),
         LcCard: z.instanceof(File, { message: "License file is required" }),
