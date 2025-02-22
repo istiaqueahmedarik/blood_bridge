@@ -1,75 +1,58 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import { useState } from 'react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from 'next/link'
-import { CalendarModal } from "./CalendarModal"
+import { useActionState } from "react"
+import { AcceptOffer } from "@/app/actions/bloodbank"
+import { Input } from "./ui/input"
 
-interface BloodRequest {
-    id: string
-    hospitalName: string
-    bloodType: string
-    quantity: number
-    urgency: 'low' | 'medium' | 'high'
-    status: 'pending' | 'accepted' | 'rejected'
-    scheduledTime?: Date
-}
 
-interface BloodRequestCardProps {
-    request: BloodRequest
-    onStatusChange: (id: string, newStatus: 'accepted' | 'rejected', scheduledTime?: Date) => void
-}
 
-export default function BloodRequestCard({ request, onStatusChange }: BloodRequestCardProps) {
-    const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
-
+export default function BloodRequestCard({ request }: any) {
+    const [state, formAction, pending] = useActionState(AcceptOffer, null);
     const urgencyColor = {
         low: 'bg-green-100 text-green-800',
         medium: 'bg-yellow-100 text-yellow-800',
         high: 'bg-red-100 text-red-800'
     }
 
-    const handleAccept = () => {
-        setIsCalendarModalOpen(true)
-    }
-
-    const handleConfirmAccept = (selectedTime: Date) => {
-        onStatusChange(request.id, 'accepted', selectedTime)
-        setIsCalendarModalOpen(false)
-    }
 
     return (
         <Card>
             <CardHeader>
-                <CardTitle>{request.hospitalName}</CardTitle>
-                <Badge className={urgencyColor[request.urgency]}>{request.urgency} urgency</Badge>
+                <CardTitle>{request.Full_name}</CardTitle>
+                <Badge className={urgencyColor[request.urgency as keyof typeof urgencyColor]}>{request.urgency} urgency</Badge>
             </CardHeader>
-            <CardContent>
-                <p>Blood Type: {request.bloodType}</p>
-                <p>Quantity: {request.quantity} units</p>
-                <p>Status: {request.status}</p>
-                {request.scheduledTime && (
-                    <p>Scheduled Time: {request.scheduledTime.toLocaleString()}</p>
+            <CardContent className='flex gap-2 flex-col'>
+                <p>Blood Type: {request.Blood_type_req}</p>
+                <p>Quantity: {request.Unit_req} units</p>
+                <div>Status: {(request.Is_complete ?
+                    <Badge className="bg-green-100 text-green-800">Completed</Badge>
+                    :
+                    <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
+                )}</div>
+                {request.Date_needed && (
+                    <p>Scheduled Time: {new Date(request.Date_needed).toLocaleString()}</p>
                 )}
             </CardContent>
             <CardFooter className="grid auto-rows-min gap-2">
-                {request.status === 'pending' && (
-                    <>
-                        <Button onClick={handleAccept} variant="outline">Accept</Button>
-                        <Button onClick={() => onStatusChange(request.id, 'rejected')} variant="outline">Reject</Button>
-                    </>
+                {!request.Is_complete && (
+                    <form action={formAction} >
+                        <Input type="hidden" name="id" value={request.ID} />
+                        <Button variant="outline" disabled={pending}>
+                            {pending ? 'Accepting...' : 'Accept Offer'}
+                        </Button>
+                        {state?.message && <p className="text-red-500">{state.message}</p>}
+                    </form>
                 )}
-                <Link href={`/bloodbank/blood/inbox/${request.id}`}>
+                <Link href={`/bloodbank/inbox/`}>
                     <Button variant="link">Contact Hospital</Button>
                 </Link>
             </CardFooter>
-            <CalendarModal
-                isOpen={isCalendarModalOpen}
-                onClose={() => setIsCalendarModalOpen(false)}
-                onConfirm={handleConfirmAccept}
-            />
+
         </Card>
     )
 }

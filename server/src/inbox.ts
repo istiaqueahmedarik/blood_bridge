@@ -101,7 +101,6 @@ app.get('/api/auth/inbox', async (c) => {
         WHERE i."sender_id" = '${userId}' OR i."reciever_id" = '${userId}'
         ORDER BY i."last_message_flag_sender_time" DESC;
     `;
-    console.log(q)
     const inboxUsers = await sql.unsafe(q);
     console.log(inboxUsers)
 
@@ -112,13 +111,18 @@ app.get('/api/auth/inbox', async (c) => {
         inboxUserIds.push(`'${item['ID']}'`)
     }
     const inboxUserIdsStr = inboxUserIds.join(', ');
-
-    const q1 = `
+    console.log(inboxUserIdsStr)
+    const q1 =
+        inboxUserIds.length ? `
       SELECT "ID", "Full_name", "Address"
       FROM public."User"
       WHERE "ID" != '${payload['id']}'
         AND "ID" NOT IN (${inboxUserIdsStr})
-    `;
+    ` : `
+        SELECT "ID", "Full_name", "Address"
+        FROM public."User"
+        WHERE "ID" != '${payload['id']}'
+        `
     console.log(q1)
     const otherUsers = await sql.unsafe(q1);
 

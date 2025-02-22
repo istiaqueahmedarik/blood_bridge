@@ -135,8 +135,216 @@ app.post('/auth/booked/delete', async (c) => {
     return c.json({ data })
 })
 
+/**
+ * 
+
+ */
+
+app.get('/auth/booked/needReport', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    console.log(ins_id)
+    const data = await sql`
+    select "User"."ID" as id, "Full_name" as "fullName", "email" from "Appointment", "Institute", "User","Donor"
+where
+"Appointment"."Institute_id" is not null
+and "Appointment"."Institute_id" = "Institute"."ID"
+and "Appointment"."Donor_id" = "Donor"."Donor_id" and "Donor"."User_id"="User"."ID" and "Appointment"."Completed" is true and "Appointment"."isTested" is false and "Institute_id"=${ins_id}`
+    return c.json({ data })
+})
 
 
+app.get('/auth/booked/futureReport', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    console.log(ins_id)
+    const data = await sql`
+   select 
+    "Appointment"."Donor_id" as id, 
+    "Full_name" as "name", 
+    to_timestamp("Appointment"."Pref_date_start" || ' ' || "Appointment"."Pref_time_start", 'YYYY-MM-DD HH24:MI:SS.US') AT TIME ZONE 'UTC' as "date", 
+    "Appointment"."Completed" as "completed" 
+from 
+    "Appointment", 
+    "Institute", 
+    "User", 
+    "Donor"
+where
+    "Appointment"."Institute_id" is not null
+    and "Appointment"."Institute_id" = "Institute"."ID"
+    and "Appointment"."Donor_id" = "Donor"."Donor_id" 
+    and "Donor"."User_id" = "User"."ID" 
+    and "Institute_id"=${ins_id}`
+    return c.json({ data })
+})
+
+
+app.post('/auth/booked/app_complete', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const { donor_id, completed } = await c.req.json();
+    console.log(donor_id, completed)
+    const data = await sql`UPDATE public."Appointment" SET "Completed" = ${completed} WHERE "Donor_id" = ${donor_id} AND "Institute_id"=${ins_id} RETURNING *`
+    return c.json({ data });
+})
+
+
+app.post('/auth/booked/add_report', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const { userId, Is_safe, fullName, email, report, inventory, explanation, future_cause, intro, secondary, others } = await c.req.json();
+
+    console.log(inventory)
+
+    const r1: any = await sql`
+    UPDATE public."Appointment"
+SET "isTested" = true
+FROM public."Donor", public."User"
+WHERE "Appointment"."Donor_id" = "Donor"."Donor_id"
+AND "Donor"."User_id" = "User"."ID"
+AND "User"."ID" = ${userId}
+AND "Appointment"."Institute_id" = ${ins_id}
+RETURNING *;
+    `
+        .then((res) => {
+            console.log(res)
+            return res
+        })
+        .catch((err) => {
+            console.log(err)
+            return c.json({ data: 'Error' })
+        })
+
+
+    const res = await sql`
+        INSERT INTO public."Test_result" ("userId", "Is_safe","institute_id", "explanation", "future_cause", "intro", "secondary", "others")
+VALUES (${userId}, ${inventory}, ${ins_id},
+${explanation}, ${future_cause}, ${intro}, ${secondary}, ${others})
+RETURNING *;
+    `.catch((err) => {
+        console.log(err)
+        const r2 = sql`
+    UPDATE public."Appointment"
+SET "isTested" = false
+FROM public."Donor", public."User"
+WHERE "Appointment"."Donor_id" = "Donor"."Donor_id"
+AND "Donor"."User_id" = "User"."ID"
+AND "User"."ID" = ${userId}
+AND "Appointment"."Institute_id" = ${ins_id}
+RETURNING *;
+        `
+        return c.json({ data: 'Error' })
+    })
+
+    if (inventory === true) {
+
+        console.log(r1[0].Unit, r1[0].Blood_type)
+
+        const isExist = await sql`
+    SELECT * FROM public."Inventory"
+WHERE "Institute_id" = ${ins_id} AND "Blood_type" = ${r1[0].Blood_type}
+    `
+        if (isExist.length === 0) {
+            const r2 = await sql`
+    INSERT INTO public."Inventory" ("Institute_id", "Blood_type", "Amount")
+VALUES (${ins_id}, ${r1[0].Blood_type}, 0)
+RETURNING *;`
+        }
+
+        const r2 = await sql`
+    UPDATE public."Inventory"
+SET "Amount" = "Amount" + ${r1[0].Unit}
+WHERE "Institute_id" = ${ins_id} AND "Blood_type" = ${r1[0].Blood_type}
+RETURNING *;
+    `.catch((err) => {
+            console.log(err)
+            const r3 = sql`
+    UPDATE public."Appointment"
+SET "isTested" = false
+FROM public."Donor", public."User"
+WHERE "Appointment"."Donor_id" = "Donor"."Donor_id"
+AND "Donor"."User_id" = "User"."ID"
+AND "User"."ID" = ${userId}
+AND "Appointment"."Institute_id" = ${ins_id}
+RETURNING *;`
+            const r4 = sql`
+        DELETE FROM public."Test_result" WHERE "userId" = ${userId} AND "institute_id" = ${ins_id}
+        `
+
+
+
+            return c.json({ data: 'Error' })
+        })
+
+    }
+    return c.json({ data: res })
+})
+
+
+
+app.get('/auth/inventory', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const data = await sql`
+    SELECT "Blood_type" as "type", "Amount" as "amount" FROM public."Inventory" WHERE "Institute_id" = ${ins_id}
+    `
+    return c.json({ data })
+})
+
+app.post('/auth/inventory/add', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const { bloodType, amount } = await c.req.json()
+    console.log(bloodType, amount)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const isPresent = await sql`
+    SELECT * FROM public."Inventory" WHERE "Institute_id" = ${ins_id} AND "Blood_type" = ${bloodType}
+    `
+    if (isPresent.length === 0) {
+        const data = await sql`
+    INSERT INTO public."Inventory" ("Institute_id", "Blood_type", "Amount")
+VALUES (${ins_id}, ${bloodType}, ${amount})
+RETURNING *;
+    `
+        return c.json({ data })
+    }
+    const data = await sql`
+    UPDATE public."Inventory"   
+SET "Amount" = "Amount" + ${amount}
+WHERE "Institute_id" = ${ins_id} AND "Blood_type" = ${bloodType}
+RETURNING *;
+    `
+    return c.json({ data })
+})
 
 
 app.get('/', async (c) => {

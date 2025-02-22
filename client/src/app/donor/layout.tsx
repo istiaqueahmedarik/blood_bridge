@@ -32,7 +32,7 @@ const items = [
     },
     {
         title: "Emergency",
-        url: "/donor/emergency",
+        url: "/emergency",
         icon: ClockAlert,
     },
     {

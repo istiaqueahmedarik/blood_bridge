@@ -1,14 +1,14 @@
 import { get_with_token } from '@/app/actions/req'
-import InventoryPage from '@/components/Inventory'
+import BloodRequestsPage from '@/components/blood_requested_list'
 import React from 'react'
 
 
 async function page() {
-    const res = await get_with_token('institute/auth/inventory');
+    const res = await get_with_token('hospital/auth/req_blood', false);
     console.log(res);
     return (
         <div>
-            <InventoryPage inventory={res.data} />
+            <BloodRequestsPage res={res?.data || []} />
         </div>
     )
 }

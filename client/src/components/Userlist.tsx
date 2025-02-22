@@ -10,7 +10,7 @@ import { ScrollArea } from './ui/scroll-area'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
-function Userlist({ allUser }: any) {
+function Userlist({ allUser, type = "donor" }: any) {
     const [query, setQuery] = useState('')
 
     // Filter users by name based on search query
@@ -42,7 +42,7 @@ function Userlist({ allUser }: any) {
                 <div className="p-2">
                     {filteredUsers?.map((contact: any) => (
                         <Link
-                            href={`/donor/inbox/me/${contact.url}`}
+                            href={`/${type}/inbox/me/${contact.url}`}
                             key={contact.ID}
                             className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                         >

@@ -8,7 +8,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 
 export async function ActivityList() {
     const get_log = (await get_with_token('donor/auth/user_log')).user_log;
-
+    if (get_log.length == 0) return <div>
+        <p className="text-muted-foreground text-center mt-4">No Activity Found</p>
+    </div>
     return (
         <ScrollArea className="max-h-[calc(40svh-theme(spacing.4))] w-full">
             <ul className="space-y-4 p-4">

@@ -108,7 +108,7 @@ export const post_with_token = cache(async (url: any, data: any) => {
             },
             body: JSON.stringify(data),
             cache: 'force-cache',
-            next: { revalidate: 30000 }
+            next: { revalidate: 1000 }
         },
 
     )

@@ -16,7 +16,7 @@ export function NavBar() {
           <Link href="/blood-bank" className="text-sm font-medium">
             Blood Bank
           </Link>
-          <Link href="/medical" className="text-sm font-medium">
+          <Link href="/hospital" className="text-sm font-medium">
             Medical
           </Link>
           <Link href="/ask" className="text-sm font-medium">

@@ -1,7 +1,7 @@
 import { AppSidebar } from '@/components/ui/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { HeartHandshake, Home, Refrigerator, Syringe, TestTubeDiagonal, UploadIcon } from 'lucide-react';
+import { Calendar1Icon, HeartHandshake, Home, MessageCircleIcon, Refrigerator, Syringe, TestTubeDiagonal, UploadIcon } from 'lucide-react';
 import { cookies } from 'next/headers';
 import React, { Suspense } from 'react'
 import LabReports from '@/components/LabReports';
@@ -16,15 +16,21 @@ const items = [
     type: 'active'
   },
   {
-    title: "Upload Report",
-    url: "/bloodbank/update",
-    icon: UploadIcon,
-  },
-  {
     title: "Donation Requests",
     url: "/bloodbank/requests",
     icon: HeartHandshake,
   },
+  {
+    title: "Events",
+    url: "/bloodbank/future",
+    icon: Calendar1Icon,
+  },
+  {
+    title: "Upload Report",
+    url: "/bloodbank/update",
+    icon: UploadIcon,
+  },
+
   {
     title: "Inventory",
     url: "/bloodbank/inventory",
@@ -37,8 +43,8 @@ const items = [
   },
   {
     title: "Inbox",
-    url: "/bloodbank/test_req",
-    icon: TestTubeDiagonal,
+    url: "/bloodbank/inbox",
+    icon: MessageCircleIcon,
   },
 ]
 
