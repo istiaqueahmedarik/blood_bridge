@@ -1,12 +1,15 @@
-import CheckUpResultPage from '@/components/CheckUpResultPage'
+import { get_with_token } from '@/app/actions/req'
+import CheckUpList from '@/components/CheckUpResults'
 import React from 'react'
 
 
 
-export default function page() {
+export default async function page() {
+  const data = await get_with_token('donor/auth/test_results', false);
+  console.log(data);
   return (
     <div>
-        <CheckUpResultPage/>
+      <CheckUpList data={data?.tests || []} />
     </div>
   )
 }

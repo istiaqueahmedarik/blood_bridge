@@ -14,6 +14,7 @@ async function page() {
         get_with_token('events'),
         get_with_token('donor/auth/appointments')]
     );
+    console.log(getAppointments);
     const last = getHistory.data[0];
     let last_donation = 0;
     if (last) {

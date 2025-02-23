@@ -27,7 +27,7 @@ interface DonationEvent {
     Add_info: string | null;
     Completed: boolean;
     Institute_id: string;
-    Final_Time: string;
+    Pref_date_start: string;
     donationType: string;
     Address: string;
 }
@@ -94,10 +94,10 @@ export default function UpComingDonation({ data, appo }: { data: any[], appo: an
                                         <div className="flex items-start gap-4">
                                             <div className="flex flex-col items-center justify-center min-w-[60px] text-center">
                                                 <span className="text-sm text-muted-foreground">
-                                                    {new Date(appointment.Final_Time).toLocaleDateString('en-US', { weekday: 'short' })}
+                                                    {new Date(appointment.Pref_date_start).toLocaleDateString('en-US', { weekday: 'short' })}
                                                 </span>
                                                 <span className="text-2xl font-bold">
-                                                    {new Date(appointment.Final_Time).getDate()}
+                                                    {new Date(appointment.Pref_date_start).getDate()}
                                                 </span>
                                             </div>
                                             <div className="space-y-1">
@@ -107,7 +107,7 @@ export default function UpComingDonation({ data, appo }: { data: any[], appo: an
                                                 </div>
                                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                     <ClockIcon className="h-4 w-4" />
-                                                    {new Date(appointment.Final_Time).toLocaleDateString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                                                    {new Date(appointment.Pref_date_start).toLocaleDateString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                     <MapPinIcon className="h-4 w-4" />
@@ -144,10 +144,10 @@ export default function UpComingDonation({ data, appo }: { data: any[], appo: an
                                         <div className="flex items-start gap-4">
                                             <div className="flex flex-col items-center justify-center min-w-[60px] text-center">
                                                 <span className="text-sm text-muted-foreground">
-                                                    {new Date(appointment.Final_Time).toLocaleDateString('en-US', { weekday: 'short' })}
+                                                    {new Date(appointment.Pref_date_start).toLocaleDateString('en-US', { weekday: 'short' })}
                                                 </span>
                                                 <span className="text-2xl font-bold">
-                                                    {new Date(appointment.Final_Time).getDate()}
+                                                    {new Date(appointment.Pref_date_start).getDate()}
                                                 </span>
                                             </div>
                                             <div className="space-y-1">
@@ -157,7 +157,7 @@ export default function UpComingDonation({ data, appo }: { data: any[], appo: an
                                                 </div>
                                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                     <ClockIcon className="h-4 w-4" />
-                                                    {new Date(appointment.Final_Time).toLocaleDateString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                                                    {new Date(appointment.Pref_date_start).toLocaleDateString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                     <MapPinIcon className="h-4 w-4" />
@@ -195,10 +195,10 @@ export default function UpComingDonation({ data, appo }: { data: any[], appo: an
                                         <div className="flex items-start gap-4">
                                             <div className="flex flex-col items-center justify-center min-w-[60px] text-center">
                                                 <span className="text-sm text-muted-foreground">
-                                                    {new Date(donation.Final_Time).toLocaleDateString('en-US', { weekday: 'short' })}
+                                                    {new Date(donation.Pref_date_start).toLocaleDateString('en-US', { weekday: 'short' })}
                                                 </span>
                                                 <span className="text-2xl font-bold">
-                                                    {new Date(donation.Final_Time).getDate()}
+                                                    {new Date(donation.Pref_date_start).getDate()}
                                                 </span>
                                             </div>
                                             <div className="space-y-1">
@@ -208,7 +208,7 @@ export default function UpComingDonation({ data, appo }: { data: any[], appo: an
                                                 </div>
                                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                     <ClockIcon className="h-4 w-4" />
-                                                    {new Date(donation.Final_Time).toLocaleDateString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                                                    {new Date(donation.Pref_date_start).toLocaleDateString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                     <MapPinIcon className="h-4 w-4" />

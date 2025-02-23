@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "./ui/input"
-import { RemoveReq } from "@/app/actions/hospital"
+import { DeliverReq, RemoveReq } from "@/app/actions/hospital"
 import { useActionState } from "react"
 
 export default function BloodRequestsPage({ res }: any) {
 
 
     const [state, formAction, pending] = useActionState(RemoveReq, null);
+    const [state1, formAction1, pending1] = useActionState(DeliverReq, null);
 
 
 
@@ -70,16 +71,16 @@ export default function BloodRequestsPage({ res }: any) {
                                                 </form>
                                             )}
                                             {request.is_delivered === false && (
-                                                <form action={formAction}>
+                                                <form action={formAction1}>
                                                     <Input type="hidden" name="reqId" value={request.hosp_id} />
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         type="submit"
-                                                        disabled={pending}
+                                                        disabled={pending1}
                                                     >
                                                         {
-                                                            pending ? 'Removing...' : 'Delivered?'
+                                                            pending1 ? 'Submitting...' : 'Delivered?'
                                                         }
                                                     </Button>
                                                 </form>

@@ -1,27 +1,23 @@
 import { Button } from '@/components/ui/button'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation';
+import { redirect } from 'next/navigation'
 import React from 'react'
 
-
-async function page() {
-    async function formAction() {
-        'use server';
-
-        (await cookies()).delete('token')
-
-        redirect('/')
-
-    }
+export default function LogoutPage() {
     return (
-
-        <form action={formAction}>
-            <Button formAction={formAction} className='max-w-xl' variant={'default'}>
-                Logout
-            </Button>
-        </form>
-
+        <div className="flex justify-center items-center min-h-screen">
+            <form action={logout}>
+                <Button formAction={logout} className="max-w-xl" variant="default">
+                    Logout
+                </Button>
+            </form>
+        </div>
     )
 }
 
-export default page
+async function logout() {
+    'use server'
+    const cookieStore = await cookies()
+    cookieStore.delete('token')
+    redirect('/')
+}

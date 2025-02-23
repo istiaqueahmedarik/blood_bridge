@@ -7,6 +7,8 @@ import React, { Suspense } from 'react'
 import LabReports from '@/components/LabReports';
 import LogTab from '@/components/LogTab';
 import { check_type } from '../actions/general';
+import { get_with_token } from '../actions/req';
+import { ActivityList } from '@/components/ActivityList';
 
 const items = [
   {
@@ -55,6 +57,8 @@ export default async function layout({
   children: React.ReactNode;
 }>) {
   const type = await check_type();
+  const res = (await get_with_token('institute/auth/institute_details')).Institute;
+
   if (type !== 'bloodbank')
     return <div>Not authorized</div>
   const cookieStore = await cookies()
@@ -72,7 +76,9 @@ export default async function layout({
               <div className="flex flex-col sm:flex-row w-full items-center justify-between">
                 <div className="flex items-center gap-4 mb-4 sm:mb-0">
                   <div className="text-center sm:text-left">
-                    <div className="text-xl sm:text-2xl font-extrabold">Crimson Care Blood Bank</div>
+                    <div className="text-xl sm:text-2xl font-extrabold">
+                      {res.Full_name}
+                    </div>
                     <div className="text-xs text-muted-foreground">
                       Explore your dashboard!
                     </div>
@@ -86,9 +92,12 @@ export default async function layout({
           </div>
           <div className='flex flex-col auto-cols-min gap-4 w-full lg:w-auto transition-all'>
             <LabReports />
-            <Suspense fallback={<div>Loading...</div>}>
-              <LogTab />
-            </Suspense>
+            <div className="relative flex items-center">
+              <div className="flex-grow border-t border-input"></div>
+              <span className="flex-shrink mx-4">Notification</span>
+              <div className="flex-grow border-t border-input"></div>
+            </div>
+            <ActivityList />
           </div>
         </div>
       </SidebarInset>

@@ -97,6 +97,52 @@ export async function AddReport(prevState: any, formData: FormData) {
 }
 
 
+export async function AddReportHospital(prevState: any, formData: FormData) {
+    const userId = formData.get("user_id") as string
+    const fullName = formData.get("full_name") as string
+    const email = formData.get("email") as string
+    const report = formData.get("report") as string
+    const inventory = formData.get("inventory") as string
+
+    const report_doc = await doc_extraction(report);
+
+    if (!userId || !fullName || !email || !report) {
+        return {
+            success: false,
+            message: "Missing fields",
+        }
+    }
+    if (!report_doc.isOk) {
+        return {
+            success: false,
+            message: "Invalid report",
+        }
+    }
+    console.log(inventory)
+
+    await post_with_token("institute/auth/booked/add_report/hospital", {
+        userId: userId,
+        fullName: fullName,
+        email: email,
+        report: report,
+        inventory: (inventory === "on") ? true : false,
+        explanation: report_doc.explanation,
+        future_cause: report_doc.future_cause,
+        intro: report_doc.intro,
+        secondary: report_doc.secondary,
+        others: report_doc.others
+
+    })
+
+
+    revalidatePath("/hospital/update")
+    return {
+        success: true,
+        message: "Report added successfully!",
+    }
+}
+
+
 export async function AddBlood(prevState: any, formData: FormData) {
     const bloodType = formData.get("bloodType") as string
     const amount = formData.get("amount") as string
@@ -135,6 +181,18 @@ export async function AcceptRequest(prevState: any, formData: FormData) {
     }
 }
 
+export async function AcceptRequestHospital(prevState: any, formData: FormData) {
+    const appointment_id = formData.get("appointment_id");
+    await post_with_token('institute/auth/booked/accept/hospital', {
+        appointment_id: appointment_id
+    });
+    revalidatePath('/bloodbank/requests');
+    revalidatePath('/hospital/requests');
+    return {
+        'message': 'Request accepted successfully'
+    }
+}
+
 export async function RejectRequest(selectedRequestId: any, explanation: string) {
 
     await post_with_token("institute/auth/booked/reject", {
@@ -149,6 +207,20 @@ export async function RejectRequest(selectedRequestId: any, explanation: string)
     }
 }
 
+
+export async function RejectRequestHospital(selectedRequestId: any, explanation: string) {
+
+    await post_with_token("institute/auth/booked/reject/hospital", {
+        user_id: selectedRequestId.user_id,
+        explanation: explanation,
+        appointment_id: selectedRequestId.id
+    })
+    revalidatePath('/bloodbank/requests');
+    revalidatePath('/hospital/requests');
+    return {
+        'message': 'Request rejected successfully'
+    }
+}
 
 export async function ToggleAction(data: any) {
 
@@ -165,6 +237,26 @@ export async function ToggleAction(data: any) {
         })
 
     revalidatePath('/bloodbank/requests');
+    return {
+        'message': 'Request toggled successfully'
+    }
+}
+
+export async function ToggleActionHospital(data: any) {
+
+    await post_with_token("institute/auth/booked/app_complete/hospital", data)
+        .then(() => {
+            console.log("Appointment status updated successfully")
+        })
+        .catch((error: any) => {
+            console.error("Error updating appointment status:", error)
+            return {
+                success: false,
+                message: "Error updating appointment status"
+            }
+        })
+
+    revalidatePath('/hospital/requests');
     return {
         'message': 'Request toggled successfully'
     }

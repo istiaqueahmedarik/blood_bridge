@@ -10,7 +10,7 @@ import { useActionState } from "react"
 import { fadeIn, staggerChildren, scaleIn } from "@/utils/animations"
 import { ImageUpload } from "@/components/ImageUpload"
 import { UnchangeableInfoCard } from "@/components/SignUpCard"
-import { detectObjectsFromBase64, DonorSignUp, OCRImage } from "../actions/action"
+import { detectObjectsFromBase64, DonorSignUp, FindLatLng, OCRImage } from "../actions/action"
 import { ImageScanLoader } from "@/components/ImageScanner"
 import { cropBase64Image } from "../client_action"
 import { useState } from "react"
@@ -18,8 +18,8 @@ import dynamic from "next/dynamic"
 
 function SignUpPage() {
   const [stage, setStage] = useState<"front" | "back" | "form" | "loading">("front")
-  const MapModal = dynamic(() => import('@/components/map-modal'), { ssr: false })
-  const [location, setLocation] = useState('')
+  const MapModal = dynamic(() => import("@/components/map-modal"), { ssr: false })
+  const [location, setLocation] = useState("")
   const [frontNidCardImage, setFrontNidCardImage] = useState<File | null>(null)
   const [backNidCardImage, setBackNidCardImage] = useState<File | null>(null)
   const [frontPreview, setFrontPreview] = useState<string | null>(null)
@@ -35,6 +35,8 @@ function SignUpPage() {
   const [nid, setNid] = useState<string>("")
   const [croppedFr, setCroppedFr] = useState<string>("")
   const [isMapboxModalOpen, setIsMapboxModalOpen] = useState(false)
+  const [manualAddress, setManualAddress] = useState("")
+  const [showManualInput, setShowManualInput] = useState(false)
 
   const [state, formAction, isPending] = useActionState(DonorSignUp, null)
 
@@ -70,19 +72,30 @@ function SignUpPage() {
         try {
           // const res = await OCRImage(base64Front, base64Url)
           // const res1 = await detectObjectsFromBase64(base64Front)
-          const [res, res1] = await Promise.all([OCRImage(base64Front, base64Url), detectObjectsFromBase64(base64Front)])
+          const [res, res1] = await Promise.all([
+            OCRImage(base64Front, base64Url),
+            detectObjectsFromBase64(base64Front),
+          ])
           const bbox = JSON.parse(res1.bounding_box)
           const croppedFront = await cropBase64Image(bbox, base64Front)
           console.log(res)
-          if (res.name === undefined || res.address === undefined || res.blood_type === undefined || res.dob === undefined || res.fatherName === undefined || res.motherName === undefined || res.nid === undefined) {
-            setStage("front");
+          if (
+            res.name === undefined ||
+            res.address === undefined ||
+            res.blood_type === undefined ||
+            res.dob === undefined ||
+            res.fatherName === undefined ||
+            res.motherName === undefined ||
+            res.nid === undefined
+          ) {
+            setStage("front")
           }
           setFullName(res.name)
           setAddress(res.address || "")
           setBloodType(res.blood_type || "")
           setDob(res.dob || "")
           setFathersName(res.fatherName || "")
-          setMothersName(res.motherName || "")
+          setMothersName(res.mothersName || "")
           setNid(res.nid || "")
           setCroppedFr(croppedFront)
           setStage("form")
@@ -93,7 +106,6 @@ function SignUpPage() {
       }
     }
   }
-
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -155,21 +167,60 @@ function SignUpPage() {
 
                 <motion.div variants={fadeIn}>
                   <Label htmlFor="present_address">Present Address</Label>
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      id="present_address"
-                      name="present_address"
-                      className="w-full"
-                      placeholder="mirpur 12, dhaka"
-                      required
-                      value={
-                        location
-                      }
-                      readOnly
-                    />
-                    <Button type="button" onClick={() => setIsMapboxModalOpen(true)}>
-                      Select on Map
-                    </Button>
+                  <div className="flex flex-col space-y-2">
+                    {showManualInput ? (
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          id="present_address"
+                          name="present_address"
+                          className="w-full"
+                          placeholder="Enter address manually"
+                          required
+                          value={manualAddress}
+                          onChange={(e) => setManualAddress(e.target.value)}
+                        />
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            setLocation(manualAddress)
+                            setShowManualInput(false)
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          id="present_address"
+                          name="present_address"
+                          className="w-full"
+                          placeholder="mirpur 12, dhaka"
+                          required
+                          value={location}
+                          readOnly
+                        />
+                        <Button type="button" onClick={() => setIsMapboxModalOpen(true)}>
+                          Select on Map
+                        </Button>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <Button type="button" variant="outline" onClick={() => setShowManualInput(!showManualInput)}>
+                        {showManualInput ? "Use Map" : "Enter Manually"}
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={async () => {
+                          console.log("Finding lat/long for:", location || manualAddress)
+                          alert("Finding lat/long for: " + location || manualAddress)
+                          const res = await FindLatLng(manualAddress)
+                          setLocation(res);
+                        }}
+                      >
+                        Generate Lat/Long
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
 
@@ -251,8 +302,8 @@ function SignUpPage() {
         </div>
         <MapModal
           open={isMapboxModalOpen}
-          onOpenChange={setIsMapboxModalOpen} onLocationSelect={(loc) => setLocation(loc)}
-
+          onOpenChange={setIsMapboxModalOpen}
+          onLocationSelect={(loc) => setLocation(loc)}
         />
       </motion.div>
     </div>

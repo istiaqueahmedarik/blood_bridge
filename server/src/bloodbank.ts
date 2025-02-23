@@ -171,8 +171,60 @@ app.get('/', async (c) => {
 
 
 
+app.get('/auth/test_count', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const iid = (await sql`SELECT "ID" FROM "Institute" WHERE "user_id" = ${id}`)[0]['ID']
+    console.log(iid)
+    const data = (await sql`SELECT COUNT(*) FROM "Appointment" WHERE "Institute_id" = ${iid}`)[0]['count']
+    const data1 = (await sql`SELECT COUNT(*) FROM "Appointment" WHERE "Institute_id" = ${iid} AND "Appointment"."donationType"='whole_blood'`)[0]['count']
+    const data2 = (await sql`SELECT COUNT(*) FROM "Appointment" WHERE "Institute_id" = ${iid} AND "Appointment"."donationType"='apheresis'`)[0]['count']
+
+    const bloodTestsByDay = await sql`
+        SELECT DATE("Pref_date_start") AS day, COUNT(*) AS "bloodTests"
+        FROM "Appointment"
+        WHERE "isTested" = true
+        GROUP BY day
+        ORDER BY day
+    `
+    return c.json(
+        {
+            data,
+            data1,
+            data2,
+            bloodTestsByDay
+        }
+    )
+})
 
 
+app.get('/auth/test_count/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const iid = (await sql`SELECT "ID" FROM "Institute" WHERE "user_id" = ${id}`)[0]['ID']
+    console.log(iid)
+    const data = (await sql`SELECT COUNT(*) FROM "Checkup" WHERE "Institute_id" = ${iid}`)[0]['count']
+
+
+    const bloodTestsByDay = await sql`
+        SELECT DATE("Pref_date_start") AS day, COUNT(*) AS "bloodTests"
+        FROM "Checkup"
+        WHERE "isTested" = true
+        GROUP BY day
+        ORDER BY day
+    `
+    return c.json(
+        {
+            data,
+
+            bloodTestsByDay
+        }
+    )
+})
 
 
 

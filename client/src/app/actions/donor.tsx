@@ -83,3 +83,33 @@ export async function TestAppointment(prevState: any, formData: FormData) {
         redirect(redirectPath)
     }
 }
+
+export async function TakeOffer(prevState: any, formData: FormData) {
+    const offer_id = formData.get('offer_id')
+    let redirectPath: string | null = null
+    try {
+        const res = await post_with_token('donor/auth/service/accept', {
+            offer_id
+        })
+
+        revalidatePath('/donor/service_using')
+        if (res.error) {
+            return {
+                message: 'Failed to book appointment',
+            }
+        }
+
+        redirectPath = '/donor/service_using'
+    }
+    catch (e) {
+
+        return {
+            message: 'Failed to book appointment',
+        }
+    }
+    if (redirectPath) {
+        revalidatePath(redirectPath)
+        redirect(redirectPath)
+    }
+
+}

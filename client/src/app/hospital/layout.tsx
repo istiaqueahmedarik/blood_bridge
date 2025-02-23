@@ -1,20 +1,14 @@
 import { AppSidebar } from '@/components/ui/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { HeartHandshake, Home, MessageCircleIcon, MessageCircleWarningIcon, Syringe } from 'lucide-react';
+import { CalendarCheck, GitPullRequestArrowIcon, HeartHandshake, Home, MessageCircleIcon, MessageCircleWarningIcon, MicroscopeIcon, Syringe, UploadCloudIcon } from 'lucide-react';
 import { cookies } from 'next/headers';
 import React, { Suspense } from 'react'
 import { BloodLog } from '@/components/blood-log';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { ActivityList } from '@/components/ActivityList';
-const sampleLogs: { type: 'request' | 'accepted' | 'offer'; message: string; timestamp: string; }[] = [
-  { type: 'request', message: 'Blood request: A+ needed urgently', timestamp: '2 minutes ago' },
-  { type: 'accepted', message: 'Blood donation accepted: B- received', timestamp: '10 minutes ago' },
-  { type: 'offer', message: 'New offer created: O- available', timestamp: '1 hour ago' },
-  { type: 'request', message: 'Blood request: AB+ needed for surgery', timestamp: '2 hours ago' },
-  { type: 'accepted', message: 'Blood donation accepted: A+ received', timestamp: '3 hours ago' },
-  { type: 'offer', message: 'New offer created: B+ available', timestamp: '4 hours ago' },
-]
+import { get_with_token } from '../actions/req';
+
 const items = [
   {
     title: "Home",
@@ -43,6 +37,21 @@ const items = [
     icon: InfoCircledIcon,
   },
   {
+    title: "Test Request",
+    url: "/hospital/requests",
+    icon: MicroscopeIcon,
+  },
+  {
+    title: "Events",
+    url: "/hospital/future",
+    icon: CalendarCheck,
+  },
+  {
+    title: "Update",
+    url: "/hospital/update",
+    icon: UploadCloudIcon,
+  },
+  {
     title: "Emergency",
     url: "/hospital/emergency",
     icon: MessageCircleWarningIcon,
@@ -54,6 +63,7 @@ export default async function layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const res = (await get_with_token('institute/auth/institute_details')).Institute;
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
   return (
@@ -68,7 +78,9 @@ export default async function layout({
               <div className="flex flex-col sm:flex-row w-full items-center justify-between">
                 <div className="flex items-center gap-4 mb-4 sm:mb-0">
                   <div className="text-center sm:text-left">
-                    <div className="text-xl sm:text-2xl font-extrabold">Dhaka Medical College, Dhaka</div>
+                    <div className="text-xl sm:text-2xl font-extrabold">
+                      {res?.Full_name}
+                    </div>
                     <div className="text-xs text-muted-foreground">
                       Explore your dashboard!
                     </div>

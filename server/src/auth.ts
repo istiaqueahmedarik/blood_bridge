@@ -71,7 +71,8 @@ app.post('/donor_signup', async (c) => {
 
         return c.json({
             status: 'success',
-            data: donor
+            data: donor,
+            user_id: user_id
         })
     }
     catch (e) {
@@ -82,6 +83,8 @@ app.post('/donor_signup', async (c) => {
         })
     }
 })
+
+
 
 
 app.post('/institute_signup', async (c) => {
@@ -155,7 +158,8 @@ app.post('/institute_signup', async (c) => {
 
         return c.json({
             status: 'success',
-            data: donor
+            data: donor,
+            user_id: user_id
         })
     }
     catch (e) {

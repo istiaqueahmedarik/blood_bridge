@@ -72,6 +72,33 @@ ORDER BY
     return c.json({ data, data1 })
 })
 
+
+app.get('/auth/booked/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const data = await sql`SELECT * FROM public."Booked_time" WHERE "user_id" = ${id}`
+
+    const data1 = await sql`
+     SELECT "Checkup"."ID" as "app_id", *
+FROM "Checkup", "User", "Donor"
+WHERE "Pref_date_end" > now()
+    AND NOT EXISTS (
+        SELECT 1
+        FROM "Booked_time"
+        WHERE "Checkup"."Pref_date_start" BETWEEN start_time AND end_time
+        AND "Booked_time"."user_id" = ${id}
+    )
+    AND "Checkup"."Institute_id" IS NULL
+    AND "Checkup"."Donor_id" = "Donor"."Donor_id"
+    AND "Donor"."User_id" = "User"."ID"
+ORDER BY 
+    (6371 * acos(cos(radians("User"."latitude")) * cos(radians(split_part("Checkup"."Test_location", ',', 1)::float)) * cos(radians(split_part("Checkup"."Test_location", ',', 2)::float) - radians("User"."longitude")) + sin(radians("User"."latitude")) * sin(radians(split_part("Checkup"."Test_location", ',', 1)::float)))) ASC;
+    `
+    return c.json({ data, data1 })
+})
+
 app.post('/auth/booked/accept', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
@@ -87,6 +114,21 @@ WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
 
 })
 
+app.post('/auth/booked/accept/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID" 
+FROM public."User", public."Institute" 
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const { appointment_id } = await c.req.json();
+    console.log(appointment_id)
+    const data = await sql`UPDATE public."Checkup" SET "Institute_id" = ${ins_id} WHERE "ID" = ${appointment_id} RETURNING *`
+    return c.json({ data })
+
+})
+
 app.post('/auth/booked/reject', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
@@ -98,6 +140,23 @@ WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
     const { appointment_id, user_id, explanation } = await c.req.json();
     console.log(appointment_id, user_id, explanation)
     const data = await sql`UPDATE public."Appointment" SET "Institute_id" = NULL WHERE "ID" = ${appointment_id} RETURNING *`
+    const data1 = await sql`INSERT INTO public."Notification"("User_id", "Text", "Type") VALUES (${user_id}, 'Your appointment has been rejected', 'Rejected') RETURNING *`
+    return c.json({ data, data1 })
+
+})
+
+
+app.post('/auth/booked/reject/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const { appointment_id, user_id, explanation } = await c.req.json();
+    console.log(appointment_id, user_id, explanation)
+    const data = await sql`UPDATE public."Checkup" SET "Institute_id" = NULL WHERE "ID" = ${appointment_id} RETURNING *`
     const data1 = await sql`INSERT INTO public."Notification"("User_id", "Text", "Type") VALUES (${user_id}, 'Your appointment has been rejected', 'Rejected') RETURNING *`
     return c.json({ data, data1 })
 
@@ -124,6 +183,28 @@ ORDER BY "Pref_date_start" ASC
 
     return c.json({ data })
 })
+
+app.get('/auth/booked/accepted/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID" 
+FROM public."User", public."Institute" 
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const data = await sql`
+   SELECT "Checkup"."ID" as "app_id", * 
+FROM "Checkup", "Donor", "User"
+where "Checkup"."Institute_id" is not null
+and "Checkup"."Donor_id"="Donor"."Donor_id"
+and "Donor"."User_id"= "User"."ID" AND "Institute_id"=${ins_id}
+AND "Pref_date_end" > now()
+ORDER BY "Pref_date_start" ASC
+    `
+
+    return c.json({ data })
+})
+
 
 app.post('/auth/booked/delete', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
@@ -158,6 +239,24 @@ and "Appointment"."Donor_id" = "Donor"."Donor_id" and "Donor"."User_id"="User"."
     return c.json({ data })
 })
 
+app.get('/auth/booked/needReport/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    console.log(ins_id)
+    const data = await sql`
+    select "User"."ID" as id, "Full_name" as "fullName", "email" from "Checkup", "Institute", "User","Donor"
+where
+"Checkup"."Institute_id" is not null
+and "Checkup"."Institute_id" = "Institute"."ID"
+and "Checkup"."Donor_id" = "Donor"."Donor_id" and "Donor"."User_id"="User"."ID" and "Checkup"."Completed" is true and "Checkup"."isTested" is false and "Institute_id"=${ins_id}`
+    return c.json({ data })
+})
+
 
 app.get('/auth/booked/futureReport', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
@@ -188,6 +287,35 @@ where
     return c.json({ data })
 })
 
+app.get('/auth/booked/futureReport/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    console.log(ins_id)
+    const data = await sql`
+   select 
+    "Checkup"."Donor_id" as id, 
+    "Full_name" as "name", 
+    to_timestamp("Checkup"."Pref_date_start" || ' ' || "Checkup"."Pref_time_start", 'YYYY-MM-DD HH24:MI:SS.US') AT TIME ZONE 'UTC' as "date", 
+    "Checkup"."Completed" as "completed" 
+from 
+    "Checkup", 
+    "Institute", 
+    "User", 
+    "Donor"
+where
+    "Checkup"."Institute_id" is not null
+    and "Checkup"."Institute_id" = "Institute"."ID"
+    and "Checkup"."Donor_id" = "Donor"."Donor_id" 
+    and "Donor"."User_id" = "User"."ID" 
+    and "Institute_id"=${ins_id}`
+    return c.json({ data })
+})
+
 
 app.post('/auth/booked/app_complete', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
@@ -200,6 +328,21 @@ WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
     const { donor_id, completed } = await c.req.json();
     console.log(donor_id, completed)
     const data = await sql`UPDATE public."Appointment" SET "Completed" = ${completed} WHERE "Donor_id" = ${donor_id} AND "Institute_id"=${ins_id} RETURNING *`
+    return c.json({ data });
+})
+
+
+app.post('/auth/booked/app_complete/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const { donor_id, completed } = await c.req.json();
+    console.log(donor_id, completed)
+    const data = await sql`UPDATE public."Checkup" SET "Completed" = ${completed} WHERE "Donor_id" = ${donor_id} AND "Institute_id"=${ins_id} RETURNING *`
     return c.json({ data });
 })
 
@@ -301,6 +444,62 @@ RETURNING *;`
 })
 
 
+app.post('/auth/booked/add_report/hospital', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const id = payload['id']
+    const ins_id = (await sql`SELECT "Institute"."ID"
+FROM public."User", public."Institute"
+WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
+    const { userId, Is_safe, fullName, email, report, inventory, explanation, future_cause, intro, secondary, others } = await c.req.json();
+
+    console.log(inventory)
+
+    const r1: any = await sql`
+    UPDATE public."Checkup"
+SET "isTested" = true
+FROM public."Donor", public."User"
+WHERE "Checkup"."Donor_id" = "Donor"."Donor_id"
+AND "Donor"."User_id" = "User"."ID"
+AND "User"."ID" = ${userId}
+AND "Checkup"."Institute_id" = ${ins_id}
+RETURNING *;
+    `
+        .then((res) => {
+            console.log(res)
+            return res
+        })
+        .catch((err) => {
+            console.log(err)
+            return c.json({ data: 'Error' })
+        })
+
+
+    const res = await sql`
+        INSERT INTO public."Test_result" ("userId", "Is_safe","institute_id", "explanation", "future_cause", "intro", "secondary", "others")
+VALUES (${userId}, ${inventory}, ${ins_id},
+${explanation}, ${future_cause}, ${intro}, ${secondary}, ${others})
+RETURNING *;
+    `.catch((err) => {
+        console.log(err)
+        const r2 = sql`
+    UPDATE public."Checkup"
+SET "isTested" = false
+FROM public."Donor", public."User"
+WHERE "Checkup"."Donor_id" = "Donor"."Donor_id"
+AND "Donor"."User_id" = "User"."ID"
+AND "User"."ID" = ${userId}
+AND "Checkup"."Institute_id" = ${ins_id}
+RETURNING *;
+        `
+        return c.json({ data: 'Error' })
+    })
+
+    return c.json({ data: res })
+})
+
+
 
 app.get('/auth/inventory', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
@@ -357,6 +556,21 @@ app.get('/', async (c) => {
 })
 
 
+app.get('/auth/institute_details', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const Institute = (await sql`SELECT * 
+FROM 
+    public."Institute" d  
+JOIN 
+    public."User" u ON d."user_id" = u."ID" 
+WHERE 
+    d."user_id" = ${payload['id']}`)[0]
+
+    return c.json({ Institute })
+
+})
 
 
 

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Pencil1Icon } from '@radix-ui/react-icons';
-import { Calendar, ClipboardCheck, ClockAlert, HeartPulse, Home, Inbox, TicketPercent } from 'lucide-react';
+import { Calendar, ClipboardCheck, ClockAlert, HeartPulse, Home, Inbox, TicketCheck, TicketPercent } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -32,13 +32,18 @@ const items = [
     },
     {
         title: "Emergency",
-        url: "/emergency",
+        url: "/donor/emergency",
         icon: ClockAlert,
     },
     {
         title: "Offer",
         url: "/donor/services",
         icon: TicketPercent,
+    },
+    {
+        title: "Service using",
+        url: "/donor/service_using",
+        icon: TicketCheck,
     },
     {
         title: "Check Up Request",
@@ -71,16 +76,33 @@ async function layout({
     // 
     // const user = getData[0];
 
-    const data = (await get_with_token('donor/auth/donor_details')).donor;
+    const [res, getHistory] = await Promise.all(
+        [(get_with_token('donor/auth/donor_details')),
+        get_with_token('donor/auth/donor_history')
+        ]
+    );
+    const data = res.donor
 
     const user = {
         userName: data['Full_name'],
         bloodType: data['Blood_type']
     }
 
+    const level = getHistory.count;
 
-
-
+    const getBadge = () => {
+        if (level < 5) {
+            return <span className="text-xs bg-green-100 text-green-800 rounded-full px-2">Newbie</span>
+        } else if (level < 10) {
+            return <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2">Regular</span>
+        }
+        else if (level < 100) {
+            return <span className="text-xs bg-red-100 text-red-800 rounded-full px-2">Supreme</span>
+        }
+        else {
+            return <span className="text-xs bg-blue-100 text-blue-800 rounded-full px-2">Legendary</span>
+        }
+    }
 
     return (
         <SidebarProvider defaultOpen={defaultOpen} className='font-[family-name:var(--font-poppins)]'>
@@ -97,6 +119,7 @@ async function layout({
                                 <div className="flex items-center gap-4 mb-4 sm:mb-0">
                                     <div className="text-center sm:text-left">
                                         <div className="text-xl sm:text-2xl font-extrabold">Hello {user.userName}</div>
+                                        {getBadge() || ''}
                                         <div className="text-xs text-muted-foreground">
                                             Happy to see you again!
                                         </div>
@@ -140,17 +163,13 @@ async function layout({
                                     <span className="text-muted-foreground">Blood Group: </span>
                                     <span className=" font-bold">{user.bloodType}</span>
                                 </div>
-                                <div className="">
-                                    <Button className="hover:text-destructive" variant="ghost" asChild>
-                                        <Link href="/edit_donor"><Pencil1Icon /></Link>
-                                    </Button>
-                                </div>
+
                             </div>
                         </div>
 
                         <div className="relative flex items-center">
                             <div className="flex-grow border-t border-input"></div>
-                            <span className="flex-shrink mx-4">Activity</span>
+                            <span className="flex-shrink mx-4">Notification</span>
                             <div className="flex-grow border-t border-input"></div>
                         </div>
                         <ActivityList />

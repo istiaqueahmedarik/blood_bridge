@@ -57,6 +57,25 @@ export async function RemoveReq(prevData: any, formData: any) {
     }
 }
 
+export async function DeliverReq(prevData: any, formData: any) {
+    const reqId = formData.get('reqId')
+    console.log(reqId)
+    const res = await post_with_token('hospital/auth/req_blood/delivered', {
+        reqId: reqId
+    })
+        .catch((err: any) => {
+            return {
+                success: false,
+                message: "Failed to remove request"
+            }
+        })
+    revalidatePath('hospital/requested')
+    return {
+        success: true,
+        message: "Request removed successfully"
+    }
+}
+
 export async function AddOffer(prevData: any, formData: any) {
     const service = formData.get('service')
     const minCoin = formData.get('minCoin')

@@ -1,47 +1,65 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
 import React from 'react'
 import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
+import { get, post } from '@/app/actions/req';
 
 
 
-const bloodBanks = [
-    {
-        name: "National Institute of Diseases of the Chest & Hospital (NIDCH)",
-        time: "2 min away",
-    },
-    {
-        name: "Alif Blood Bank",
-        time: "5 min away",
-    },
-    {
-        name: "Shahjalala Blood Bank",
-        time: "20 min away",
-    },
-    {
-        name: "National Institute of Diseases of the Chest & Hospital (NIDCH)",
-        time: "2 min away",
-    },
-    {
-        name: "National Institute of Diseases of the Chest & Hospital (NIDCH)",
-        time: "2 min away",
-    },
-    {
-        name: "National Institute of Diseases of the Chest & Hospital (NIDCH)",
-        time: "2 min away",
-    },
-];
 
-const donors = [
-    { name: "Arik", time: "6 min away" },
-    { name: "Sajedullah", time: "6 min away" },
-    { name: "Ariful Khan", time: "6 min away" },
-    { name: "Rasiul", time: "6 min away" },
-    { name: "Reza", time: "6 min away" },
-];
-function SearchPageWrapper() {
+function SearchPageWrapper({ data, donor, institute }: any) {
+
+    const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null);
+    const [res, setRes] = React.useState<any>(null);
+    const [bloodBanks, setBloodBanks] = React.useState<any>([]);
+    const [donors, setDonors] = React.useState<any>([]);
+    React.useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setCoords({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    });
+                },
+                (error) => {
+                    console.error("Error fetching location:", error);
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (coords) {
+            post('search', {
+                res: data,
+                lat: coords.lat,
+                lng: coords.lng,
+            }).then((res) => {
+                setRes(res)
+                const data = res.data;
+                console.log("data", data)
+                console.log("donor", donor)
+                for (let i = 0; i < data.length; i++) {
+                    const id = data[i].ID;
+                    if (donor.find((d: any) => d.id === id)) {
+                        console.log("donor", data[i])
+                        setDonors((prev: any) => [...prev, data[i]]);
+                    }
+                    else if (institute.find((d: any) => d.id === id)) {
+                        setBloodBanks((prev: any) => [...prev, data[i]]);
+                    }
+                }
+            });
+        }
+    }, [coords]);
+    if (!coords) return <div>Loading...</div>
 
     return (
         <div className="min-h-screen bg-background">
@@ -56,7 +74,7 @@ function SearchPageWrapper() {
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                     <div>
-                        <h2 className="text-lg font-semibold mb-4">Blood Bank (6)</h2>
+                        <h2 className="text-lg font-semibold mb-4">Blood Bank ({bloodBanks.length})</h2>
                         <div className="space-y-4">
                             {bloodBanks.map((bank, i) => (
                                 <div key={i} className="p-4 border rounded-lg">
@@ -67,7 +85,7 @@ function SearchPageWrapper() {
                         </div>
                     </div>
                     <div>
-                        <h2 className="text-lg font-semibold mb-4">Donor (5)</h2>
+                        <h2 className="text-lg font-semibold mb-4">Donor ({donors.length})</h2>
                         <div className="space-y-4">
                             {donors.map((donor, i) => (
                                 <div key={i} className="p-4 border rounded-lg">
@@ -79,16 +97,15 @@ function SearchPageWrapper() {
                                             </Avatar>
                                             <div>
                                                 <h3 className="font-medium">{donor.name}</h3>
-                                                <p className="text-sm text-foreground">{donor.time}</p>
+                                                <p className='text-sm text-foreground'>{donor.Address}</p>
+                                                <p className="text-sm text-foreground">{Math.round(donor.distance)} m</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <span className="text-sm text-primary bg-secondary px-2 py-1 rounded">Available</span>
                                         </div>
                                     </div>
-                                    <Button className="w-full bg-primary hover:bg-secondary text-foreground" asChild>
-                                        <Link href="/donor/inbox/1">Contact</Link>
-                                    </Button>
+
                                 </div>
                             ))}
                         </div>

@@ -5,7 +5,7 @@ import { getMutableAIState, streamUI } from 'ai/rsc';
 import { google } from '@ai-sdk/google';
 import { ReactNode } from 'react';
 import { z } from 'zod';
-import { generateId, generateObject, generateText, Output } from 'ai';
+import { embed, generateId, generateObject, generateText, Output } from 'ai';
 import HospitalCard from '@/components/HospitalCard';
 import { TextShimmerWave } from '@/components/ui/text-shimmer-wave';
 import DonationChart from '@/components/DonationChart';
@@ -17,6 +17,7 @@ import { revalidatePath } from 'next/cache'
 import { get_with_token, post } from './req';
 import { cookies } from 'next/headers';
 import { check_type } from './general';
+import { createClient } from '@supabase/supabase-js';
 
 const signUpSchema = z
     .object({
@@ -89,16 +90,130 @@ export async function DonorSignUp(prevState: any, formData: FormData) {
         if (res.error) {
             return { error: res.error };
         }
+        const str_data = `Name: ${name}, Present Address: ${present_address}, Email: ${email}, Phone: ${phone}, Blood Type: ${bloodType}, Date of Birth: ${dob}, Father's Name: ${fathersName}, Mother's Name: ${mothersName}, NID: ${nid}, Permanent Address: ${permanentAddress} id: ${JSON.stringify(res)} Type:'donor'`
+
+        /**
+         * 
+         * create table documents (
+  id bigint primary key generated always as identity,
+  content text,
+  embedding vector(512)
+);
+         */
+
+
+        const { embedding } = await embed({
+            model: google.textEmbeddingModel('text-embedding-004', {
+                outputDimensionality: 512,
+            }),
+            value: str_data,
+        });
+        const sec = (await cookies()).get('token') || ''
+        console.log("sec", sec)
+
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+        console.log(sec, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+        const supabase = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
+        const { data, error } = await supabase
+            .from('documents')
+            .insert([{ content: str_data, embedding: embedding }]);
+        console.log(data, error)
 
     }
     catch (error) {
         console.error(error);
         return { error: "Sign up failed!" };
     }
+
     redirect('/login');
 
 }
 
+export async function SearchAction(query: string) {
+    const { embedding } = await embed({
+        model: google.textEmbeddingModel('text-embedding-004', {
+            outputDimensionality: 512,
+        }),
+        value: query,
+    });
+    const sec = (await cookies()).get('token') || ''
+    console.log("sec", sec)
+
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+    console.log(sec, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+    const supabase = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
+    const { data: documents } = await supabase.rpc('match_documents', {
+        query_embedding: embedding,
+        match_threshold: 0.3,
+        match_count: 10,
+    })
+
+    let context = "";
+    for (const doc of documents) {
+        context += doc.content + '\n';
+    }
+
+    const result = await generateText({
+        model: google('gemini-2.0-flash-exp', {
+            structuredOutputs: true
+        }),
+
+        maxSteps: 10,
+        messages: [
+            {
+                role: 'user',
+                content: [
+                    {
+                        type: 'text', text: `This is a search result now beautify it, response proffessionally and return it in markdown with all the information - 
+                        ${context}
+                        ` },
+                ],
+            },
+        ],
+
+
+        experimental_output: Output.object({
+            schema: z.object({
+                result: z.string().describe('The search result in markdown'),
+                id: z.array(z.object({
+                    type: z.string().describe('The type of user donor or institute'),
+                    id: z.string().describe('The id of the user'),
+                })),
+            }),
+        }),
+    });
+
+
+
+    return result.experimental_output;
+
+}
+
+
+export async function FindLatLng(address: string) {
+    const result = await generateText({
+        model: google('gemini-2.0-flash-exp', {
+            useSearchGrounding: true,
+        }),
+
+        maxSteps: 10,
+        messages: [
+            {
+                role: 'user',
+                content: [
+                    {
+                        type: 'text', text: `Find lat and lng of the address - ${address} and respond only the lat and lng in comma separated format`
+                    },
+                ],
+            },
+        ],
+
+    });
+
+
+
+    return result.text
+}
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),

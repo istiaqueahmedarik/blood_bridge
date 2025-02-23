@@ -29,9 +29,9 @@ export default function BloodRequestCard({ request }: any) {
             <CardContent className='flex gap-2 flex-col'>
                 <p>Blood Type: {request.Blood_type_req}</p>
                 <p>Quantity: {request.Unit_req} units</p>
-                <div>Status: {(request.Is_complete ?
-                    <Badge className="bg-green-100 text-green-800">Completed</Badge>
-                    :
+                <div>Status: {request.Is_complete ? (
+                    request.is_delivered ? <Badge className="bg-green-100 text-green-800">Delivered</Badge> : <Badge className="bg-yellow-100 text-yellow-800">On the way</Badge>
+                ) : (
                     <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
                 )}</div>
                 {request.Date_needed && (

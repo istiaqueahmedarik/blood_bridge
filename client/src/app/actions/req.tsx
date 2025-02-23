@@ -107,8 +107,8 @@ export const post_with_token = cache(async (url: any, data: any) => {
                 Authorization: `Bearer ${token.value}`,
             },
             body: JSON.stringify(data),
-            cache: 'force-cache',
-            next: { revalidate: 1000 }
+            // cache: 'force-cache',
+            // next: { revalidate: 1000 }
         },
 
     )

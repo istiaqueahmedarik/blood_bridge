@@ -142,7 +142,150 @@ app.post('/auth/test_appointment', async (c) => {
     }
 })
 
+/**
+ * 
+ * create table public."Offer" (
+  "ID" uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  "Institute_ID" uuid null default gen_random_uuid (),
+  "Service_name" text null,
+  "Expired_at" timestamp with time zone null,
+  "Min_Coin" bigint null,
+  "Max_Coin" bigint null,
+  "Details" text null,
+  constraint Offer_pkey primary key ("ID"),
+  constraint Offer_Institute_ID_fkey foreign KEY ("Institute_ID") references "Institute" ("ID")
+) TABLESPACE pg_default;
+ */
 
+/**
+ * 
+ * create table public."Service_Using" (
+  "ID" uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  "Donor_ID" uuid null default gen_random_uuid (),
+  "Offer_ID" uuid null default gen_random_uuid (),
+  "Expired_at" timestamp without time zone null default (now() AT TIME ZONE 'utc'::text),
+  "Coin_Used" bigint null,
+  constraint Service_Using_pkey primary key ("ID"),
+  constraint Service_Using_Donor_ID_fkey foreign KEY ("Donor_ID") references "Donor" ("Donor_id"),
+  constraint Service_Using_Offer_ID_fkey foreign KEY ("Offer_ID") references "Offer" ("ID")
+) TABLESPACE pg_default;
+ */
+
+/**
+ * 
+ * create table public."Service_Using" (
+  "ID" uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  "Donor_ID" uuid null default gen_random_uuid (),
+  "Offer_ID" uuid null default gen_random_uuid (),
+  "Expired_at" timestamp without time zone null default (now() AT TIME ZONE 'utc'::text),
+  "Coin_Used" bigint null,
+  constraint Service_Using_pkey primary key ("ID"),
+  constraint Service_Using_Donor_ID_fkey foreign KEY ("Donor_ID") references "Donor" ("Donor_id"),
+  constraint Service_Using_Offer_ID_fkey foreign KEY ("Offer_ID") references "Offer" ("ID")
+) TABLESPACE pg_default;
+ */
+
+app.get('/auth/services', async (c) => {
+    //all services that is on offer but not on service using
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const donor_id = (await sql`SELECT "Donor_id" FROM "Donor" WHERE "User_id" = ${payload['id']}`)[0]['Donor_id'];
+    const count = (await sql`SELECT COUNT(*) FROM "Donor_donation_history" WHERE "Donor_id" = ${donor_id}`)[0]['count']
+
+    const cost = (await sql`SELECT SUM("Coin_Used") FROM "Service_Using" WHERE "Donor_ID" = ${donor_id}`)[0]['sum']
+
+    const services = await sql`
+        SELECT 
+            "Offer"."ID" as "offer_id",
+            "Offer".*, 
+            "Institute".*, 
+            "User".*, 
+            (
+                (("Offer"."Max_Coin" + "Offer"."Min_Coin") / 2) * (${count}::numeric / 100)
+            ) AS token_need, 
+             ${count - cost} AS token_left
+        FROM "Offer", "Institute", "User"
+        WHERE "Offer"."ID" NOT IN (
+            SELECT "Offer_ID" FROM "Service_Using" WHERE "Donor_ID" = ${donor_id}
+        )
+        AND "Institute"."ID" = "Offer"."Institute_ID" 
+        AND "User"."ID" = "Institute"."user_id" 
+        ORDER BY "Offer"."created_at" DESC
+    `
+    return c.json({ services })
+})
+
+app.post('/auth/service/accept', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const donor_id = (await sql`SELECT "Donor_id" FROM "Donor" WHERE "User_id" = ${payload['id']}`)[0]['Donor_id'];
+    const body = await c.req.json();
+    const offer_id = body.offer_id;
+    console.log("offer_id", offer_id)
+    const offer = (await sql`SELECT * FROM "Offer" WHERE "ID" = ${offer_id}`)[0];
+    const count = (await sql`SELECT COUNT(*) FROM "Donor_donation_history" WHERE "Donor_id" = ${donor_id}`)[0]['count']
+    const cost = ((Number(offer['Max_Coin']) + Number(offer['Min_Coin'])) / 2) * (count / 100)
+    const token_left = (await sql`SELECT COUNT(*) FROM "Donor_donation_history" WHERE "Donor_id" = ${donor_id}`)[0]['count'] - (await sql`SELECT SUM("Coin_Used") FROM "Service_Using" WHERE "Donor_ID" = ${donor_id}`)[0]['sum']
+    console.log(offer, token_left, cost)
+    if (token_left < cost) {
+        return c.json({ error: 'Not enough tokens' })
+    }
+    console.log("cost", cost)
+    console.log(donor_id, offer_id, offer['Expired_at'], cost)
+    const res = await sql`INSERT INTO public."Service_Using" ("Donor_ID", "Offer_ID","Expired_at","Coin_Used") VALUES (${donor_id},${offer_id},${offer['Expired_at']},${Math.round(cost)});`
+        .catch((error) => {
+            console.log(error)
+            return c.json({ error })
+        })
+    console.log(res)
+    return c.json({ res })
+})
+
+app.get('/auth/service/using', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+    const donor_id = (await sql`SELECT "Donor_id" FROM "Donor" WHERE "User_id" = ${payload['id']}`)[0]['Donor_id'];
+    const services = await sql`
+    SELECT 
+        "Service_Using".*, 
+        "Offer".*, 
+        "Institute".*, 
+        "User".*
+    FROM "Service_Using", "Offer", "Institute", "User"
+    WHERE "Service_Using"."Donor_ID" = ${donor_id}
+    AND "Service_Using"."Offer_ID" = "Offer"."ID"
+    AND "Offer"."Institute_ID" = "Institute"."ID"
+    AND "User"."ID" = "Institute"."user_id"
+    ORDER BY "Service_Using"."created_at" DESC
+    `
+    return c.json({ services })
+})
+
+
+app.get('/auth/test_results', async (c) => {
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const payload = c.get('jwtPayload');
+
+    const tests = await sql`
+    SELECT 
+        "Test_result".*, 
+        "Institute".*,
+        "User".*
+    FROM "Test_result", "User","Institute"
+    WHERE "Test_result"."userId" = ${payload['id']}
+    AND "Test_result"."institute_id" = "Institute"."ID"
+    AND "User"."ID" = "Institute"."user_id"
+    ORDER BY "Test_result"."created_at" DESC
+    `
+    return c.json({ tests })
+})
 
 
 app.get('/auth/user_log', async (c) => {
@@ -150,7 +293,7 @@ app.get('/auth/user_log', async (c) => {
     const sql = postgres(connectionString)
     const payload = c.get('jwtPayload');
     try {
-        const user_log = (await sql`SELECT * FROM "User_log" u WHERE "User_id" = ${payload['id']} ORDER BY
+        const user_log = (await sql`SELECT * FROM "Notification" u WHERE "User_id" = ${payload['id']} ORDER BY
     u."created_at" DESC LIMIT 50`)
         return c.json({ user_log })
     }

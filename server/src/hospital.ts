@@ -128,6 +128,23 @@ app.post('/auth/req_blood/delete', async (c) => {
     })
 })
 
+app.post('/auth/req_blood/delivered', async (c) => {
+    const { reqId } = await c.req.json()
+    console.log(reqId)
+    const connectionString = c.env.DATABASE_URL || ''
+    const sql = postgres(connectionString)
+    const res = await sql`UPDATE public."Hospital_req" SET "is_delivered" = TRUE WHERE "ID" = ${reqId}`
+        .catch((err) => {
+            console.log(err)
+            return c.json({
+                status: 'error',
+                message: 'Error occured'
+            })
+        })
+    return c.json({
+        data: res
+    })
+})
 
 
 /**

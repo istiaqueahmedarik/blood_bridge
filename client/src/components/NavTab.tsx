@@ -9,8 +9,7 @@ import Image from 'next/image'
 import { Input } from './ui/input'
 import { Flower } from 'coolshapes-react'
 import Form from 'next/form'
-import { BellIcon, Grip, LayoutDashboard, LogInIcon, LogOutIcon } from 'lucide-react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { LayoutDashboard, LogInIcon, LogOutIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 function NavTab({ token, type }: { token: any, type: any }) {
@@ -36,6 +35,7 @@ function NavTab({ token, type }: { token: any, type: any }) {
             </div>
             <Button asChild className=' rounded-full  hover:text-background bg-destructive shadow-none text-background font-extrabold'>
                 <Link href="/emergency" className="">Emergency</Link>
+
             </Button>
 
             <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none' asChild>
@@ -57,24 +57,11 @@ function NavTab({ token, type }: { token: any, type: any }) {
                     </Button>
                 </Form>
             </motion.div>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none'>
-                        <Grip size={22} />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className='flex gap-2 w-fit  justify-center'>
-                    <DropdownMenuItem asChild>
-                        <Link href={`${isLogged ? '/logout' : '/users'}`} className='hover:text-foreground/80 transition-all'>
-                            {isLogged ? <LogOutIcon size={22} className='hover:text-foreground/80 transition-all' /> : <LogInIcon className='hover:text-foreground/80 transition-all' size={22} />}
-                        </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem asChild>
-                        <Link href="/notification" className='hover:text-foreground/80 transition-all'><BellIcon className='hover:text-foreground/80 transition-all' size={22} /></Link>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none' asChild>
+                <Link href={`${isLogged ? '/logout' : '/users'}`} className='hover:text-foreground/80 transition-all'>
+                    {isLogged ? <LogOutIcon size={22} className='hover:text-foreground/80 transition-all' /> : <LogInIcon className='hover:text-foreground/80 transition-all' size={22} />}
+                </Link>
+            </Button>
         </motion.div >
     )
 }
