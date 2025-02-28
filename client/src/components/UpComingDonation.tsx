@@ -27,7 +27,6 @@ interface DonationEvent {
     Add_info: string | null;
     Completed: boolean;
     Institute_id: string;
-    Pref_date_start: string;
     donationType: string;
     Address: string;
 }

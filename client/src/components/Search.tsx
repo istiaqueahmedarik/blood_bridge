@@ -3,10 +3,8 @@
 import React from 'react'
 import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
-import Link from 'next/link';
 import { Search } from 'lucide-react';
-import { get, post } from '@/app/actions/req';
+import { post } from '@/app/actions/req';
 
 
 
@@ -14,7 +12,7 @@ import { get, post } from '@/app/actions/req';
 function SearchPageWrapper({ data, donor, institute }: any) {
 
     const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null);
-    const [res, setRes] = React.useState<any>(null);
+    const [, setRes] = React.useState<any>(null);
     const [bloodBanks, setBloodBanks] = React.useState<any>([]);
     const [donors, setDonors] = React.useState<any>([]);
     React.useEffect(() => {
@@ -58,6 +56,7 @@ function SearchPageWrapper({ data, donor, institute }: any) {
                 }
             });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [coords]);
     if (!coords) return <div>Loading...</div>
 
@@ -76,7 +75,7 @@ function SearchPageWrapper({ data, donor, institute }: any) {
                     <div>
                         <h2 className="text-lg font-semibold mb-4">Blood Bank ({bloodBanks.length})</h2>
                         <div className="space-y-4">
-                            {bloodBanks.map((bank, i) => (
+                            {bloodBanks.map((bank: any, i: any) => (
                                 <div key={i} className="p-4 border rounded-lg">
                                     <h3 className="font-medium">{bank.name}</h3>
                                     <p className="text-sm text-foreground">{bank.time}</p>
@@ -87,7 +86,7 @@ function SearchPageWrapper({ data, donor, institute }: any) {
                     <div>
                         <h2 className="text-lg font-semibold mb-4">Donor ({donors.length})</h2>
                         <div className="space-y-4">
-                            {donors.map((donor, i) => (
+                            {donors.map((donor: any, i: any) => (
                                 <div key={i} className="p-4 border rounded-lg">
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-3">

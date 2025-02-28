@@ -23,7 +23,7 @@ export function BloodRequestForm({ res }: any) {
   const [showMap, setShowMap] = useState(false)
   const [location, setLocation] = useState("")
   const [testLocation, setTestLocation] = useState("Blood Bank")
-  const [state, formAction, pending] = useActionState(AddReq, null);
+  const [state, formAction,] = useActionState(AddReq, null);
   return (
     <form action={formAction}>
       <Card className="w-full max-w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">

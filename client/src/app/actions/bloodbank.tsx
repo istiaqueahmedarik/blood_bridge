@@ -1,9 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
-import { google } from "@ai-sdk/google";
-import { generateText, Output } from "ai";
-import { z } from "zod";
 import { post_with_token } from "./req";
 import { revalidatePath } from "next/cache";
 

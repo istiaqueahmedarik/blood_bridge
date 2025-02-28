@@ -81,7 +81,7 @@ export default function AddRep({ data }: any) {
                                             <CommandList>
                                                 <CommandEmpty>No user found.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {filteredUsers(fullName, "fullName").map((user) => (
+                                                    {filteredUsers(fullName, "fullName").map((user: any) => (
                                                         <CommandItem key={user.id} onSelect={() => handleAutofill(user)}>
                                                             {user.fullName} ({user.email})
                                                         </CommandItem>
@@ -114,7 +114,7 @@ export default function AddRep({ data }: any) {
                                             <CommandList>
                                                 <CommandEmpty>No user found.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {filteredUsers(userId, "id").map((user) => (
+                                                    {filteredUsers(userId, "id").map((user: any) => (
                                                         <CommandItem key={user.id} onSelect={() => handleAutofill(user)}>
                                                             {user.id} - {user.fullName}
                                                         </CommandItem>
@@ -158,7 +158,7 @@ export default function AddRep({ data }: any) {
                                                     <CommandList>
                                                         <CommandEmpty>No user found.</CommandEmpty>
                                                         <CommandGroup>
-                                                            {filteredUsers(email, "email").map((user) => (
+                                                            {filteredUsers(email, "email").map((user: any) => (
                                                                 <CommandItem key={user.id} onSelect={() => handleAutofill(user)}>
                                                                     {user.email} ({user.fullName})
                                                                 </CommandItem>

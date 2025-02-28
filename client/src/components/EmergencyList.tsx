@@ -26,7 +26,7 @@ export default function EmergencyBloodDonationList({ res }: any) {
         <div className="max-w-2xl mx-auto my-8 p-6 bg-background rounded-lg">
             <h2 className="text-3xl font-bold mb-6 text-center">Emergency Blood Donation Needs</h2>
             <ul className="space-y-4">
-                {res.map((request: any, id) => (
+                {res.map((request: any, id: any) => (
                     <li key={id} className="border border-muted rounded-lg overflow-hidden">
                         <div className="p-4 flex items-center justify-between">
                             <div className="flex items-center space-x-4">

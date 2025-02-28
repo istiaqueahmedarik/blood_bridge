@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Lexend_Deca, Poppins } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import { cookies } from "next/headers";
-import SearchBar from "@/components/SearchBar";
 
 import { check_type } from "./actions/general";
 const geistSans = Geist({
@@ -52,7 +51,7 @@ export default async function RootLayout({
         {/* <NavBar /> */}
         {children}
         <NavBar token={cookieStore.get('token')} type={type} />
-        <SearchBar />
+        {/* <SearchBar /> */}
       </body>
     </html>
   );

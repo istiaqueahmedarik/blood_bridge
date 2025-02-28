@@ -1,11 +1,10 @@
 import { AppSidebar } from '@/components/ui/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { Calendar1Icon, HeartHandshake, Home, MessageCircleIcon, Refrigerator, Syringe, TestTubeDiagonal, UploadIcon } from 'lucide-react';
+import { Calendar1Icon, HeartHandshake, Home, MessageCircleIcon, Refrigerator, Syringe, UploadIcon } from 'lucide-react';
 import { cookies } from 'next/headers';
-import React, { Suspense } from 'react'
+import React from 'react'
 import LabReports from '@/components/LabReports';
-import LogTab from '@/components/LogTab';
 import { check_type } from '../actions/general';
 import { get_with_token } from '../actions/req';
 import { ActivityList } from '@/components/ActivityList';

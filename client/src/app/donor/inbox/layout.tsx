@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { get_with_token } from "@/app/actions/req"
 import type React from "react"
 import Userlist from "@/components/Userlist"

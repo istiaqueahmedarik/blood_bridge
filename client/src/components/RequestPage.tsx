@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input"
 import { AcceptRequest, RejectRequest } from "@/app/actions/bloodbank"
 import { X } from "lucide-react"
 import { RejectModal } from "./RejectModal"
-import { revalidatePath } from "next/cache"
 
 interface Request {
     id: number

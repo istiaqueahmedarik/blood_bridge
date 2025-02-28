@@ -2,7 +2,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUpRight, Droplet } from 'lucide-react'
+import { Droplet } from 'lucide-react'
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

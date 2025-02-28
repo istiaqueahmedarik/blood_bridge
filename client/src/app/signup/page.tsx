@@ -95,7 +95,7 @@ function SignUpPage() {
           setBloodType(res.blood_type || "")
           setDob(res.dob || "")
           setFathersName(res.fatherName || "")
-          setMothersName(res.mothersName || "")
+          setMothersName(res.motherName || "")
           setNid(res.nid || "")
           setCroppedFr(croppedFront)
           setStage("form")

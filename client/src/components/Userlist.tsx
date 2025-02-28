@@ -3,8 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useState } from 'react'
-import { Button } from './ui/button'
-import { Plus, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Input } from './ui/input'
 import { ScrollArea } from './ui/scroll-area'
 import Link from 'next/link'
@@ -13,7 +12,6 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 function Userlist({ allUser, type = "donor" }: any) {
     const [query, setQuery] = useState('')
 
-    // Filter users by name based on search query
     const filteredUsers = allUser?.filter((contact: any) =>
         contact.Full_name.toLowerCase().includes(query.toLowerCase())
     )

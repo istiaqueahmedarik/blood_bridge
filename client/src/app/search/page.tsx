@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
-import { SearchAction } from '../actions/action'
-import Markdown from 'react-markdown'
 import SearchPageWrapper from '@/components/Search'
 export const experimental_ppr = true
 const page = async ({ searchParams }: any) => {

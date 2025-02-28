@@ -9,7 +9,7 @@ import { embed, generateId, generateObject, generateText, Output } from 'ai';
 import HospitalCard from '@/components/HospitalCard';
 import { TextShimmerWave } from '@/components/ui/text-shimmer-wave';
 import DonationChart from '@/components/DonationChart';
-import { BloodAppointmentCard } from '@/components/BloodAppointmentCard';
+// import { BloodAppointmentCard } from '@/components/BloodAppointmentCard';
 import { MapWithMarkers } from '@/components/MapWithMarkers';
 import { redirect } from 'next/navigation';
 
@@ -43,7 +43,6 @@ const signUpSchema = z
 
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DonorSignUp(prevState: any, formData: FormData) {
     const validatedFields = signUpSchema.safeParse({
         name: formData.get("name"),
@@ -87,7 +86,7 @@ export async function DonorSignUp(prevState: any, formData: FormData) {
             nidImage
         });
         console.log(res);
-        if (res.error) {
+        if (res.status === 'error') {
             return { error: res.error };
         }
         const str_data = `Name: ${name}, Present Address: ${present_address}, Email: ${email}, Phone: ${phone}, Blood Type: ${bloodType}, Date of Birth: ${dob}, Father's Name: ${fathersName}, Mother's Name: ${mothersName}, NID: ${nid}, Permanent Address: ${permanentAddress} id: ${JSON.stringify(res)} Type:'donor'`
@@ -202,7 +201,7 @@ export async function FindLatLng(address: string) {
                 role: 'user',
                 content: [
                     {
-                        type: 'text', text: `Find lat and lng of the address - ${address} and respond only the lat and lng in comma separated format`
+                        type: 'text', text: `Find lat and lng of the address - ${address} and respond only the lat and lng in comma separated format do not add anything extra, again only the lat and lng in comma separated format`
                     },
                 ],
             },
@@ -220,7 +219,6 @@ const loginSchema = z.object({
     password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function Login(prevState: any, formData: FormData) {
     const validatedFields = loginSchema.safeParse({
         email: formData.get("email"),
@@ -639,7 +637,7 @@ export async function continueConversation(
                     });
 
                     return <div>
-                        <BloodAppointmentCard />
+                        {/* <BloodAppointmentCard /> */}
                         <p>
                             {donationAppointment?.subtext}
                         </p>

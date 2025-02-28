@@ -27,6 +27,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
         }
         return () => {
             if (videoRef.current && videoRef.current.srcObject) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
                 tracks.forEach((track) => track.stop())
             }

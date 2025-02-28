@@ -15,12 +15,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 
-function active_state(x: string, y: string) {
-    if (x.includes(y)) {
-        return true
-    }
-    return false
-}
+
 
 
 export function AppSidebar({ title, items }: { title: string, items: { title: string, url: string, icon: React.ComponentType, type?: string }[] }) {

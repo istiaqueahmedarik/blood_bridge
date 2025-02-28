@@ -11,6 +11,7 @@ import { Flower } from 'coolshapes-react'
 import Form from 'next/form'
 import { LayoutDashboard, LogInIcon, LogOutIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { SparklesIcon } from './ui/sparkles'
 
 function NavTab({ token, type }: { token: any, type: any }) {
     const isLogged = token !== undefined
@@ -60,6 +61,11 @@ function NavTab({ token, type }: { token: any, type: any }) {
             <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none' asChild>
                 <Link href={`${isLogged ? '/logout' : '/users'}`} className='hover:text-foreground/80 transition-all'>
                     {isLogged ? <LogOutIcon size={22} className='hover:text-foreground/80 transition-all' /> : <LogInIcon className='hover:text-foreground/80 transition-all' size={22} />}
+                </Link>
+            </Button>
+            <Button className=' rounded-full bg-transparent text-foreground hover:text-background shadow-none' asChild>
+                <Link href={'/ask'} className='hover:text-foreground/80 transition-all'>
+                    <SparklesIcon className="hover:bg-transparent m-auto" />
                 </Link>
             </Button>
         </motion.div >

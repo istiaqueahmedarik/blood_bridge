@@ -1,16 +1,12 @@
 import { ActivityList } from '@/components/ActivityList';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { Pencil1Icon } from '@radix-ui/react-icons';
 import { Calendar, ClipboardCheck, ClockAlert, HeartPulse, Home, Inbox, TicketCheck, TicketPercent } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
-import Link from 'next/link';
 import React, { Suspense } from 'react'
 import { check_type } from '../actions/general';
 import { get_with_token } from '../actions/req';
-import dynamic from 'next/dynamic';
 import { AppSidebar } from '@/components/ui/app-sidebar';
 const items = [
     {

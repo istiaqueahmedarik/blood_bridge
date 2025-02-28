@@ -3,12 +3,10 @@
 
 import React, { useState, useEffect, useRef, useActionState } from 'react'
 import Map, { Marker, Source, Layer, MapRef } from 'react-map-gl'
-import { format } from 'date-fns'
 import { MapPin, Clock, Navigation, ChevronRight, ChevronLeft, PhoneCall, User2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import "mapbox-gl/dist/mapbox-gl.css";
 import { design } from './map_design'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -66,21 +64,10 @@ export default function BloodDonationEmergency({ data, id, data1 }: { data: any,
   const prevStep = () => {
     setCurrentStep((prev) => (prev - 1 + steps.length) % steps.length)
   }
-  const [messages, setMessages] = useState<Message[]>([
+  const [, setMessages] = useState<Message[]>([
 
   ])
 
-  const [inputValue, setInputValue] = useState('')
-
-  const handleSendMessage = () => {
-    if (inputValue.trim() !== '') {
-      setMessages(prevMessages => [
-        ...prevMessages,
-        { id: prevMessages.length + 1, sender: 'You', content: inputValue, timestamp: new Date() }
-      ])
-      setInputValue('')
-    }
-  }
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -137,13 +124,11 @@ export default function BloodDonationEmergency({ data, id, data1 }: { data: any,
     return () => clearInterval(interval)
   }, [])
 
-  // Add state to manage the visibility of the chatbox
-  const [showChatbox, setShowChatbox] = useState(data1 !== undefined && data1.present === true);
+  const [, setShowChatbox] = useState(data1 !== undefined && data1.present === true);
   console.log("d", data1);
 
   const [text, setText] = useState('');
 
-  // Add handlers for accept and reject buttons
   const handleAccept = () => {
     setText('ac');
     setShowChatbox(true);
@@ -238,7 +223,7 @@ export default function BloodDonationEmergency({ data, id, data1 }: { data: any,
               <Button type='submit' onClick={handleAccept} variant="default" disabled={pending}>Accept</Button>
               <Button type='submit' onClick={handleReject} variant="destructive" disabled={pending}>Reject</Button>
             </form>
-            {showChatbox && (
+            {/* {showChatbox && (
               <div className="space-y-2">
                 <h3 className="font-semibold">Inbox</h3>
                 <ScrollArea className="h-64 rounded border border-muted/20 p-4">
@@ -264,7 +249,7 @@ export default function BloodDonationEmergency({ data, id, data1 }: { data: any,
                   </Button>
                 </div>
               </div>
-            )}
+            )} */}
           </CardContent>
         </Card>
       </div>

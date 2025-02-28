@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import { AddReportHospital } from "@/app/actions/bloodbank"
 import { Loader2, Upload } from "lucide-react"
 import Image from "next/image"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 
@@ -81,7 +80,7 @@ export default function AddRepHospital({ data }: any) {
                                             <CommandList>
                                                 <CommandEmpty>No user found.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {filteredUsers(fullName, "fullName").map((user) => (
+                                                    {filteredUsers(fullName, "fullName").map((user: any) => (
                                                         <CommandItem key={user.id} onSelect={() => handleAutofill(user)}>
                                                             {user.fullName} ({user.email})
                                                         </CommandItem>
@@ -114,7 +113,7 @@ export default function AddRepHospital({ data }: any) {
                                             <CommandList>
                                                 <CommandEmpty>No user found.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {filteredUsers(userId, "id").map((user) => (
+                                                    {filteredUsers(userId, "id").map((user: any) => (
                                                         <CommandItem key={user.id} onSelect={() => handleAutofill(user)}>
                                                             {user.id} - {user.fullName}
                                                         </CommandItem>
@@ -158,7 +157,7 @@ export default function AddRepHospital({ data }: any) {
                                                     <CommandList>
                                                         <CommandEmpty>No user found.</CommandEmpty>
                                                         <CommandGroup>
-                                                            {filteredUsers(email, "email").map((user) => (
+                                                            {filteredUsers(email, "email").map((user: any) => (
                                                                 <CommandItem key={user.id} onSelect={() => handleAutofill(user)}>
                                                                     {user.email} ({user.fullName})
                                                                 </CommandItem>

@@ -1,10 +1,9 @@
 import { AppSidebar } from '@/components/ui/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { CalendarCheck, GitPullRequestArrowIcon, HeartHandshake, Home, MessageCircleIcon, MessageCircleWarningIcon, MicroscopeIcon, Syringe, UploadCloudIcon } from 'lucide-react';
+import { CalendarCheck, HeartHandshake, Home, MessageCircleIcon, MessageCircleWarningIcon, MicroscopeIcon, Syringe, UploadCloudIcon } from 'lucide-react';
 import { cookies } from 'next/headers';
-import React, { Suspense } from 'react'
-import { BloodLog } from '@/components/blood-log';
+import React from 'react'
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { ActivityList } from '@/components/ActivityList';
 import { get_with_token } from '../actions/req';

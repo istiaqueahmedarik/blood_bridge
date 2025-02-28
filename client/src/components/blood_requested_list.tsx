@@ -12,8 +12,8 @@ import { useActionState } from "react"
 export default function BloodRequestsPage({ res }: any) {
 
 
-    const [state, formAction, pending] = useActionState(RemoveReq, null);
-    const [state1, formAction1, pending1] = useActionState(DeliverReq, null);
+    const [, formAction, pending] = useActionState(RemoveReq, null);
+    const [, formAction1, pending1] = useActionState(DeliverReq, null);
 
 
 
