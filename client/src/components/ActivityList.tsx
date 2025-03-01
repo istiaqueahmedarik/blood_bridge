@@ -1,9 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { get_with_token } from '@/app/actions/req'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Badge } from './ui/badge';
 
 
-
+function getBadge(type: string) {
+    switch (type) {
+        case 'info':
+            return <Badge variant={'secondary'}>Info</Badge>
+        case 'success':
+            return <Badge variant={'default'}>Success</Badge>
+        case 'error':
+            return <Badge variant={'destructive'}>Error</Badge>
+        case 'Rejected':
+            return <Badge variant={'destructive'}>Rejected</Badge>
+        case 'Accepted':
+            return <Badge variant={'default'}>Accepted</Badge>
+        case 'Pending':
+            return <Badge variant={'destructive'}>Pending</Badge>
+        default:
+            return <Badge variant={'secondary'}>Info</Badge>
+    }
+}
 
 
 export async function ActivityList() {
@@ -27,6 +45,8 @@ export async function ActivityList() {
                                     ? activity['Text'].split(' ').slice(0, 10).join(' ') + '...'
                                     : activity['Text']}
                             </p>
+                            {getBadge(activity['Type'])}
+
                         </div>
                     </li>
                 ))}

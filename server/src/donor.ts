@@ -32,32 +32,44 @@ app.get('/auth', async (c) => {
 app.get('/auth/donor_history', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
     const sql = postgres(connectionString)
-    const payload = c.get('jwtPayload');
+    const payload = c.get('jwtPayload')
 
-    const get_user_id = payload['id'];
-    const get_donor_id = (await sql`SELECT "Donor_id" FROM "Donor" WHERE "User_id" = ${get_user_id}`)[0]['Donor_id']
-    const count = (await sql`SELECT COUNT(*) FROM "Donor_donation_history" WHERE "Donor_id" = ${get_donor_id}`)[0]['count']
-    const sum = (await sql`SELECT SUM("Unit") FROM "Donor_donation_history" WHERE "Donor_id" = ${get_donor_id}`)[0]['sum']
-    const data = await sql`SELECT
-    d."Donor_id",
-    d."Institute_id",
-    d."Unit",
-    d."Address",
-    d."Date",
-    d."Time",
-    i."Type",  
-    i."city",  
-    i."upazilla"  
-FROM
-    public."Donor_donation_history" d
-JOIN
-    public."Institute" i ON d."Institute_id" = i."ID"
-WHERE
-    d."Donor_id" = ${get_donor_id}
-ORDER BY
-    d."created_at" DESC
-LIMIT 100;
-    `
+    // Get the donor ID for the current user.
+    const get_user_id = payload['id']
+    const get_donor_id = (
+        await sql`SELECT "Donor_id" FROM "Donor" WHERE "User_id" = ${get_user_id}`
+    )[0]['Donor_id']
+
+    // Count and sum the records from the Appointment table.
+    const count = (
+        await sql`SELECT COUNT(*) FROM "Appointment" WHERE "Donor_id" = ${get_donor_id}`
+    )[0]['count']
+    const sum = (
+        await sql`SELECT SUM("Unit") FROM "Appointment" WHERE "Donor_id" = ${get_donor_id}`
+    )[0]['sum']
+
+    // Retrieve appointment records along with related institute information.
+    const data = await sql`
+    SELECT
+      a."Donor_id",
+      a."Institute_id",
+      a."Unit",
+      a."Location" AS "Address",
+      a."Pref_date_start" AS "Date",
+      a."Pref_time_start" AS "Time",
+      i."Type",  
+      i."city",  
+      i."upazilla"  
+    FROM
+      public."Appointment" a
+    JOIN
+      public."Institute" i ON a."Institute_id" = i."ID"
+    WHERE
+      a."Donor_id" = ${get_donor_id}
+    ORDER BY
+      a."created_at" DESC
+    LIMIT 100;
+  `
 
     return c.json({ data, count, sum })
 })
@@ -113,8 +125,24 @@ app.post('/auth/appointment', async (c) => {
         return c.json({ error: 'Invalid request' })
     }
 
+    const last_appointment = await sql`SELECT * FROM "Appointment" WHERE "Donor_id" = ${donor_id} ORDER BY "created_at" DESC LIMIT 1`
+    if (last_appointment.length > 0) {
+        const last_appointment_date = new Date(last_appointment[0]['Pref_date_start'])
+        const current_date = new Date(body.start_date)
+        const diffTime = Math.abs(current_date.getTime() - last_appointment_date.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays < 21) {
+            return c.json({ error: 'You can only donate blood after 3 weeks of last donation' })
+        }
+    }
 
     const res = await sql`INSERT INTO public."Appointment" ("Donor_id", "Location", "Pref_date_start", "Pref_date_end", "Pref_time_start", "Pref_time_end", "Add_info", "Completed", "donationType") VALUES (${donor_id},${body.location},${body.start_date},${body.end_date},${body.start_time},${body.end_time},${body.add_info},${false},${body.donationType}) RETURNING *;`
+        .then(async () => {
+            await sql`INSERT INTO public."Notification" ("User_id", "Text", "Type") 
+VALUES (${payload['id']}, 'You added an appointment', 'info') 
+RETURNING "ID", "created_at";)`
+        })
+
 
     return c.json({ body })
 })
@@ -197,7 +225,8 @@ app.get('/auth/services', async (c) => {
     const count = (await sql`SELECT COUNT(*) FROM "Donor_donation_history" WHERE "Donor_id" = ${donor_id}`)[0]['count']
 
     const cost = (await sql`SELECT SUM("Coin_Used") FROM "Service_Using" WHERE "Donor_ID" = ${donor_id}`)[0]['sum']
-
+    console.log("cost", cost)
+    console.log("count", count)
     const services = await sql`
         SELECT 
             "Offer"."ID" as "offer_id",
@@ -216,7 +245,7 @@ app.get('/auth/services', async (c) => {
         AND "User"."ID" = "Institute"."user_id" 
         ORDER BY "Offer"."created_at" DESC
     `
-    return c.json({ services })
+    return c.json({ services, token_left: count - cost })
 })
 
 app.post('/auth/service/accept', async (c) => {
@@ -293,8 +322,10 @@ app.get('/auth/user_log', async (c) => {
     const sql = postgres(connectionString)
     const payload = c.get('jwtPayload');
     try {
+        console.log("searchin..", payload['id']);
         const user_log = (await sql`SELECT * FROM "Notification" u WHERE "User_id" = ${payload['id']} ORDER BY
     u."created_at" DESC LIMIT 50`)
+        console.log(user_log)
         return c.json({ user_log })
     }
     catch (error) {

@@ -143,10 +143,9 @@ export async function SearchAction(query: string) {
     const supabase = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
     const { data: documents } = await supabase.rpc('match_documents', {
         query_embedding: embedding,
-        match_threshold: 0.3,
-        match_count: 10,
+        match_threshold: 0.1,
+        match_count: 50,
     })
-
     let context = "";
     for (const doc of documents) {
         context += doc.content + '\n';
@@ -325,7 +324,7 @@ export async function OCRImage(image: string, image1: string) {
             {
                 role: 'user',
                 content: [
-                    { type: 'text', text: "Is it look like NID, it needs to be bangladeshi NID? If say yes, also OCR the image, extract info in good structured way and you must reply with the 2d bounding box of box_2d_tx, box_2d_ty,box_2d_bx,box_2d_by  , mask and label of the first image, where the profile pictures at" },
+                    { type: 'text', text: "Is it look like NID, it needs to be bangladeshi NID? If say yes, also OCR the image, extract info in good structured way also convert the dob as iso string and you must reply with the 2d bounding box of box_2d_tx, box_2d_ty,box_2d_bx,box_2d_by  , mask and label of the first image, where the profile pictures at" },
                     { type: 'image', image: image },
                     { type: 'image', image: image1 }
                 ],
@@ -352,20 +351,7 @@ export async function OCRImage(image: string, image1: string) {
     });
     console.log(result);
     return result.experimental_output;
-    return {
-        isNID: true,
-        name: 'Istiaque Ahmed',
-        fatherName: 'Md. Shahidul Islam',
-        motherName: 'Rojina Begum',
-        dob: '1998-01-01',
-        nid: '12345678901234567',
-        address: 'Dhaka',
-        blood_type: 'A+',
-        box_2d_tx: 16,
-        box_2d_ty: 108,
-        box_2d_bx: 126,
-        box_2d_by: 215,
-    }
+
 }
 
 async function distanceBetweenHospitals(hospital1: string, hospital2: string) {

@@ -25,6 +25,12 @@ export async function donationAppointment(prevState: any, formData: FormData) {
             add_info,
             donationType
         })
+        console.log("res", res);
+        if (res.error) {
+            return {
+                message: 'Failed to book appointment - ' + res.error,
+            }
+        }
 
         redirectPath = '/donor'
     }

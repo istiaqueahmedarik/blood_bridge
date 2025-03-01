@@ -76,9 +76,14 @@ export default function CheckUpList({ data }: any) {
                                     <div className="p-4 pt-0">
 
                                         <CheckUpResultPage
+                                            reportImage={card.report}
+                                            intro={card.intro}
+                                            secondary={card.secondary}
+                                            others={card.others}
+                                            future_cause={card.future_cause}
+                                            explanation={card.explanation}
                                             address={card.Address}
                                             date={card.created_at}
-                                            summary={`Summary: ${card.intro} ${card.secondary} ${card.others} ${card.future_cause} ${card.explanation}`}
                                         />
                                     </div>
                                 </motion.div>

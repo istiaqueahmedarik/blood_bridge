@@ -4,6 +4,7 @@ import postgres from 'postgres'
 
 var jwt_ = require('jsonwebtoken')
 import { createClient } from '@supabase/supabase-js'
+import { error } from 'console';
 
 
 type Variables = JwtVariables
@@ -110,6 +111,21 @@ WHERE "Institute"."user_id" = "User"."ID" AND "User"."ID"=${id}`)[0].ID
     const { appointment_id } = await c.req.json();
     console.log(appointment_id)
     const data = await sql`UPDATE public."Appointment" SET "Institute_id" = ${ins_id} WHERE "ID" = ${appointment_id} RETURNING *`
+        .then(async (res) => {
+            const donor_id = (await sql`SELECT "Donor_id" FROM public."Appointment" WHERE "ID" = ${appointment_id}`)[0].Donor_id
+            const donor_user_id = (await sql`SELECT "User_id" FROM public."Donor" WHERE "Donor_id" = ${donor_id}`)[0].User_id
+            await sql`INSERT INTO public."Notification" ("User_id", "Text", "Type") 
+VALUES (${donor_user_id}, 'Your appointment is accepted!', 'info') 
+RETURNING "ID", "created_at";`
+                .catch((err) => {
+                    console.log(err);
+                    return c.json({ error: 'Error' })
+                })
+            return res
+        })
+        .catch((err) => {
+            return c.json({ error: 'Error' })
+        })
     return c.json({ data })
 
 })
@@ -180,6 +196,7 @@ and "Donor"."User_id"= "User"."ID" AND "Institute_id"=${ins_id}
 AND "Pref_date_end" > now()
 ORDER BY "Pref_date_start" ASC
     `
+
 
     return c.json({ data })
 })
@@ -380,9 +397,9 @@ RETURNING *;
 
 
     const res = await sql`
-        INSERT INTO public."Test_result" ("userId", "Is_safe","institute_id", "explanation", "future_cause", "intro", "secondary", "others")
+        INSERT INTO public."Test_result" ("userId", "Is_safe","institute_id", "explanation", "future_cause", "intro", "secondary", "others","report")
 VALUES (${userId}, ${inventory}, ${ins_id},
-${explanation}, ${future_cause}, ${intro}, ${secondary}, ${others})
+${explanation}, ${future_cause}, ${intro}, ${secondary}, ${others},${report})
 RETURNING *;
     `.catch((err) => {
         console.log(err)

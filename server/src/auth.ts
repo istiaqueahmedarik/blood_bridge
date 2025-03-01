@@ -48,39 +48,52 @@ app.post('/donor_signup', async (c) => {
     const body = await c.req.json();
 
     const { name, present_address, email, phone, password, bloodType, dob, fathersName, mothersName, nid, permanentAddress, croppedImage, nidImage } = body;
-    let ok = true;
     const [lat, lng] = present_address.split(',');
 
-    const findDonor = await sql`SELECT * FROM "Donor" WHERE "nid" = ${nid}`
-    if (findDonor.length > 0) {
-        return c.json({
-            status: 'error',
-            message: 'Donor already exists'
-        })
-    }
-
     try {
-        const user = await sql`INSERT INTO "User" ("Full_name","email", "Address","Verification_url","latitude","longitude","Verified") VALUES (${name}, ${email}, ${permanentAddress}, ${nidImage},${lat},${lng},${ok}) RETURNING *`
+        const result = await sql`
+            SELECT donor_signup(
+                ${name},
+                ${present_address},
+                ${email},
+                ${phone},
+                ${password},
+                ${bloodType},
+                ${new Date(dob).toISOString()},
+                ${fathersName},
+                ${mothersName},
+                ${nid},
+                ${permanentAddress},
+                ${croppedImage},
+                ${nidImage}
+            );
+        `;
 
-        const user_id = user[0].ID
-
-        const donor = await sql`INSERT INTO "Donor" ("Phone_number", "Father's_name", "Mother's_name", "Date_of_birth", "Blood_type", "Profile_picture", "User_id","nid") VALUES (${phone}, ${fathersName}, ${mothersName}, ${dob}, ${bloodType}, ${croppedImage}, ${user_id},${nid}) RETURNING *`
-
-        const pass = await sql`INSERT INTO "Password" ("Password", "User_id") VALUES (${password}, ${user_id}) RETURNING *`
-
-
-        return c.json({
-            status: 'success',
-            data: donor,
-            user_id: user_id
-        })
-    }
-    catch (e) {
-
+        if (result && result[0] && result[0].donor_signup) {
+            const donorData = result[0].donor_signup;
+            if (donorData.status === 'error') {
+                return c.json({
+                    status: 'error',
+                    message: donorData.data.message
+                });
+            }
+            return c.json({
+                status: 'success',
+                data: donorData,
+                user_id: donorData.user_id
+            });
+        } else {
+            return c.json({
+                status: 'error',
+                message: 'Failed to create donor'
+            });
+        }
+    } catch (e) {
+        console.log(e);
         return c.json({
             status: 'error',
             message: e
-        })
+        });
     }
 })
 
@@ -277,9 +290,10 @@ app.post('/auth/em/ac', async (c) => {
     const eid = body.eid;
     const type = body.val;
     const payload = c.get('jwtPayload');
-    const email = payload.email;
-    const user = await sql`SELECT * FROM "User" WHERE "email" = ${email}`
+    const id = payload.id;
+    const user = await sql`SELECT * FROM "User" WHERE "ID" = ${id}`
     if (user.length === 0) {
+        console.log('User not found')
         return c.json({
             status: 'error',
             message: 'User not found'
@@ -291,6 +305,7 @@ app.post('/auth/em/ac', async (c) => {
         const res = await sql`INSERT INTO public."Responder" ("Emergency_id", "User_id")
 VALUES (${eid}, ${user_id}) RETURNING *;`
             .catch((e) => {
+                console.log(e);
                 return c.json({
                     status: 'error',
                     message: e

@@ -59,7 +59,7 @@ app.post('/api/send/:id', async (c) => {
     }
     const iid = await sql`SELECT "ID" FROM public."Inbox" WHERE ("sender_id" = ${user1} AND "reciever_id" = ${user2})`
     const { message } = await c.req.json()
-
+    console.log("Message: ", message)
     const res = await sql`INSERT INTO public."Message" ("Inbox_id", "sender_id", "Text") VALUES (${iid[0]['ID']}, ${payload['id']}, ${message}) RETURNING *`;
 
     await sql`
@@ -72,7 +72,12 @@ app.post('/api/send/:id', async (c) => {
         "last_message_flag_reciever" = FALSE
       WHERE "ID" = ${iid[0]['ID']}
     `
-
+        .catch((err) => {
+            console.log(err);
+        })
+        .then(() => {
+            console.log("Message sent")
+        });
 
     return c.json({
         status: 'success',
@@ -87,7 +92,6 @@ app.get('/api/auth/inbox', async (c) => {
     const payload = c.get('jwtPayload');
 
     const email = payload['email'];
-
     const userId = payload.id;
 
     let q = `
@@ -103,7 +107,6 @@ app.get('/api/auth/inbox', async (c) => {
     `;
     const inboxUsers = await sql.unsafe(q);
     console.log(inboxUsers)
-
 
     // Extract IDs of users already in an inbox
     const inboxUserIds = []
@@ -128,26 +131,27 @@ app.get('/api/auth/inbox', async (c) => {
 
     const data = [...inboxUsers, ...otherUsers];
 
-
-
-
-    const ret = data.map((item) => {
-        // const data = get_user_id[0]['ID'] + ':' + item['ID'];
-        const user1 = (payload['id'] > item['ID']) ? item['ID'] : payload['id']
-        const user2 = (payload['id'] > item['ID']) ? payload['id'] : item['ID']
-        const data = user1 + ':' + user2;
-        return {
-            ID: item['ID'],
-            Full_name: item['Full_name'],
-            Address: item['Address'],
-            url: data
+    const uniqueUsers = new Set();
+    const ret = [];
+    for (const item of data) {
+        if (!uniqueUsers.has(item['ID'])) {
+            uniqueUsers.add(item['ID']);
+            const user1 = (payload['id'] > item['ID']) ? item['ID'] : payload['id'];
+            const user2 = (payload['id'] > item['ID']) ? payload['id'] : item['ID'];
+            const url = user1 + ':' + user2;
+            console.log(url);
+            ret.push({
+                ID: item['ID'],
+                Full_name: item['Full_name'],
+                Address: item['Address'],
+                url
+            });
         }
-    })
+    }
+    console.log("ret", ret);
 
-
-    return c.json(ret)
+    return c.json(ret);
 })
-
 
 app.get('/api/auth/inbox/:id', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''

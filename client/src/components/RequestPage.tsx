@@ -29,7 +29,6 @@ interface Request {
 
 export default function RequestsPage({ data, data1 }: any) {
     const [pendingRequests, setPendingRequests] = useState<Request[]>([])
-    const [acceptedRequests, setAcceptedRequests] = useState<Request[]>([])
     const [bookedTimes, setBookedTimes] = useState<
         {
             id: number
@@ -78,24 +77,7 @@ export default function RequestsPage({ data, data1 }: any) {
                 },
             ])
         })
-        console.log(data1)
-        data1.data.map((d: any) => {
-            console.log(d)
-            setAcceptedRequests((prev) => [
-                ...prev,
-                {
-                    id: d.app_id,
-                    name: d.Full_name,
-                    bloodType: d.Blood_type,
-                    location: { lat: d.latitude, lng: d.longitude },
-                    prefStartDate: new Date(d.Pref_date_start),
-                    prefEndDate: new Date(d.Pref_date_end),
-                    prefStartTime: d.Pref_time_start,
-                    prefEndTime: d.Pref_time_end,
-                    user_id: d.ID
-                },
-            ])
-        })
+
     }, [data, data1])
 
     const handleBooking = async (dateTime: {
@@ -136,7 +118,7 @@ export default function RequestsPage({ data, data1 }: any) {
         if (!selectedRequestId) return
         await RejectRequest(selectedRequestId, explanation)
 
-        setAcceptedRequests((prev) => prev.filter((r) => r.id !== selectedRequestId.id))
+        // setAcceptedRequests((prev) => prev.filter((r) => r.id !== selectedRequestId.id))
 
         setRejectModalOpen(false)
     }
@@ -204,7 +186,7 @@ export default function RequestsPage({ data, data1 }: any) {
                 <ScrollArea className="h-[400px]">
                     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                         <AnimatePresence>
-                            {acceptedRequests.map((request, id) => (
+                            {data1?.data?.map((request: any, id: any) => (
                                 <motion.div
                                     key={id}
                                     initial={{ opacity: 0, scale: 0.8 }}
@@ -214,13 +196,13 @@ export default function RequestsPage({ data, data1 }: any) {
                                 >
                                     <Card>
                                         <CardHeader>
-                                            <CardTitle>{request.name}</CardTitle>
+                                            <CardTitle>{request.Full_name}</CardTitle>
                                         </CardHeader>
                                         <CardContent>
-                                            <p>Blood Type: {request.bloodType}</p>
+                                            <p>Blood Type: {request.Blood_type}</p>
                                             <p>
-                                                Preferred Date: {request.prefStartDate.toLocaleDateString()} -{" "}
-                                                {request.prefEndDate.toLocaleDateString()}
+                                                Preferred Date: {new Date(request.Pref_date_start).toLocaleDateString()} -{" "}
+                                                {new Date(request.Pref_date_end).toLocaleDateString()}
                                             </p>
 
                                         </CardContent>

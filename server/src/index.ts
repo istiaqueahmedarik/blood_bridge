@@ -39,11 +39,7 @@ app.post('/search', async (c) => {
   //object is in this format -  {
   // id: [{ type: 'donor', id: 'a2e01acf-0d38-4210-8a7f-e66a17248205' }],
   //   }
-
-  const ids = obj.id.map((entry: { id: string }) => entry.id)
-  const connectionString = c.env.DATABASE_URL || ''
-  const sql = postgres(connectionString)
-  const data = await sql`
+  let q = `
     SELECT "ID", "Full_name" as "name",
            latitude,
            longitude,
@@ -56,8 +52,18 @@ app.post('/search', async (c) => {
              sin(radians(latitude))
            )) AS distance
     FROM public."User"
-    WHERE "ID" IN (${ids})
-  `
+    WHERE "ID" IN (`
+  // const ids = obj.id.map((entry: { id: string }) => "'" + entry.id + "'")
+  for (let i = 0; i < obj.id.length; i++) {
+    q += "'" + obj.id[i].id + "',"
+  }
+
+  q = q.slice(0, -1)
+  q += ')'
+  console.log(q);
+  const connectionString = c.env.DATABASE_URL || ''
+  const sql = postgres(connectionString)
+  const data = await sql.unsafe(q)
 
   console.log(data);
   return c.json(
