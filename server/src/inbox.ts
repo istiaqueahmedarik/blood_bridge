@@ -79,6 +79,8 @@ app.post('/api/send/:id', async (c) => {
             console.log("Message sent")
         });
 
+    await sql`INSERT INTO public."Notification" ("User_id", "Text", "Type") VALUES (${user1 === my_id[0]['ID'] ? user2 : user1}, 'You have a new message.', 'info') RETURNING "ID", "created_at";`
+
     return c.json({
         status: 'success',
         message: 'Message sent'

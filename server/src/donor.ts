@@ -140,7 +140,7 @@ app.post('/auth/appointment', async (c) => {
         .then(async () => {
             await sql`INSERT INTO public."Notification" ("User_id", "Text", "Type") 
 VALUES (${payload['id']}, 'You added an appointment', 'info') 
-RETURNING "ID", "created_at";)`
+RETURNING "ID", "created_at";`
         })
 
 

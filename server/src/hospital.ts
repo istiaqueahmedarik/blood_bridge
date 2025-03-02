@@ -81,6 +81,7 @@ app.post('auth/req_blood', async (c) => {
                 message: 'Error occured'
             })
         })
+    await sql`INSERT INTO public."Notification" ("User_id", "Text", "Type") VALUES (${id}, 'Blood request created', 'info') RETURNING "ID", "created_at";`
     return c.json({
         data: res
     })
