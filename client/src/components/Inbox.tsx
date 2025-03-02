@@ -23,7 +23,6 @@ export default function Inbox({ res, val }: any) {
         setMessages((prev) => [...prev, { Text: payload.new.Text, owner: res.uid === payload.new.sender_id ? "me" : "other" }])
     }
     const [cookies, ,] = useCookies(['token']);
-    const [client, setClient] = useState<any>(null)
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -41,7 +40,6 @@ export default function Inbox({ res, val }: any) {
             console.log(sec, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
             const client = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
             client.realtime.setAuth(sec)
-            setClient(client)
             const id = val.slug
             const res = await get_with_token(`inbox/api/auth/inbox/${id}`, id)
             console.log(res)
@@ -64,7 +62,7 @@ export default function Inbox({ res, val }: any) {
 
         return () => {
             console.log("unsubscribed")
-            client.channel('Message').unsubscribe()
+            // client.channel('Message').unsubscribe()
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
