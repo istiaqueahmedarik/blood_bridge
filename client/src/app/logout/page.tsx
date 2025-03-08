@@ -19,7 +19,6 @@ export default function LogoutPage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30" />
             </div>
 
-            {/* Content */}
             <div className="relative z-10 flex w-full flex-col items-center justify-center px-4 text-white md:items-start md:px-16 lg:px-24">
                 <div className="max-w-md">
                     <h1 className="mb-3 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">See you soon!</h1>
@@ -29,9 +28,11 @@ export default function LogoutPage() {
                     </p>
 
                     <div className="flex flex-col gap-4 md:flex-row">
-                        <Button variant="default" size="lg" formAction={logout}>
-                            Logout
-                        </Button>
+                        <form action={logout}>
+                            <Button variant="default" size="lg" type="submit">
+                                Logout
+                            </Button>
+                        </form>
 
                         <Link href="/">
                             <Button variant="outline" size="lg" className="text-foreground">
