@@ -4,7 +4,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
 import { Calendar1Icon, HeartHandshake, Home, MessageCircleIcon, Refrigerator, Syringe, UploadIcon } from 'lucide-react';
 import { cookies } from 'next/headers';
 import React from 'react'
-import LabReports from '@/components/LabReports';
+// import LabReports from '@/components/LabReports';
 import { check_type } from '../actions/general';
 import { get_with_token } from '../actions/req';
 import { ActivityList } from '@/components/ActivityList';
@@ -90,7 +90,7 @@ export default async function layout({
             </div>
           </div>
           <div className='flex flex-col auto-cols-min gap-4 w-full lg:w-auto transition-all'>
-            <LabReports />
+            {/* <LabReports /> */}
             <div className="relative flex items-center">
               <div className="flex-grow border-t border-input"></div>
               <span className="flex-shrink mx-4">Notification</span>

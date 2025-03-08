@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Lexend_Deca, Poppins } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import { cookies } from "next/headers";
+import { ViewTransitions } from 'next-view-transitions'
 
 import { check_type } from "./actions/general";
 const geistSans = Geist({
@@ -43,16 +44,18 @@ export default async function RootLayout({
   const type = await check_type();
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${lexen_dec.variable} font-[family-name:var(--font-poppins)] antialiased`}
-      >
+    <ViewTransitions>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${lexen_dec.variable} font-[family-name:var(--font-poppins)] antialiased`}
+        >
 
-        {/* <NavBar /> */}
-        {children}
-        <NavBar token={cookieStore.get('token')} type={type} />
-        {/* <SearchBar /> */}
-      </body>
-    </html>
+          {/* <NavBar /> */}
+          {children}
+          <NavBar token={cookieStore.get('token')} type={type} />
+          {/* <SearchBar /> */}
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

@@ -13,7 +13,7 @@ export default function Main() {
       <Hero />
       <SubHero />
       <Reason />
-      <Suspense fallback={<Image src="/logo.svg" alt="loading" />}>
+      <Suspense fallback={<Image src="/logo.svg" alt="loading" width={300} height={300} />}>
         <BdMap />
       </Suspense>
       <Task />

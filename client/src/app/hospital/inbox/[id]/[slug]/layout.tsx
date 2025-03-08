@@ -17,7 +17,7 @@ export default async function layout({
             <div className="border-b p-4 flex items-center justify-between  ">
                 <div className="flex items-center space-x-4">
                     <Avatar>
-                        <AvatarImage src="/placeholder.svg" />
+                        <AvatarImage src="/logo.svg" />
                         <AvatarFallback>{data.Full_name[0]}</AvatarFallback>
                     </Avatar>
                     <div>

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react'
 import { Button } from './ui/button';
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import { CalendarDaysIcon, DropletIcon, HandHeart, HeartPulseIcon, NotebookPen, TrophyIcon, User, UserPen } from 'lucide-react';
 
 
@@ -57,7 +57,7 @@ function Donor() {
                 <h1 className='font-bold text-2xl'>36</h1>
               </div>
               <div className='items-center flex justify-center'> {/**For Logo */}
-                <HeartPulseIcon/>
+                <HeartPulseIcon />
               </div>
             </div>
             <div className='border flex h-20 w-60 justify-between px-2 rounded-sm'>

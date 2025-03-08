@@ -23,7 +23,7 @@ export const ImageScanLoader: React.FC<ImageScanLoaderProps> = ({
         <div className="flex items-center justify-center ">
             <div className="relative overflow-hidden rounded-lg shadow-lg" style={{ width, height }}>
                 <Image
-                    src={imageSrc || "/placeholder.svg"}
+                    src={imageSrc || "/logo.svg"}
                     alt="Scanning image"
                     layout="fill"
                     className="object-center object-cover"

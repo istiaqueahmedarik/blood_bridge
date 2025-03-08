@@ -131,9 +131,10 @@ app.post('/auth/appointment', async (c) => {
         const current_date = new Date(body.start_date)
         const diffTime = Math.abs(current_date.getTime() - last_appointment_date.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays < 21) {
-            return c.json({ error: 'You can only donate blood after 3 weeks of last donation' })
-        }
+        //for testing purpose it is commented
+        // if (diffDays < 21) {
+        //     return c.json({ error: 'You can only donate blood after 3 weeks of last donation' })
+        // }
     }
 
     const res = await sql`INSERT INTO public."Appointment" ("Donor_id", "Location", "Pref_date_start", "Pref_date_end", "Pref_time_start", "Pref_time_end", "Add_info", "Completed", "donationType") VALUES (${donor_id},${body.location},${body.start_date},${body.end_date},${body.start_time},${body.end_time},${body.add_info},${false},${body.donationType}) RETURNING *;`

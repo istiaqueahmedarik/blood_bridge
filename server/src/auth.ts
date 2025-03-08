@@ -187,17 +187,20 @@ app.post('/institute_signup', async (c) => {
 
 app.post('/login', async (c) => {
     const connectionString = c.env.DATABASE_URL || ''
+    console.log(connectionString)
     const sql = postgres(connectionString)
 
     const body = await c.req.json();
 
     const { email, password } = body;
 
+    console.log(email, password)
 
 
 
     const user = await sql`SELECT * FROM "User" , "Donor" WHERE "email" = ${email} and "User"."ID" = "Donor"."User_id"`
     const user1 = await sql`SELECT * FROM "User" , "Institute" WHERE "email" = ${email} and "User"."ID" = "Institute"."user_id"`
+    console.log(user, user1)
     if (user.length || user1.length) {
 
         const pass = await sql`SELECT * FROM "Password" WHERE "User_id" = ${user.length ? user[0].ID : user1[0].user_id}`

@@ -4,7 +4,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { useActionState } from "react"
 import { AcceptOffer } from "@/app/actions/bloodbank"
 import { Input } from "./ui/input"

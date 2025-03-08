@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import { Search } from 'lucide-react'
 import { Input } from './ui/input'
 import { ScrollArea } from './ui/scroll-area'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
 function Userlist({ allUser, type = "donor" }: any) {

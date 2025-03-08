@@ -91,7 +91,7 @@ function SearchPageWrapper({ data, donor, institute }: any) {
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-3">
                                             <Avatar>
-                                                <AvatarImage src="/placeholder.svg" />
+                                                <AvatarImage src="/logo.svg" />
                                                 <AvatarFallback>{donor.name[0]}</AvatarFallback>
                                             </Avatar>
                                             <div>

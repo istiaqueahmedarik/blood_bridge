@@ -48,7 +48,7 @@ export default function CheckUpResultPage({
                     <CardContent>
                         <div className="relative aspect-square w-full overflow-hidden rounded-md object-center">
                             <Image
-                                src={reportImage || "/placeholder.svg"}
+                                src={reportImage || "/logo.svg"}
                                 alt="Medical report visualization"
                                 fill
                                 className="object-cover"

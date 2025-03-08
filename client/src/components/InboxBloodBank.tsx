@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 interface Message {
     id: string

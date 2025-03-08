@@ -130,7 +130,7 @@ function SignUpPage() {
                 <ImageUpload onImageUpload={(file) => handleNIdCardChange(file, "front")} />
                 {frontPreview && (
                   <Image
-                    src={frontPreview || "/placeholder.svg"}
+                    src={frontPreview || "/logo.svg"}
                     alt="Front NID Preview"
                     width={200}
                     height={200}
@@ -146,7 +146,7 @@ function SignUpPage() {
                 <ImageUpload onImageUpload={(file) => handleNIdCardChange(file, "back")} />
                 {backPreview && (
                   <Image
-                    src={backPreview || "/placeholder.svg"}
+                    src={backPreview || "/logo.svg"}
                     alt="Back NID Preview"
                     width={200}
                     height={200}
