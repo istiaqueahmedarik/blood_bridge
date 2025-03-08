@@ -55,6 +55,9 @@ app.post('/search', async (c) => {
     WHERE "ID" IN (`
   // const ids = obj.id.map((entry: { id: string }) => "'" + entry.id + "'")
   for (let i = 0; i < obj.id.length; i++) {
+    if (obj.id[i].id === undefined || obj.id[i].id === null || obj.id[i].id === '' || obj.id[i].id === 'undefined' || obj.id[i].id === 'null') {
+      continue
+    }
     q += "'" + obj.id[i].id + "',"
   }
 
